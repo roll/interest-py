@@ -32,7 +32,7 @@ deploy:
   provider: pypi
   user: roll
   password:
-    secure: 
+    secure: eN3OOqIkf4QsVDzJnCoXGRUOtUwqBBu+nu8V52QBzBdlSJ+Vs8FNFgfkZ1RBK0f1O10OHNzKxtM7l9oKx17DD/vsxT3FyP/VmFZs2GLkmXIT1652o42vuiSUuY736KboXOU6NzoQjjK4uKXn89vAoWY9R/CFUpLkgtw24LwKSiw=
   on:
     tags: true
     all_branches: true
