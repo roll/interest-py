@@ -1,0 +1,43 @@
+# Block: caution
+# TO MAKE CHANGES USE [meta] DIRECTORY.
+
+# Block: coverage
+.coverage
+coverage.xml
+
+# Block: eclipse
+.settings/
+.project
+.pydevproject
+
+# Block: nose
+nosetests.xml
+
+# Block: pip
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Block: project
+tmp/
+
+# Block: python
+__pycache__/
+*.py[cod]
+
+# Block: setup
+build/
+develop-eggs/
+dist/
+eggs/
+sdist/
+*.egg-info/
+*.egg
+
+# Block: sphinx
+docs/_build
+
+# Block: virtualenv
+venv/
+venvs/
+virtualenv/
+virtualenvs/

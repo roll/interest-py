@@ -1,0 +1,14 @@
+# Block: caution
+# TO MAKE CHANGES USE [meta] DIRECTORY.
+
+# Block: graft
+graft data
+graft interest
+graft tests
+
+# Block: include
+include *.rst
+include *.py
+
+# Block: global_exclude
+global-exclude __pycache__/*

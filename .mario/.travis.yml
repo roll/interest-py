@@ -1,0 +1,2 @@
+# REPLACE: .travis.yml
+{% extends 'mario.origin/.travis.yml' %}

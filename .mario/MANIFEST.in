@@ -1,0 +1,2 @@
+# REPLACE: MANIFEST.in
+{% extends 'mario.origin/MANIFEST.in' %}

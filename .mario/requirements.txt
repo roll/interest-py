@@ -1,0 +1,2 @@
+# REPLACE: requirements.txt
+{% extends 'mario.origin/requirements.txt' %}

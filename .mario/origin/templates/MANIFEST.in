@@ -1,0 +1,22 @@
+{% block caution %}
+# Block: caution
+# {{ caution }}
+{% endblock %}
+
+{% block graft %}
+# Block: graft
+graft data
+graft {{ name }}
+graft tests
+{% endblock %}
+
+{% block include %}
+# Block: include
+include *.rst
+include *.py
+{% endblock %}
+
+{% block global_exclude %}
+# Block: global_exclude
+global-exclude __pycache__/*
+{% endblock %}

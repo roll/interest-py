@@ -1,0 +1,63 @@
+{% block caution %}
+# Block: caution
+# {{ caution }}
+{% endblock %}
+
+{% block coverage %}
+# Block: coverage
+.coverage
+coverage.xml
+{% endblock %}
+
+{% block eclipse %}
+# Block: eclipse
+.settings/
+.project
+.pydevproject
+{% endblock %}
+
+{% block nose %}
+# Block: nose
+nosetests.xml
+{% endblock %}
+
+{% block pip %}
+# Block: pip
+pip-log.txt
+pip-delete-this-directory.txt
+{% endblock %}
+
+{% block project %}
+# Block: project
+tmp/
+{% endblock %}
+
+{% block python %}
+# Block: python
+__pycache__/
+*.py[cod]
+{% endblock %}
+
+{% block setup %}
+# Block: setup
+build/
+develop-eggs/
+dist/
+eggs/
+sdist/
+*.egg-info/
+*.egg
+{% endblock %}
+
+{% block sphinx %}
+# Block: sphinx
+docs/_build
+{% endblock %}
+
+{% block virtualenv %}
+# Block: virtualenv
+venv/
+venvs/
+virtualenv/
+virtualenvs/
+{% endblock %}

@@ -1,0 +1,11 @@
+#TO MAKE CHANGES USE [meta] DIRECTORY.
+
+mario
+runfile
+sphinx
+sphinx-settings
+sphinx-rtd-theme
+sugarbowl
+aiohttp
+nose
+coverage

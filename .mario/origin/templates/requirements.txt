@@ -1,0 +1,9 @@
+{% block caution %}
+#{{ caution }}
+{% endblock %}
+
+{% block dependencies %}
+{% for dependency in development_requires+install_requires+tests_require -%}
+{{ dependency }}
+{% endfor %}
+{% endblock %}

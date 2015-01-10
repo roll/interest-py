@@ -1,0 +1,58 @@
+{% block caution %}
+# Block: caution
+#{{ caution }}
+{% endblock %}
+
+{% block language %}
+# Block: language
+language: 
+  python
+{% endblock %}
+
+{% block python %}
+# Block: python
+{% if interpreters %}
+python:
+  {% for interpreter in interpreters %}
+  - '{{ interpreter }}'
+  {% endfor %}
+{% endif %}
+{% endblock %}
+
+{% block install %}
+# Block: install
+install:
+  - pip install coveralls
+  - pip install {{ (install_requires+tests_require)|join(' ') }}
+{% endblock %}
+
+{% block script %}
+# Block: script
+script:
+  - coverage run --source={{ name }} setup.py test
+{% endblock %}
+
+{% block after_success %}
+# Block: after_success
+after_success:
+  - coveralls
+{% endblock %}
+
+{% block notifications %}
+# Block: notifications
+notifications:
+  email:
+    - {{ author_email }}
+{% endblock %}
+
+{% block deploy %}
+# Block: deploy
+deploy:
+  provider: pypi
+  user: {{ pypi_user }}
+  password:
+    secure: {{ pypi_password_secure }}
+  on:
+    tags: true
+    all_branches: true
+{% endblock %}

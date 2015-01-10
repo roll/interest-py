@@ -1,0 +1,39 @@
+# Block: caution
+#TO MAKE CHANGES USE [meta] DIRECTORY.
+
+# Block: language
+language: 
+  python
+
+# Block: python
+python:
+  - '3.3'
+  - '3.4'
+
+# Block: install
+install:
+  - pip install coveralls
+  - pip install sugarbowl aiohttp nose coverage
+
+# Block: script
+script:
+  - coverage run --source=interest setup.py test
+
+# Block: after_success
+after_success:
+  - coveralls
+
+# Block: notifications
+notifications:
+  email:
+    - roll@respect31.com
+
+# Block: deploy
+deploy:
+  provider: pypi
+  user: roll
+  password:
+    secure: 
+  on:
+    tags: true
+    all_branches: true
