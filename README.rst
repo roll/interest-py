@@ -43,7 +43,6 @@ Requirements
   - Unix
 - Interpreters
 
-  - Python 3.3
   - Python 3.4
 
 .. Block: installation

@@ -7,7 +7,6 @@ language:
 
 # Block: python
 python:
-  - '3.3'
   - '3.4'
 
 # Block: install
