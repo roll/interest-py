@@ -16,7 +16,7 @@ class Service(dict):
         if loop is None:
             loop = asyncio.get_event_loop()
         if logger is None:
-            logger = logging.getLogger('path')
+            logger = logging.getLogger(path)
         self.__path = path
         self.__loop = loop
         self.__logger = logger
@@ -37,6 +37,9 @@ class Service(dict):
     def listen(self, *, hostname, port):
         server = self.loop.create_server(self.protocol.fork, hostname, port)
         server = self.loop.run_until_complete(server)
+        self.logger.info(
+            'Start listening at http://{hostname}:{port}'.
+            format(hostname=hostname, port=port))
         try:
             self.loop.run_forever()
         except KeyboardInterrupt:

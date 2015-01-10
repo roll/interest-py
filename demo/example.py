@@ -20,8 +20,8 @@ class Comment(Resource):
         return {'hello': request.hello}
 
 
+logging.basicConfig(level=logging.INFO)
 service = Service(path='/api/v1')
 service.add_middleware(Auth)
 service.add_resource(Comment)
-service.logger.setLevel(logging.DEBUG)
 service.listen(hostname='127.0.0.1', port=9000)
