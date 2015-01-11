@@ -8,6 +8,7 @@ class Middleware(metaclass=ABCMeta):
 
     def __init__(self):
         for name in ['process_request',
+                     'process_data',
                      'process_response',
                      'process_exception']:
             attr = getattr(self, name, None)

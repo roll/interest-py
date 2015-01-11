@@ -20,7 +20,6 @@ class Protocol(ServerHttpProtocol):
         start_time = self.__service.loop.time()
         dispatcher = self.__service.dispatcher
         processor = self.__service.processor
-        formatter = self.__service.formatter
         request = Request(
             None, message, payload, self.transport,
             self.writer, self.keep_alive_timeout)
@@ -31,8 +30,8 @@ class Protocol(ServerHttpProtocol):
             request = yield from processor.process_request(request)
             if not match:
                 raise match.exception
-            data = yield from match.route.handler(request)
-            response = formatter.make_response(data)
+            result = yield from match.route.handler(request)
+            response = yield from processor.process_result(request, result)
             response.request = request
             response = yield from processor.process_response(response)
         except HTTPException as exception:
