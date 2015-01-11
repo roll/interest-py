@@ -7,7 +7,10 @@ class Protocol(ServerHttpProtocol):
 
     def __init__(self, service):
         self.__service = service
-        super().__init__(loop=service.loop, logger=service.logger)
+        super().__init__(
+            loop=service.loop,
+            logger=service.logger,
+            access_log=service.logger)
 
     def fork(self):
         return type(self)(self.__service)
