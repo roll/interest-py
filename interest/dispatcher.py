@@ -13,12 +13,16 @@ class Dispatcher:
         self.__resources = []
 
     @property
+    def service(self):
+        return self.__service
+
+    @property
     def resources(self):
         return self.__resources
 
     def add_resource(self, *resources, source=None):
         for resource in resources:
-            resource = resource()
+            resource = resource(self.service)
             self.resources.append(resource)
         if source is not None:
             for resource in vars(source).values():
@@ -43,7 +47,7 @@ class Dispatcher:
         for resource in self.resources:
             for binding in resource.bindings:
                 binding.register(
-                    service=self.__service,
+                    service=self.service,
                     resource=resource,
                     router=router)
         return router

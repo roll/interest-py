@@ -6,6 +6,13 @@ class Resource(metaclass=ABCMeta):
 
     # Public
 
+    def __init__(self, service):
+        self.__service = service
+
+    @property
+    def service(self):
+        return self.__service
+
     @property
     def path(self):
         return '/' + type(self).__name__.lower()

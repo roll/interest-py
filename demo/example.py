@@ -16,17 +16,17 @@ class Interface(Middleware):
 
     # Public
 
-    def process_data(self, request, data):
-        formatter = request.service.formatter
-        text = formatter.encode(data)
-        response = Response(text=text, content_type=formatter.content_type)
+    def process_data(self, data):
+        response = Response(
+            text=self.service.formatter.encode(data),
+            content_type=self.service.formatter.content_type)
         return response
 
     def process_exception(self, exception):
-        formatter = exception.request.service.formatter
         if isinstance(exception, (HTTPClientError, HTTPServerError)):
-            exception.content_type = formatter.content_type
-            exception.text = formatter.encode({'error': str(exception)})
+            data = {'error': str(exception)}
+            exception.text = self.service.formatter.encode(data)
+            exception.content_type = self.service.formatter.content_type
         return exception
 
 

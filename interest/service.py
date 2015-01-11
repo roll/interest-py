@@ -20,8 +20,8 @@ class Service(dict):
         self.__path = path
         self.__loop = loop
         self.__logger = logger
-        self.__formatter = formatter()
-        self.__processor = processor()
+        self.__formatter = formatter(self)
+        self.__processor = processor(self)
         self.__dispatcher = dispatcher(self)
         self.__protocol = protocol(self)
 

@@ -7,8 +7,13 @@ class Processor:
 
     # Public
 
-    def __init__(self):
+    def __init__(self, service):
+        self.__service = service
         self.__middlewares = []
+
+    @property
+    def service(self):
+        return self.__service
 
     @property
     def middlewares(self):
@@ -16,7 +21,7 @@ class Processor:
 
     def add_middleware(self, *middlewares, source=None):
         for middleware in middlewares:
-            middleware = middleware()
+            middleware = middleware(self.service)
             self.middlewares.append(middleware)
         if source is not None:
             for middleware in vars(source).values():
@@ -32,12 +37,12 @@ class Processor:
         return request
 
     @asyncio.coroutine
-    def process_result(self, request, result):
+    def process_result(self, result):
         for middleware in self.middlewares:
             if isinstance(result, Response):
                 break
             if hasattr(middleware, 'process_data'):
-                result = yield from middleware.process_data(request, result)
+                result = yield from middleware.process_data(result)
         if not isinstance(result, Response):
             raise RuntimeError(
                 'Middlewares have not properly converted data to response')

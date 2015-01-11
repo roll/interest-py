@@ -6,6 +6,13 @@ class Formatter(metaclass=ABCMeta):
 
     # Public
 
+    def __init__(self, service):
+        self.__service = service
+
+    @property
+    def service(self):
+        return self.__service
+
     @property
     @abstractmethod
     def content_type(self):
