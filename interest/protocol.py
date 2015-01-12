@@ -1,7 +1,28 @@
+import http
+import time
 import asyncio
+import traceback
+from aiohttp import Response
+from html import escape as html_escape
+from aiohttp.helpers import SafeAtoms, atoms
 from aiohttp.server import ServerHttpProtocol
 from aiohttp.web import Request, HTTPException
 
+
+RESPONSES = http.server.BaseHTTPRequestHandler.responses
+DEFAULT_ERROR_MESSAGE = """
+<html>
+  <head>
+    <title>{status} {reason}</title>
+  </head>
+  <body>
+    <h1>{status} {reason}</h1>
+    {message}
+  </body>
+</html>"""
+
+ACCESS_LOG_FORMAT = (
+    '%(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"')
 
 class Protocol(ServerHttpProtocol):
 
@@ -43,3 +64,63 @@ class Protocol(ServerHttpProtocol):
         self.keep_alive(resp_msg.keep_alive())
         stop_time = self.service.loop.time()
         self.log_access(message, None, resp_msg, stop_time - start_time)
+
+    @asyncio.coroutine
+    def handle_error(self, status=500,
+                     message=None, payload=None, exc=None, headers=None):
+        """Handle errors.
+        Returns http response with specific status code. Logs additional
+        information. It always closes current connection."""
+        now = time.time()
+        try:
+            if self._request_handler is None:
+                # client has been disconnected during writing.
+                return ()
+            if status == 500:
+                self.log_exception("Error handling request")
+            try:
+                reason, msg = RESPONSES[status]
+            except KeyError:
+                status = 500
+                reason, msg = '???', ''
+            if self.debug and exc is not None:
+                try:
+                    tb = traceback.format_exc()
+                    tb = html_escape(tb)
+                    msg += '<br><h2>Traceback:</h2>\n<pre>{}</pre>'.format(tb)
+                except:
+                    pass
+            html = DEFAULT_ERROR_MESSAGE.format(
+                status=status, reason=reason, message=msg).encode('utf-8')
+            response = Response(self.writer, status, close=True)
+            response.add_headers(
+                ('CONTENT-TYPE', 'text/html; charset=utf-8'),
+                ('CONTENT-LENGTH', str(len(html))))
+            if headers is not None:
+                response.add_headers(*headers)
+            response.send_headers()
+            response.write(html)
+            drain = response.write_eof()
+            self.log_access(message, None, response, time.time() - now)
+            return drain
+        finally:
+            self.keep_alive(False)
+
+    def log_debug(self, *args, **kw):
+        if self.debug:
+            self.logger.debug(*args, **kw)
+
+    def log_access(self, message, environ, response, time):
+        if self.access_log and self.access_log_format:
+            try:
+                environ = environ if environ is not None else {}
+                safe_atoms = SafeAtoms(
+                    atoms(message, environ, response, self.transport, time),
+                    getattr(message, 'headers', None),
+                    getattr(response, 'headers', None))
+                self.access_log.info(self.access_log_format % safe_atoms)
+            except:
+                self.logger.error(traceback.format_exc())
+
+    def log_exception(self, *args, **kw):
+        self.logger.exception(*args, **kw)
