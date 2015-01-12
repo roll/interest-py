@@ -6,6 +6,8 @@ from urllib.parse import urlencode
 
 class Route(metaclass=ABCMeta):
 
+    # Public
+
     def __init__(self, method, handler, name):
         self._method = method
         self._handler = handler
@@ -32,6 +34,8 @@ class Route(metaclass=ABCMeta):
     def url(self, **kwargs):
         """Construct url for route with additional params."""
 
+    # Protected
+
     @staticmethod
     def _append_query(url, query):
         if query is not None:
@@ -41,6 +45,8 @@ class Route(metaclass=ABCMeta):
 
 
 class PlainRoute(Route):
+
+    # Public
 
     def __init__(self, method, handler, name, path):
         super().__init__(method, handler, name)
@@ -64,6 +70,8 @@ class PlainRoute(Route):
 
 
 class DynamicRoute(Route):
+
+    # Public
 
     def __init__(self, method, handler, name, pattern, formatter):
         super().__init__(method, handler, name)

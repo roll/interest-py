@@ -2,19 +2,19 @@
 # TODO: it needs refactoring/simplification to meet interest requirements
 import re
 import asyncio
-import collections
 from aiohttp.web import HTTPNotFound, HTTPMethodNotAllowed
 from .route import DynamicRoute, PlainRoute
 
 
-class UrlDispatcher(collections.abc.Mapping):
+class UrlDispatcher:
+
+    # Public
 
     DYN = re.compile(r'^\{(?P<var>[a-zA-Z][_a-zA-Z0-9]*)\}$')
     DYN_WITH_RE = re.compile(
         r'^\{(?P<var>[a-zA-Z][_a-zA-Z0-9]*):(?P<re>.+)\}$')
     GOOD = r'[^{}/]+'
     PLAIN = re.compile('^' + GOOD + '$')
-
     METHODS = {'POST', 'GET', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'}
 
     def __init__(self):
@@ -41,29 +41,6 @@ class UrlDispatcher(collections.abc.Mapping):
                 raise HTTPMethodNotAllowed(method, allowed_methods)
             else:
                 raise HTTPNotFound()
-
-    def __iter__(self):
-        return iter(self._routes)
-
-    def __len__(self):
-        return len(self._routes)
-
-    def __contains__(self, name):
-        return name in self._routes
-
-    def __getitem__(self, name):
-        return self._routes[name]
-
-    def _register_endpoint(self, route):
-        name = route.name
-        if name is not None:
-            if name in self._routes:
-                raise ValueError('Duplicate {!r}, '
-                                 'already handled by {!r}'
-                                 .format(name, self._routes[name]))
-            else:
-                self._routes[name] = route
-        self._urls.append(route)
 
     def add_route(self, method, path, handler, *, name=None):
         assert path.startswith('/')
@@ -109,8 +86,23 @@ class UrlDispatcher(collections.abc.Mapping):
         self._register_endpoint(route)
         return route
 
+    # Protected
+
+    def _register_endpoint(self, route):
+        name = route.name
+        if name is not None:
+            if name in self._routes:
+                raise ValueError('Duplicate {!r}, '
+                                 'already handled by {!r}'
+                                 .format(name, self._routes[name]))
+            else:
+                self._routes[name] = route
+        self._urls.append(route)
+
 
 class UrlMappingMatchInfo(dict):
+
+    # Public
 
     def __init__(self, match_dict, route):
         super().__init__(match_dict)
