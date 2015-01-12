@@ -1,4 +1,3 @@
-import json
 from abc import ABCMeta, abstractmethod
 
 
@@ -25,16 +24,3 @@ class Formatter(metaclass=ABCMeta):
     @abstractmethod
     def encode(self, data):
         pass  # pragma: no cover
-
-
-class JSONFormatter(Formatter):
-
-    # Public
-
-    content_type = 'application/json'
-
-    def decode(self, text):
-        return json.loads(text)
-
-    def encode(self, data):
-        return json.dumps(data)
