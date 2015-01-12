@@ -3,6 +3,7 @@ from .dispatcher import (Dispatcher, Resource,
                          Match, ExistentMatch, NonExistentMatch)
 from .formatter import Formatter, JSONFormatter
 from .handler import Handler
+from .logger import Logger
 from .processor import Processor, Middleware
 from .service import Service
 version = '0.0.0'  # REPLACE: version = '{{ version }}'
