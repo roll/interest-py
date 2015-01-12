@@ -1,5 +1,6 @@
 import asyncio
-from aiohttp.web import UrlDispatcher, HTTPException
+from aiohttp.web import HTTPException
+from .router import UrlDispatcher
 from .match import ExistentMatch, NonExistentMatch
 from .resource import Resource
 
