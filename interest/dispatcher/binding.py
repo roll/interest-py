@@ -26,11 +26,11 @@ class Binding(Function, metaclass=ABCMeta):
             return Function.FUNCTION
         return Function.DECORATOR
 
-    def register(self, *, service, resource, router):
+    def register(self, *, service, resource, dispatcher):
         method = type(self).__name__.lower()
         fullpath = service.path + resource.path + self.__path
         bresponder = partial(self.__responder, resource)
-        router.add_route(method, fullpath, bresponder)
+        dispatcher.add_route(method, fullpath, bresponder)
 
 
 class get(Binding): pass
