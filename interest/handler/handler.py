@@ -24,7 +24,7 @@ DEFAULT_ERROR_MESSAGE = """
 ACCESS_LOG_FORMAT = (
     '%(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"')
 
-class Protocol(ServerHttpProtocol):
+class Handler(ServerHttpProtocol):
 
     def __init__(self, service):
         self.__service = service

@@ -2,8 +2,8 @@ import asyncio
 import logging
 from .dispatcher import Dispatcher  # @UnusedImport
 from .formatter import JSONFormatter  # @UnusedImport
+from .handler import Handler  # @UnusedImport
 from .processor import Processor  # @UnusedImport
-from .protocol import Protocol  # @UnusedImport
 
 
 class Service(dict):
@@ -12,7 +12,7 @@ class Service(dict):
 
     def __init__(self, *, path='', loop=None, logger=None,
                  formatter=JSONFormatter, processor=Processor,
-                 dispatcher=Dispatcher, protocol=Protocol):
+                 dispatcher=Dispatcher, handler=Handler):
         if loop is None:
             loop = asyncio.get_event_loop()
         if logger is None:
@@ -23,7 +23,7 @@ class Service(dict):
         self.__formatter = formatter(self)
         self.__processor = processor(self)
         self.__dispatcher = dispatcher(self)
-        self.__protocol = protocol(self)
+        self.__handler = handler(self)
 
     def __bool__(self):
         return True
@@ -35,7 +35,7 @@ class Service(dict):
         self.dispatcher.add_resource(*resources, source=source)
 
     def listen(self, *, hostname, port):
-        server = self.loop.create_server(self.protocol.fork, hostname, port)
+        server = self.loop.create_server(self.handler.fork, hostname, port)
         server = self.loop.run_until_complete(server)
         self.logger.info(
             'Start listening at http://{hostname}:{port}'.
@@ -82,9 +82,9 @@ class Service(dict):
         self.__dispatcher = value
 
     @property
-    def protocol(self):
-        return self.__protocol
+    def handler(self):
+        return self.__handler
 
-    @protocol.setter
-    def protocol(self, value):
-        self.__protocol = value
+    @handler.setter
+    def handler(self, value):
+        self.__handler = value
