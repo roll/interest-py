@@ -1,33 +1,13 @@
-import http
-import time
 import asyncio
-import traceback
-from aiohttp import Response
-from html import escape as html_escape
 from aiohttp.server import ServerHttpProtocol
 from aiohttp.web import Request, HTTPException
 
-
-RESPONSES = http.server.BaseHTTPRequestHandler.responses
-DEFAULT_ERROR_MESSAGE = """
-<html>
-  <head>
-    <title>{status} {reason}</title>
-  </head>
-  <body>
-    <h1>{status} {reason}</h1>
-    {message}
-  </body>
-</html>"""
 
 class Handler(ServerHttpProtocol):
 
     def __init__(self, service):
         self.__service = service
-        super().__init__(
-            loop=service.loop,
-            logger=service.logger,
-            access_log=service.logger)
+        super().__init__(loop=service.loop)
 
     @property
     def service(self):
@@ -61,54 +41,13 @@ class Handler(ServerHttpProtocol):
         stop_time = self.service.loop.time()
         self.log_access(message, None, resp_msg, stop_time - start_time)
 
-    @asyncio.coroutine
-    def handle_error(self, status=500,
-                     message=None, payload=None, exc=None, headers=None):
-        """Handle errors.
-        Returns http response with specific status code. Logs additional
-        information. It always closes current connection."""
-        now = time.time()
-        try:
-            if self._request_handler is None:
-                # client has been disconnected during writing.
-                return ()
-            if status == 500:
-                self.log_exception("Error handling request")
-            try:
-                reason, msg = RESPONSES[status]
-            except KeyError:
-                status = 500
-                reason, msg = '???', ''
-            if self.debug and exc is not None:
-                try:
-                    tb = traceback.format_exc()
-                    tb = html_escape(tb)
-                    msg += '<br><h2>Traceback:</h2>\n<pre>{}</pre>'.format(tb)
-                except:
-                    pass
-            html = DEFAULT_ERROR_MESSAGE.format(
-                status=status, reason=reason, message=msg).encode('utf-8')
-            response = Response(self.writer, status, close=True)
-            response.add_headers(
-                ('CONTENT-TYPE', 'text/html; charset=utf-8'),
-                ('CONTENT-LENGTH', str(len(html))))
-            if headers is not None:
-                response.add_headers(*headers)
-            response.send_headers()
-            response.write(html)
-            drain = response.write_eof()
-            self.log_access(message, None, response, time.time() - now)
-            return drain
-        finally:
-            self.keep_alive(False)
-
-    def log_debug(self, message, *args, **kwargs):
-        self.logger.debug(message, *args, **kwargs)
-
     def log_access(self, message, environ, response, time):
-        self.logger.access(message,
+        self.service.logger.access(message,
             environ=environ, response=response,
             transport=self.transport, time=time)
 
+    def log_debug(self, message, *args, **kwargs):
+        self.service.logger.debug(message, *args, **kwargs)
+
     def log_exception(self, message, *args, **kwargs):
-        self.logger.exception(message, *args, **kwargs)
+        self.service.logger.exception(message, *args, **kwargs)

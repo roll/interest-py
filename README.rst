@@ -6,7 +6,7 @@
 
 Interest
 =====================
-Interest is a REST framework on top of aiohttp (experimental).
+Interest is a REST framework on top of aiohttp/asyncio (experimental).
 
 .. Block: badges
 
