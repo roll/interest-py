@@ -4,7 +4,6 @@ import asyncio
 import traceback
 from aiohttp import Response
 from html import escape as html_escape
-from aiohttp.helpers import SafeAtoms, atoms
 from aiohttp.server import ServerHttpProtocol
 from aiohttp.web import Request, HTTPException
 
@@ -20,9 +19,6 @@ DEFAULT_ERROR_MESSAGE = """
     {message}
   </body>
 </html>"""
-
-ACCESS_LOG_FORMAT = (
-    '%(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"')
 
 class Handler(ServerHttpProtocol):
 
@@ -106,21 +102,13 @@ class Handler(ServerHttpProtocol):
         finally:
             self.keep_alive(False)
 
-    def log_debug(self, *args, **kw):
-        if self.debug:
-            self.logger.debug(*args, **kw)
+    def log_debug(self, message, *args, **kwargs):
+        self.logger.debug(message, *args, **kwargs)
 
     def log_access(self, message, environ, response, time):
-        if self.access_log and self.access_log_format:
-            try:
-                environ = environ if environ is not None else {}
-                safe_atoms = SafeAtoms(
-                    atoms(message, environ, response, self.transport, time),
-                    getattr(message, 'headers', None),
-                    getattr(response, 'headers', None))
-                self.access_log.info(self.access_log_format % safe_atoms)
-            except:
-                self.logger.error(traceback.format_exc())
+        self.logger.access(message,
+            environ=environ, response=response,
+            transport=self.transport, time=time)
 
-    def log_exception(self, *args, **kw):
-        self.logger.exception(*args, **kw)
+    def log_exception(self, message, *args, **kwargs):
+        self.logger.exception(message, *args, **kwargs)
