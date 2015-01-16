@@ -1,6 +1,6 @@
 import logging
-from aiohttp.web import Response, HTTPClientError, HTTPServerError
-from interest import Service, Resource, Middleware, get
+from aiohttp.web import Response, HTTPCreated
+from interest import Service, Resource, Middleware, get, put
 
 
 class Comment(Resource):
@@ -9,7 +9,11 @@ class Comment(Resource):
 
     @get('/{id}')
     def read(self, request):
-        return {'action': 'read'}
+        return {'id': request.match['id']}
+
+    @put
+    def upsert(self, request):
+        raise HTTPCreated()
 
 
 class Interface(Middleware):
@@ -23,10 +27,9 @@ class Interface(Middleware):
         return response
 
     def process_exception(self, exception):
-        if isinstance(exception, (HTTPClientError, HTTPServerError)):
-            data = {'error': str(exception)}
-            exception.text = self.service.formatter.encode(data)
-            exception.content_type = self.service.formatter.content_type
+        data = {'message': str(exception)}
+        exception.text = self.service.formatter.encode(data)
+        exception.content_type = self.service.formatter.content_type
         return exception
 
 
