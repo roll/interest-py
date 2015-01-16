@@ -30,7 +30,7 @@ class Interface(Middleware):
         return exception
 
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 service = Service(path='/api/v1')
 service.add_resource(Comment)
 service.add_middleware(Interface)
