@@ -16,7 +16,7 @@ class Logger:
         return self.__service
 
     # TODO: reimplement
-    def format(self, message, environ, response, transport, time):
+    def format(self, message, *, environ, response, transport, time):
         try:
             environ = environ if environ is not None else {}
             safe_atoms = SafeAtoms(
