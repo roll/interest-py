@@ -17,7 +17,7 @@ class ExampleTest(unittest.TestCase):
 
     # Tests
 
-    def test(self):
+    def test_read(self):
         response = self.server.make_request('GET', '/api/v1/comment/7')
         self.assertEqual(
             response.headers['CONTENT-TYPE'],

@@ -1,5 +1,6 @@
 import os
 import time
+import socket
 import asyncio
 import aiohttp
 import subprocess
@@ -16,7 +17,7 @@ class Server:
 
     def listen(self):
         self.process = subprocess.Popen(
-            [self.python, self.script, self.hostname, self.port],
+            [self.python, self.script, self.hostname, str(self.port)],
             env=self.environ)
         time.sleep(1)
 
@@ -39,7 +40,7 @@ class Server:
     def make_path(self, *paths):
         return os.path.join(os.path.dirname(__file__), '..', '..', *paths)
 
-    def make_url(self, path):
+    def make_url(self, path=''):
         url = 'http://{self.hostname}:{self.port}'.format(self=self)
         url += path
         return url
@@ -62,7 +63,11 @@ class Server:
 
     @cachedproperty
     def port(self):
-        return '4577'
+        sock = socket.socket()
+        sock.bind(('', 0))
+        port = sock.getsockname()[1]
+        sock.close()
+        return port
 
     @cachedproperty
     def environ(self):
