@@ -1,3 +1,4 @@
+import sys
 import logging
 from aiohttp.web import Response, HTTPCreated
 from interest import Service, Resource, Middleware, get, put
@@ -33,8 +34,14 @@ class Interface(Middleware):
         return exception
 
 
+hostname = '127.0.0.1'
+try:
+    port = int(sys.argv[1])
+except Exception:
+    port = 9000
+
 logging.basicConfig(level=logging.DEBUG)
 service = Service(path='/api/v1')
 service.add_resource(Comment)
 service.add_middleware(Interface)
-service.listen(hostname='127.0.0.1', port=9000)
+service.listen(hostname=hostname, port=port)
