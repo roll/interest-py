@@ -1,5 +1,5 @@
 import asyncio
-from aiohttp.web import StreamResponse
+from aiohttp.web import Response
 from .middleware import Middleware
 
 
@@ -39,11 +39,11 @@ class Processor:
     @asyncio.coroutine
     def process_result(self, result):
         for middleware in self.middlewares:
-            if isinstance(result, StreamResponse):
+            if isinstance(result, Response):
                 break
             if hasattr(middleware, 'process_data'):
                 result = yield from middleware.process_data(result)
-        if not isinstance(result, StreamResponse):
+        if not isinstance(result, Response):
             raise RuntimeError(
                 'Middlewares have not properly converted data to response')
         return result
