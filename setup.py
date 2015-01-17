@@ -39,7 +39,7 @@ setup(
     maintainer_email='roll@respect31.com',
     name='interest',
     include_package_data=True,
-    install_requires=['sugarbowl', 'aiohttp=0.13.1'], 
+    install_requires=['sugarbowl', 'aiohttp==0.13.1'], 
     packages=packages,
     platforms=['Unix'],
     url='https://github.com/interest-hub/interest',

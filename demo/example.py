@@ -34,9 +34,12 @@ class Interface(Middleware):
         return exception
 
 
-hostname = '127.0.0.1'
 try:
-    port = int(sys.argv[1])
+    hostname = sys.argv[1]
+except Exception:
+    hostname = '127.0.0.1'
+try:
+    port = int(sys.argv[2])
 except Exception:
     port = 9000
 

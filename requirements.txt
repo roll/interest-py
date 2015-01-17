@@ -6,6 +6,6 @@ sphinx
 sphinx-settings
 sphinx-rtd-theme
 sugarbowl
-aiohttp=0.13.1
+aiohttp==0.13.1
 nose
 coverage

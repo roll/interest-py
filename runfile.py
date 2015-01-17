@@ -15,7 +15,7 @@ class ProjectModule(ProjectModule):
     development_requires = [
         'mario', 'runfile', 'sphinx', 'sphinx-settings', 'sphinx-rtd-theme']
     github_user = 'interest-hub'
-    install_requires = ['sugarbowl', 'aiohttp=0.13.1']
+    install_requires = ['sugarbowl', 'aiohttp==0.13.1']
     interpreters = ['3.4']
     license = 'MIT License'
     name = 'interest'
