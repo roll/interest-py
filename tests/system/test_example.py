@@ -28,6 +28,7 @@ class ExampleTest(unittest.TestCase):
     def test_upsert(self):
         response = self.server.make_request('PUT', '/api/v1/comment')
         self.assertEqual(response.status, 201)
+        self.assertEqual(response.json, {'message': 'Created'})
 
     def test_not_found(self):
         response = self.server.make_request('PUT', '/api/v1/not-found')
