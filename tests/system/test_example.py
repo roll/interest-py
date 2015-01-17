@@ -19,7 +19,12 @@ class ExampleTest(unittest.TestCase):
 
     def test_read(self):
         response = self.server.make_request('GET', '/api/v1/comment/7')
+        self.assertEqual(response.status, 200)
         self.assertEqual(
             response.headers['CONTENT-TYPE'],
             'application/json; charset=utf-8')
         self.assertEqual(response.json, {'id': '7'})
+
+    def test_upsert(self):
+        response = self.server.make_request('PUT', '/api/v1/comment')
+        self.assertEqual(response.status, 201)
