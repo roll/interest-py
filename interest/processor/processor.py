@@ -1,4 +1,5 @@
 import asyncio
+from builtins import isinstance
 from aiohttp.web import Response
 from .middleware import Middleware
 
