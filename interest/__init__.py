@@ -6,4 +6,4 @@ from .handler import Handler
 from .logger import Logger, SystemLogger
 from .processor import Processor, Middleware
 from .service import Service
-version = '0.0.0'  # REPLACE: version = '{{ version }}'
+version = '0.1.0'  # REPLACE: version = '{{ version }}'

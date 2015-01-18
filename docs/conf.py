@@ -3,7 +3,7 @@ import sphinx
 import sphinx_rtd_theme
 from sphinx_settings import Settings
 project = 'interest'  # REPLACE: project = '{{ name }}'
-version = '0.0.0'  # REPLACE: version = '{{ version }}'
+version = '0.1.0'  # REPLACE: version = '{{ version }}'
 
 
 class Settings(Settings):
