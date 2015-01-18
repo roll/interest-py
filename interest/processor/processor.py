@@ -37,27 +37,29 @@ class Processor:
         return request
 
     @asyncio.coroutine
-    def process_result(self, result):
+    def process_result(self, request, result):
         for middleware in self.middlewares:
             if isinstance(result, Response):
                 break
             if hasattr(middleware, 'process_data'):
-                result = yield from middleware.process_data(result)
+                result = yield from middleware.process_data(request, result)
         if not isinstance(result, Response):
             raise RuntimeError(
                 'Middlewares have not properly converted data to response')
         return result
 
     @asyncio.coroutine
-    def process_response(self, response):
+    def process_response(self, request, response):
         for middleware in reversed(self.middlewares):
             if hasattr(middleware, 'process_response'):
-                response = yield from middleware.process_response(response)
+                response = (yield from
+                    middleware.process_response(request, response))
         return response
 
     @asyncio.coroutine
-    def process_exception(self, exception):
+    def process_exception(self, request, exception):
         for middleware in reversed(self.middlewares):
             if hasattr(middleware, 'process_exception'):
-                exception = yield from middleware.process_exception(exception)
+                exception = (yield from
+                    middleware.process_exception(request, exception))
         return exception

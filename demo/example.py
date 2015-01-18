@@ -21,13 +21,13 @@ class Interface(Middleware):
 
     # Public
 
-    def process_data(self, data):
+    def process_data(self, request, data):
         response = Response(
             text=self.service.formatter.encode(data),
             content_type=self.service.formatter.content_type)
         return response
 
-    def process_exception(self, exception):
+    def process_exception(self, request, exception):
         data = {'message': str(exception)}
         exception.text = self.service.formatter.encode(data)
         exception.content_type = self.service.formatter.content_type

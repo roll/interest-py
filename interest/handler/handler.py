@@ -31,10 +31,11 @@ class Handler(ServerHttpProtocol):
             if not match:
                 raise match.exception
             result = yield from match.route.handler(request)
-            response = yield from processor.process_result(result)
-            response = yield from processor.process_response(response)
+            response = yield from processor.process_result(request, result)
+            response = yield from processor.process_response(request, response)
         except HTTPException as exception:
-            response = yield from processor.process_exception(exception)
+            response = (yield from
+                processor.process_exception(request, exception))
         resp_msg = response.start(request)
         yield from response.write_eof()
         self.keep_alive(resp_msg.keep_alive())
