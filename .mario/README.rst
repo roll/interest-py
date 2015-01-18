@@ -54,18 +54,21 @@ Here is a base usage example.
     service.add_middleware(Interface)
     service.listen(hostname='127.0.0.1', port=9000)
     
-- run the server:
+- run the server using python3 interpreter:
 
   .. code-block:: bash
 
     $ python3 server.py
     INFO:interest:Start listening at http://127.0.0.1:9000
+    ... <see log here> ... 
     
 - open a new terminal window and make a request:
 
   .. code-block:: bash
 
-    $ curl http://127.0.0.1:9000/api/v1/comment/1; echo
+    $ curl -X GET http://127.0.0.1:9000/api/v1/comment/1; echo
     {"id": "1"}
+    $ curl -X PUT http://127.0.0.1:9000/api/v1/comment; echo
+    {"message": "Created"}
 
 {% endblock %}
