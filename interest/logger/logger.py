@@ -1,8 +1,9 @@
 import traceback
+from abc import ABCMeta
 from aiohttp.helpers import SafeAtoms, atoms
 
 
-class Logger:
+class Logger(metaclass=ABCMeta):
 
     # Public
 
