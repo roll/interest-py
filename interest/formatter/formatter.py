@@ -2,6 +2,8 @@ from abc import ABCMeta, abstractmethod
 
 
 class Formatter(metaclass=ABCMeta):
+    """Formatter representation.
+    """
 
     # Public
 

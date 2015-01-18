@@ -3,6 +3,8 @@ from .formatter import Formatter
 
 
 class JSONFormatter(Formatter):
+    """JSONFormatter representation.
+    """
 
     # Public
 

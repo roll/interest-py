@@ -4,6 +4,10 @@ from aiohttp.web import Request, HTTPException
 
 
 class Handler(ServerHttpProtocol):
+    """Handler representation.
+    """
+
+    # Public
 
     def __init__(self, service):
         self.__service = service

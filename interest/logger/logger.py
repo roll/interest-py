@@ -4,6 +4,8 @@ from aiohttp.helpers import SafeAtoms, atoms
 
 
 class Logger(metaclass=ABCMeta):
+    """Logger representation.
+    """
 
     # Public
 

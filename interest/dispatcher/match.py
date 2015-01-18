@@ -2,6 +2,8 @@ from abc import ABCMeta, abstractmethod
 
 
 class Match(dict, metaclass=ABCMeta):
+    """Match representation.
+    """
 
     # Public
 
@@ -11,6 +13,8 @@ class Match(dict, metaclass=ABCMeta):
 
 
 class ExistentMatch(Match):
+    """ExistentMatch representation.
+    """
 
     # Public
 
@@ -27,6 +31,8 @@ class ExistentMatch(Match):
 
 
 class NonExistentMatch(Match):
+    """NonExistentMatch representation.
+    """
 
     # Public
 

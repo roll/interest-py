@@ -5,6 +5,8 @@ from .middleware import Middleware
 
 
 class Processor:
+    """Processor representation.
+    """
 
     # Public
 

@@ -3,6 +3,8 @@ from abc import ABCMeta
 
 
 class Middleware(metaclass=ABCMeta):
+    """Middleware representation.
+    """
 
     # Public
 

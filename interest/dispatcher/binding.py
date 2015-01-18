@@ -6,6 +6,8 @@ from sugarbowl import Function
 
 
 class Binding(Function, metaclass=ABCMeta):
+    """Binding representation.
+    """
 
     # Public
 
@@ -33,10 +35,64 @@ class Binding(Function, metaclass=ABCMeta):
         dispatcher.add_route(method, fullpath, bresponder)
 
 
-class get(Binding): pass
-class post(Binding): pass
-class put(Binding): pass
-class delete(Binding): pass
-class patch(Binding): pass
-class head(Binding): pass
-class options(Binding): pass
+class get(Binding):
+    """HTTP method get representation.
+    """
+
+    # Public
+
+    pass
+
+
+class post(Binding):
+    """HTTP method post representation.
+    """
+
+    # Public
+
+    pass
+
+
+class put(Binding):
+    """HTTP method put representation.
+    """
+
+    # Public
+
+    pass
+
+
+class delete(Binding):
+    """HTTP method delete representation.
+    """
+
+    # Public
+
+    pass
+
+
+class patch(Binding):
+    """HTTP method patch representation.
+    """
+
+    # Public
+
+    pass
+
+
+class head(Binding):
+    """HTTP method head representation.
+    """
+
+    # Public
+
+    pass
+
+
+class options(Binding):
+    """HTTP method options representation.
+    """
+
+    # Public
+
+    pass

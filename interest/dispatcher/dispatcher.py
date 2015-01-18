@@ -9,6 +9,8 @@ from .resource import Resource
 
 
 class Dispatcher:
+    """Dispatcher representation.
+    """
 
     DYN = re.compile(r'^\{(?P<var>[a-zA-Z][_a-zA-Z0-9]*)\}$')
     DYN_WITH_RE = re.compile(

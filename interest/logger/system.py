@@ -3,6 +3,8 @@ from .logger import Logger
 
 
 class SystemLogger(Logger):
+    """SystemLogger representation.
+    """
 
     # Public
 

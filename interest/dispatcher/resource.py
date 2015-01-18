@@ -3,6 +3,8 @@ from .binding import Binding
 
 
 class Resource(metaclass=ABCMeta):
+    """Resource representation.
+    """
 
     # Public
 

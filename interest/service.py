@@ -7,6 +7,8 @@ from .processor import Processor  # @UnusedImport
 
 
 class Service(dict):
+    """Service representation.
+    """
 
     # Public
 
