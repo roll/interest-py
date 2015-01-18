@@ -7,7 +7,9 @@
 Example
 -------
 
-Base usage example::
+Base usage example:
+
+.. code-block:: python
 
     import logging
     from aiohttp.web import Response, HTTPCreated

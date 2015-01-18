@@ -30,7 +30,9 @@ Interest is a REST framework on top of aiohttp/asyncio (experimental).
 Example
 -------
 
-Base usage example::
+Base usage example:
+
+.. code-block:: python
 
     import logging
     from aiohttp.web import Response, HTTPCreated
