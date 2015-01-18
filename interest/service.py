@@ -1,5 +1,4 @@
 import asyncio
-import logging
 from .dispatcher import Dispatcher  # @UnusedImport
 from .formatter import JSONFormatter  # @UnusedImport
 from .handler import Handler  # @UnusedImport
@@ -16,8 +15,6 @@ class Service(dict):
                  dispatcher=Dispatcher, processor=Processor, handler=Handler):
         if loop is None:
             loop = asyncio.get_event_loop()
-        if logger is None:
-            logger = logging.getLogger(path)
         self.__path = path
         self.__loop = loop
         self.__logger = logger(self)
