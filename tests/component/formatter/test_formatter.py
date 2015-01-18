@@ -25,6 +25,3 @@ class FormatterTest(unittest.TestCase):
 
     def test_service(self):
         self.assertEqual(self.formatter.service, 'service')
-
-    def test_abstract(self):
-        self.assertRaises(TypeError, component.Formatter, 'service')
