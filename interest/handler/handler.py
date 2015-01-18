@@ -22,8 +22,8 @@ class Handler(ServerHttpProtocol):
         dispatcher = self.service.dispatcher
         processor = self.service.processor
         request = Request(
-            None, message, payload, self.transport,
-            self.writer, self.keep_alive_timeout)
+            None, message, payload,
+            self.transport, self.reader, self.writer)
         match = yield from dispatcher.resolve(request)
         request.match = match
         try:

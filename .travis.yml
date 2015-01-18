@@ -12,7 +12,7 @@ python:
 # Block: install
 install:
   - pip install coveralls
-  - pip install sugarbowl aiohttp==0.13.1 nose coverage
+  - pip install sugarbowl aiohttp>=0.14 nose coverage
 
 # Block: script
 script:
