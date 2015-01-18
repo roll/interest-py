@@ -55,7 +55,7 @@ class SystemLoggerTest(unittest.TestCase):
         self.assertIsNone(
             self.logger.info(
                 'message', *self.args, **self.kwargs))
-        # Check system.debug call
+        # Check system.info call
         self.logger.system.info.assert_called_with(
             'message', *self.args, **self.kwargs)
 
@@ -63,7 +63,7 @@ class SystemLoggerTest(unittest.TestCase):
         self.assertIsNone(
             self.logger.warning(
                 'message', *self.args, **self.kwargs))
-        # Check system.debug call
+        # Check system.warning call
         self.logger.system.warning.assert_called_with(
             'message', *self.args, **self.kwargs)
 
@@ -71,7 +71,7 @@ class SystemLoggerTest(unittest.TestCase):
         self.assertIsNone(
             self.logger.error(
                 'message', *self.args, **self.kwargs))
-        # Check system.debug call
+        # Check system.error call
         self.logger.system.error.assert_called_with(
             'message', *self.args, **self.kwargs)
 
@@ -79,7 +79,7 @@ class SystemLoggerTest(unittest.TestCase):
         self.assertIsNone(
             self.logger.exception(
                 'message', *self.args, **self.kwargs))
-        # Check system.debug call
+        # Check system.exception call
         self.logger.system.exception.assert_called_with(
             'message', *self.args, **self.kwargs)
 
@@ -87,6 +87,6 @@ class SystemLoggerTest(unittest.TestCase):
         self.assertIsNone(
             self.logger.critical(
                 'message', *self.args, **self.kwargs))
-        # Check system.debug call
+        # Check system.critical call
         self.logger.system.critical.assert_called_with(
             'message', *self.args, **self.kwargs)
