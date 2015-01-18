@@ -25,13 +25,13 @@ class ProcessorTest(unittest.TestCase):
                     if instance is not None:
                         return instance
             def process_request(self, request):
-                return request + '[P]'
+                return request + '[*]'
             def process_data(self, request, data):
-                return data + '[P]'
+                return data + '[*]'
             def process_response(self, request, response):
-                return response + '[P]'
+                return response + '[*]'
             def process_exception(self, request, exception):
-                return exception + '[P]'
+                return exception + '[*]'
         return MockMiddleware
 
     def unyield(self, coroutine):
@@ -58,13 +58,13 @@ class ProcessorTest(unittest.TestCase):
 
     def test_process_request(self):
         coroutine = self.processor.process_request('request')
-        self.assertEqual(self.unyield(coroutine), 'request[P][P]')
+        self.assertEqual(self.unyield(coroutine), 'request[*][*]')
 
     def test_process_result(self):
-        mock_isinstance = lambda obj, cls: '[P]' in obj
+        mock_isinstance = lambda obj, cls: '[*]' in obj
         coroutine = self.processor.process_result('request', 'result')
         with patch.object(component, 'isinstance', mock_isinstance):
-            self.assertEqual(self.unyield(coroutine), 'result[P]')
+            self.assertEqual(self.unyield(coroutine), 'result[*]')
 
     def test_process_result_no_middlewares(self):
         self.processor = component.Processor('service')
@@ -73,8 +73,8 @@ class ProcessorTest(unittest.TestCase):
 
     def test_process_response(self):
         coroutine = self.processor.process_response('request', 'response')
-        self.assertEqual(self.unyield(coroutine), 'response[P][P]')
+        self.assertEqual(self.unyield(coroutine), 'response[*][*]')
 
     def test_process_exception(self):
         coroutine = self.processor.process_exception('request', 'exception')
-        self.assertEqual(self.unyield(coroutine), 'exception[P][P]')
+        self.assertEqual(self.unyield(coroutine), 'exception[*][*]')
