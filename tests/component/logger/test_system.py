@@ -25,6 +25,13 @@ class SystemLoggerTest(unittest.TestCase):
             format = Mock()
         return MockLogger
 
+    def make_mock_interaction_class(self):
+        class MockInteraction(dict):
+            # Public
+            def __getitem__(self, key):
+                return key
+        return MockInteraction
+
     # Tests
 
     def test_system(self):
@@ -35,58 +42,44 @@ class SystemLoggerTest(unittest.TestCase):
         self.logging.getLogger.assert_called_with(self.logger.name)
 
     def test_access(self):
-        self.assertIsNone(
-            self.logger.access(
-                'message', environ='environ', response='response',
-                transport='transport', time='time'))
+        interaction = self.make_mock_interaction_class()()
+        self.assertIsNone(self.logger.access(interaction))
         # Check system.info call
         self.logger.system.info.assert_called_with(
-            self.logger.format.return_value)
+            'host time "request" status length "referer" "agent"')
 
     def test_debug(self):
-        self.assertIsNone(
-            self.logger.debug(
-                'message', *self.args, **self.kwargs))
+        self.logger.debug('message', *self.args, **self.kwargs)
         # Check system.debug call
         self.logger.system.debug.assert_called_with(
             'message', *self.args, **self.kwargs)
 
     def test_info(self):
-        self.assertIsNone(
-            self.logger.info(
-                'message', *self.args, **self.kwargs))
+        self.logger.info('message', *self.args, **self.kwargs)
         # Check system.info call
         self.logger.system.info.assert_called_with(
             'message', *self.args, **self.kwargs)
 
     def test_warning(self):
-        self.assertIsNone(
-            self.logger.warning(
-                'message', *self.args, **self.kwargs))
+        self.logger.warning('message', *self.args, **self.kwargs)
         # Check system.warning call
         self.logger.system.warning.assert_called_with(
             'message', *self.args, **self.kwargs)
 
     def test_error(self):
-        self.assertIsNone(
-            self.logger.error(
-                'message', *self.args, **self.kwargs))
+        self.logger.error('message', *self.args, **self.kwargs)
         # Check system.error call
         self.logger.system.error.assert_called_with(
             'message', *self.args, **self.kwargs)
 
     def test_exception(self):
-        self.assertIsNone(
-            self.logger.exception(
-                'message', *self.args, **self.kwargs))
+        self.logger.exception('message', *self.args, **self.kwargs)
         # Check system.exception call
         self.logger.system.exception.assert_called_with(
             'message', *self.args, **self.kwargs)
 
     def test_critical(self):
-        self.assertIsNone(
-            self.logger.critical(
-                'message', *self.args, **self.kwargs))
+        self.logger.critical('message', *self.args, **self.kwargs)
         # Check system.critical call
         self.logger.system.critical.assert_called_with(
             'message', *self.args, **self.kwargs)

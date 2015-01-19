@@ -1,6 +1,4 @@
-import traceback
 from abc import ABCMeta
-from aiohttp.helpers import SafeAtoms, atoms
 
 
 class Logger(metaclass=ABCMeta):
@@ -9,7 +7,8 @@ class Logger(metaclass=ABCMeta):
 
     # Public
 
-    template = '%(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"'
+    template = ('%(host)s %(time)s "%(request)s" %(status)s '
+                '%(length)s "%(referer)s" "%(agent)s"')
 
     def __init__(self, service):
         self.__service = service
@@ -18,19 +17,7 @@ class Logger(metaclass=ABCMeta):
     def service(self):
         return self.__service
 
-    # TODO: reimplement
-    def format(self, message, *, environ, response, transport, time):
-        try:
-            environ = environ if environ is not None else {}
-            safe_atoms = SafeAtoms(
-                atoms(message, environ, response, transport, time),
-                getattr(message, 'headers', None),
-                getattr(response, 'headers', None))
-            return self.template % safe_atoms
-        except:
-            self.error(traceback.format_exc())
-
-    def access(self, message, *, environ, response, transport, time):
+    def access(self, interaction):
         pass
 
     def debug(self, message, *args, **kwargs):

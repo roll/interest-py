@@ -1,6 +1,8 @@
 import asyncio
+import traceback
 from aiohttp.server import ServerHttpProtocol
 from aiohttp.web import Request, HTTPException
+from .interaction import Interaction
 
 
 class Handler(ServerHttpProtocol):
@@ -40,16 +42,20 @@ class Handler(ServerHttpProtocol):
         except HTTPException as exception:
             response = (yield from
                 processor.process_exception(request, exception))
-        resp_msg = response.start(request)
+        response_message = response.start(request)
         yield from response.write_eof()
-        self.keep_alive(resp_msg.keep_alive())
+        self.keep_alive(response_message.keep_alive())
         stop_time = self.service.loop.time()
-        self.log_access(message, None, resp_msg, stop_time - start_time)
+        self.log_access(message, None, response_message, stop_time - start_time)
 
     def log_access(self, message, environ, response, time):
-        self.service.logger.access(message,
-            environ=environ, response=response,
-            transport=self.transport, time=time)
+        try:
+            interaction = Interaction(
+                request=message, response=response,
+                transport=self.transport, duration=time)
+            self.service.logger.access(interaction)
+        except:
+            self.service.logger.error(traceback.format_exc())
 
     def log_debug(self, message, *args, **kwargs):
         self.service.logger.debug(message, *args, **kwargs)

@@ -18,11 +18,8 @@ class SystemLogger(Logger):
     def system(self):
         return self.__system
 
-    def access(self, message, *, environ, response, transport, time):
-        message = self.format(message,
-            environ=environ, response=response,
-            transport=transport, time=time)
-        self.info(message)
+    def access(self, interaction):
+        self.info(self.template % interaction)
 
     def debug(self, message, *args, **kwargs):
         self.system.debug(message, *args, **kwargs)

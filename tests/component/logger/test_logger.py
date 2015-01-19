@@ -26,47 +26,29 @@ class LoggerTest(unittest.TestCase):
     def test_template(self):
         self.assertEqual(
             self.logger.template,
-            '%(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"')
+            '%(host)s %(time)s "%(request)s" %(status)s '
+            '%(length)s "%(referer)s" "%(agent)s"')
 
     def test_service(self):
         self.assertEqual(self.logger.service, 'service')
 
-    # TODO: implement
-    def test_format(self):
-        pass
-
     def test_access(self):
-        self.assertIsNone(
-            self.logger.access(
-                'message', environ='environ', response='response',
-                transport='transport', time='time'))
+        self.logger.access('instance')
 
     def test_debug(self):
-        self.assertIsNone(
-            self.logger.debug(
-                'message', *self.args, **self.kwargs))
+        self.logger.debug('message', *self.args, **self.kwargs)
 
     def test_info(self):
-        self.assertIsNone(
-            self.logger.info(
-                'message', *self.args, **self.kwargs))
+        self.logger.info('message', *self.args, **self.kwargs)
 
     def test_warning(self):
-        self.assertIsNone(
-            self.logger.warning(
-                'message', *self.args, **self.kwargs))
+        self.logger.warning('message', *self.args, **self.kwargs)
 
     def test_error(self):
-        self.assertIsNone(
-            self.logger.error(
-                'message', *self.args, **self.kwargs))
+        self.logger.error('message', *self.args, **self.kwargs)
 
     def test_exception(self):
-        self.assertIsNone(
-            self.logger.exception(
-                'message', *self.args, **self.kwargs))
+        self.logger.exception('message', *self.args, **self.kwargs)
 
     def test_critical(self):
-        self.assertIsNone(
-            self.logger.critical(
-                'message', *self.args, **self.kwargs))
+        self.logger.critical('message', *self.args, **self.kwargs)
