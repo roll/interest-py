@@ -6,16 +6,27 @@ class PluginImporter:
 
     # Public
 
-    source = 'interest.plugins.'
-    target = 'interest_'
+    def __init__(self, *, source, target):
+        self.__source = source
+        self.__target = target
 
-    @classmethod
-    def register(cls):
-        for item in sys.meta_path:
-            if isinstance(item, cls):
-                return
-        importer = cls()
-        sys.meta_path.append(importer)
+    def __eq__(self, other):
+        if not isinstance(other, type(self)):
+            return False
+        return (self.source == other.source and
+                self.target == other.target)
+
+    @property
+    def source(self):
+        return self.__source
+
+    @property
+    def target(self):
+        return self.__target
+
+    def register(self):
+        if self not in sys.meta_path:
+            sys.meta_path.append(self)
 
     def find_module(self, fullname, path=None):
         if fullname.startswith(self.source):
