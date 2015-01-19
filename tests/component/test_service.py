@@ -1,3 +1,4 @@
+import asyncio
 import unittest
 from unittest.mock import Mock
 from importlib import import_module
@@ -64,11 +65,23 @@ class ServiceTest(unittest.TestCase):
             self.loop.create_server.return_value)
         self.loop.run_forever.assert_called_with()
 
+    def test_listen_keyboard_interrupt(self):
+        self.loop.run_forever.side_effect = KeyboardInterrupt()
+        self.service.listen(hostname='hostname', port='port')
+
     def test_path(self):
         self.assertEqual(self.service.path, self.path)
 
+    def test_path_default(self):
+        self.service = component.Service()
+        self.assertEqual(self.service.path, '')
+
     def test_loop(self):
         self.assertEqual(self.service.loop, self.loop)
+
+    def test_loop_default(self):
+        self.service = component.Service()
+        self.assertEqual(self.service.loop, asyncio.get_event_loop())
 
     def test_logger(self):
         self.assertEqual(self.service.logger, self.logger)
