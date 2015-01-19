@@ -6,39 +6,39 @@ class PluginImporter:
 
     # Public
 
-    def __init__(self, *, source, target):
-        self.__source = source
-        self.__target = target
+    def __init__(self, *, virtual, actual):
+        self.__virtual = virtual
+        self.__actual = actual
 
     def __eq__(self, other):
         if not isinstance(other, type(self)):
             return False
-        return (self.source == other.source and
-                self.target == other.target)
+        return (self.virtual == other.virtual and
+                self.actual == other.actual)
 
     @property
-    def source(self):
-        return self.__source
+    def virtual(self):
+        return self.__virtual
 
     @property
-    def target(self):
-        return self.__target
+    def actual(self):
+        return self.__actual
 
     def register(self):
         if self not in sys.meta_path:
             sys.meta_path.append(self)
 
     def find_module(self, fullname, path=None):
-        if fullname.startswith(self.source):
+        if fullname.startswith(self.virtual):
             return self
         return None
 
     def load_module(self, fullname):
         if fullname in sys.modules:
             return sys.modules[fullname]
-        if not fullname.startswith(self.source):
+        if not fullname.startswith(self.virtual):
             raise ImportError(fullname)
-        realname = fullname.replace(self.source, self.target)
+        realname = fullname.replace(self.virtual, self.actual)
         module = import_module(realname)
         sys.modules[realname] = module
         sys.modules[fullname] = module

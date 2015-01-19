@@ -1,5 +1,5 @@
 from ..helpers import PluginImporter
 
 
-importer = PluginImporter(source='interest.plugins.', target='interest_')
+importer = PluginImporter(virtual='interest.plugins.', actual='interest_')
 importer.register()
