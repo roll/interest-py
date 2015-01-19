@@ -8,6 +8,8 @@ class Interaction(dict):
     # Public
 
     def __init__(self, *, request, response, transport, duration):
+        self.__inheaders = getattr(request, 'headers', None)
+        self.__outheaders = getattr(response, 'headers', None)
         self.__request = request
         self.__response = response
         self.__transport = transport
@@ -20,9 +22,9 @@ class Interaction(dict):
             headers = None
             if key.startswith('{'):
                 if key.endswith('}i'):
-                    headers = self.__request
+                    headers = self.__inheaders
                 elif key.endswith('}o'):
-                    headers = self.__response
+                    headers = self.__outheaders
             if headers is not None:
                 return headers.get(key[1:-2], '-')
         return '-'
