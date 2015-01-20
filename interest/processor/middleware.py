@@ -4,6 +4,22 @@ from abc import ABCMeta
 
 class Middleware(metaclass=ABCMeta):
     """Middleware representation.
+
+    Middlewares is used by :class:`.Processor` to process request,
+    data, response and exception. Middleware **CAN** have following
+    methods which will be used by processor:
+
+    - process_request(request)
+    - process_data(request, data)
+    - process_response(request, response)
+    - process_exception(request, exception)
+
+    Those methods **CAN** be or not to be coroutins.
+
+    Parameters
+    ----------
+    service: :class:`.Service`
+        Service instance.
     """
 
     # Public
@@ -22,4 +38,6 @@ class Middleware(metaclass=ABCMeta):
 
     @property
     def service(self):
+        """:class:`.Service` instance (read-only).
+        """
         return self.__service

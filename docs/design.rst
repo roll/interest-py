@@ -6,29 +6,8 @@ If you're interested in concrete term use left menu to pick it.
 
 *under development*
 
-Service
--------
-    
-Logger
-------
-
-Formatter
----------
-
-Dispatcher
-----------
-
-Resource
---------
-
-Processor
----------
-
-Middleware
-----------
-
-Handler
--------
-
-Interaction
+Terminology
 -----------
+    
+Architecture
+------------

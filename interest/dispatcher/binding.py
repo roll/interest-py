@@ -36,7 +36,7 @@ class Binding(Function, metaclass=ABCMeta):
 
 
 class get(Binding):
-    """HTTP method get representation.
+    """Binding for the [get] HTTP method.
     """
 
     # Public
@@ -45,7 +45,7 @@ class get(Binding):
 
 
 class post(Binding):
-    """HTTP method post representation.
+    """Binding for the [post] HTTP method.
     """
 
     # Public
@@ -54,7 +54,7 @@ class post(Binding):
 
 
 class put(Binding):
-    """HTTP method put representation.
+    """Binding for the [put] HTTP method.
     """
 
     # Public
@@ -63,7 +63,7 @@ class put(Binding):
 
 
 class delete(Binding):
-    """HTTP method delete representation.
+    """Binding for the [delete] HTTP method.
     """
 
     # Public
@@ -72,7 +72,7 @@ class delete(Binding):
 
 
 class patch(Binding):
-    """HTTP method patch representation.
+    """Binding for the [patch] HTTP method.
     """
 
     # Public
@@ -81,7 +81,7 @@ class patch(Binding):
 
 
 class head(Binding):
-    """HTTP method head representation.
+    """Binding for the [head] HTTP method.
     """
 
     # Public
@@ -90,7 +90,7 @@ class head(Binding):
 
 
 class options(Binding):
-    """HTTP method options representation.
+    """Binding for the [options] HTTP method.
     """
 
     # Public

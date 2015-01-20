@@ -8,6 +8,27 @@ from .processor import Processor  # @UnusedImport
 
 class Service(dict):
     """Service representation.
+
+    Service is fully customizable by passing subclasses of
+    main interest's elements like Logger or Formatter. See
+    full list of parameters.
+
+    Parameters
+    ----------
+    path: str
+        Path prefix for HTTP path routing.
+    loop: object
+        Custom asyncio's loop.
+    logger: type
+        :class:`.Logger` subclass.
+    formatter: type
+        :class:`.Formatter` subclass.
+    dispatcher: type
+        :class:`.Dispatcher` subclass.
+    processor: type
+        :class:`.Processor` subclass.
+    handler: type
+        :class:`.Handler` subclass.
     """
 
     # Public
@@ -47,14 +68,20 @@ class Service(dict):
 
     @property
     def path(self):
+        """Path prefix for HTTP path routing (read-only).
+        """
         return self.__path
 
     @property
     def loop(self):
+        """asyncio's loop (read-only).
+        """
         return self.__loop
 
     @property
     def logger(self):
+        """:class:`.Logger` instance (read/write).
+        """
         return self.__logger
 
     @logger.setter
@@ -63,6 +90,8 @@ class Service(dict):
 
     @property
     def formatter(self):
+        """:class:`.Formatter` instance (read/write).
+        """
         return self.__formatter
 
     @formatter.setter
@@ -71,6 +100,8 @@ class Service(dict):
 
     @property
     def dispatcher(self):
+        """:class:`.Dispatcher` instance (read/write).
+        """
         return self.__dispatcher
 
     @dispatcher.setter
@@ -79,6 +110,8 @@ class Service(dict):
 
     @property
     def processor(self):
+        """:class:`.Processor` instance (read/write).
+        """
         return self.__processor
 
     @processor.setter
@@ -87,6 +120,8 @@ class Service(dict):
 
     @property
     def handler(self):
+        """:class:`.Handler` instance (read/write).
+        """
         return self.__handler
 
     @handler.setter
