@@ -6,6 +6,11 @@ from .middleware import Middleware
 
 class Processor:
     """Processor representation.
+
+    Parameters
+    ----------
+    service: :class:`Service`
+        Service instance.
     """
 
     # Public
@@ -53,6 +58,20 @@ class Processor:
 
     @asyncio.coroutine
     def process_response(self, request, response):
+        """Process response.
+
+        Parameters
+        ----------
+        request: :class:`aiohttp.web.Request`
+            Request instance.
+        response: :class:`aiohttp.web.Response`
+            Response instance.
+
+        Returns
+        -------
+        :class:`aiohttp.web.Response`
+            Processed response instance.
+        """
         for middleware in reversed(self.middlewares):
             if hasattr(middleware, 'process_response'):
                 response = (yield from
