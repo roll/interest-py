@@ -104,8 +104,9 @@ class Handler(ServerHttpProtocol):
         stop_time = self.service.loop.time()
         self.log_access(message, None, resp_message, stop_time - start_time)
 
+    # Internal (ServerHttpProtocol's API hook)
+
     def log_access(self, message, environ, response, time):
-        # For internal use (ServerHttpProtocol's API)
         try:
             interaction = Interaction(
                 request=message, response=response,
@@ -115,9 +116,7 @@ class Handler(ServerHttpProtocol):
             self.service.logger.error(traceback.format_exc())
 
     def log_debug(self, message, *args, **kwargs):
-        # For internal use (ServerHttpProtocol's API)
         self.service.logger.debug(message, *args, **kwargs)
 
     def log_exception(self, message, *args, **kwargs):
-        # For internal use (ServerHttpProtocol's API)
         self.service.logger.exception(message, *args, **kwargs)

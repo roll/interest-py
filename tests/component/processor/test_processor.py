@@ -69,7 +69,7 @@ class ProcessorTest(unittest.TestCase):
     def test_process_result_no_middlewares(self):
         self.processor = component.Processor('service')
         coroutine = self.processor.process_result('request', 'result')
-        self.assertRaises(RuntimeError, self.unyield, coroutine)
+        self.assertRaises(TypeError, self.unyield, coroutine)
 
     def test_process_response(self):
         coroutine = self.processor.process_response('request', 'response')
