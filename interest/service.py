@@ -9,9 +9,11 @@ from .processor import Processor  # @UnusedImport
 class Service(dict):
     """Service representation.
 
-    Service is fully customizable by passing subclasses of
-    main interest's elements like Logger or Formatter. See
-    full list of parameters.
+    Service provides high-level abstraction for end-user and incapsulates
+    all internal components. Service is a dict. You can use service instance
+    to store application data. Service is fully customizable by passing
+    subclasses of main interest's classes to the constructor.
+    See full list of parameters below.
 
     Parameters
     ----------
@@ -29,6 +31,27 @@ class Service(dict):
         :class:`.Processor` subclass.
     handler: type
         :class:`.Handler` subclass.
+
+    Example
+    -------
+    Imagine we have custom details of all types. That's how will be looking
+    most general usage case of service. Explore following documentation
+    to decide which components you do want to customize and which you don't::
+
+        service = Service(
+            path='/api/v1',
+            loop=custom_loop,
+            logger=CustomLogger,
+            formatter=CustomFormatter,
+            dispatcher=CustomDispatcher,
+            processor=CustomProcessor,
+            handler=Customhandler)
+        service['data'] = 'data'
+        service.add_resource(CustomResourse)
+        service.add_middleware(CustomMiddleware)
+        service.listen('127.0.0.1', 9000)
+
+    .. seealso:: API: :attr:`dict`
     """
 
     # Public
@@ -50,12 +73,29 @@ class Service(dict):
         return True
 
     def add_middleware(self, *middlewares, source=None):
+        """Add a one or many middlewares.
+
+        .. seealso:: Proxy: :meth:`.Processor.add_middleware`
+        """
         self.processor.add_middleware(*middlewares, source=source)
 
     def add_resource(self, *resources, source=None):
+        """Add a one or many resources.
+
+        .. seealso:: Proxy: :meth:`.Dispatcher.add_resource`
+        """
         self.dispatcher.add_resource(*resources, source=source)
 
     def listen(self, *, hostname, port):
+        """Listen forever on TCP/IP socket.
+
+        Parameters
+        ----------
+        hostname: str
+            Hostname like '127.0.0.1'
+        port:
+            Port like 80.
+        """
         server = self.loop.create_server(self.handler.fork, hostname, port)
         server = self.loop.run_until_complete(server)
         self.logger.info(

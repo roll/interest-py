@@ -44,6 +44,11 @@ Binding
 .. autoclass:: interest.head
 .. autoclass:: interest.options
 
+Match
+-----
+
+.. autoclass:: interest.Match
+
 Processor
 ---------
 
@@ -64,7 +69,7 @@ Interaction
 
 .. autoclass:: interest.Interaction
     
-Version
+version
 -------
 
 .. data:: interest.version
