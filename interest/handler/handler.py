@@ -93,13 +93,16 @@ class Handler(ServerHttpProtocol):
             response = yield from processor.process_result(request, result)
             response = yield from processor.process_response(request, response)
         except HTTPException as exception:
-            response = (yield from
-                processor.process_exception(request, exception))
-        response_message = response.start(request)
+            try:
+                response = (yield from
+                    processor.process_exception(request, exception))
+            except HTTPException as exception:
+                response = exception
+        resp_message = response.start(request)
         yield from response.write_eof()
-        self.keep_alive(response_message.keep_alive())
+        self.keep_alive(resp_message.keep_alive())
         stop_time = self.service.loop.time()
-        self.log_access(message, None, response_message, stop_time - start_time)
+        self.log_access(message, None, resp_message, stop_time - start_time)
 
     def log_access(self, message, environ, response, time):
         # For internal use (ServerHttpProtocol's API)
