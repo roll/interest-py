@@ -1,4 +1,5 @@
 import sys
+import asyncio
 import logging
 from aiohttp.web import Response, HTTPCreated
 from interest import Service, Resource, Middleware, get, put
@@ -21,12 +22,14 @@ class Interface(Middleware):
 
     # Public
 
+    @asyncio.coroutine
     def process_data(self, request, data):
         response = Response(
             text=self.service.formatter.encode(data),
             content_type=self.service.formatter.content_type)
         return response
 
+    @asyncio.coroutine
     def process_exception(self, request, exception):
         data = {'message': str(exception)}
         exception.text = self.service.formatter.encode(data)

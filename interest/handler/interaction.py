@@ -34,7 +34,7 @@ class Interaction(dict):
     status: str
         Response status.
     time: str
-        Handling time (GMT).
+        Time when handling have been done (GMT).
 
     Extended keys
     -------------

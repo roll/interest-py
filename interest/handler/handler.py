@@ -104,7 +104,7 @@ class Handler(ServerHttpProtocol):
         stop_time = self.service.loop.time()
         self.log_access(message, None, resp_message, stop_time - start_time)
 
-    # Internal (ServerHttpProtocol's API hook)
+    # Internal (ServerHttpProtocol's API hooks)
 
     def log_access(self, message, environ, response, time):
         try:

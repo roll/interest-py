@@ -13,7 +13,7 @@ class Processor:
 
     Example
     -------
-    For example we don't want to process our responds by middlewawres
+    For example we don't want to process our responds by middlewares
     in production for performance's sake (save some CPU ticks)::
 
         class ProductionProcessor(Processor):

@@ -4,7 +4,7 @@ Tips & Tricks
 How to start a server manually?
 -------------------------------
 
-Just use handler.fork as protocol factory for asyncio. You can start as many 
+Just use handler.fork as a protocol factory for asyncio. You can start as many 
 servers on different ports as you want:
 
 .. code-block:: python

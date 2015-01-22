@@ -24,12 +24,16 @@ class ProcessorTest(unittest.TestCase):
                 def __new__(cls, service):
                     if instance is not None:
                         return instance
+            @asyncio.coroutine
             def process_request(self, request):
                 return request + '[*]'
+            @asyncio.coroutine
             def process_data(self, request, data):
                 return data + '[*]'
+            @asyncio.coroutine
             def process_response(self, request, response):
                 return response + '[*]'
+            @asyncio.coroutine
             def process_exception(self, request, exception):
                 return exception + '[*]'
         return MockMiddleware
