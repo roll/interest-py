@@ -8,7 +8,7 @@ class Processor:
     """Processor representation.
 
     Processor is used by :class:`.Service` for
-    request/response/result/exception processing for every HTTP request.
+    request/response/reply/exception processing for every HTTP request.
     Processor uses middlewares to make actual job.
 
     Example
@@ -80,7 +80,7 @@ class Processor:
 
     @asyncio.coroutine
     def process_request(self, request):
-        """Process request (courutine).
+        """Process request (coroutine).
 
         Request will be processed by every middleware with
         process_request method in straight order.
@@ -101,10 +101,10 @@ class Processor:
         return request
 
     @asyncio.coroutine
-    def process_result(self, request, result):
-        """Process result (courutine).
+    def process_reply(self, request, reply):
+        """Process reply (coroutine).
 
-        While result is not instance of :class:`aiohttp.web.Response`
+        While reply is not instance of :class:`aiohttp.web.Response`
         it will be processed by middlewares with process_data method
         in reverse order.
 
@@ -112,7 +112,7 @@ class Processor:
         ----------
         request: :class:`aiohttp.web.Request`
             Request instance.
-        result: dict/:class:`aiohttp.web.Response`
+        reply: dict/:class:`aiohttp.web.Response`
             Responder's return.
 
         Returns
@@ -123,22 +123,22 @@ class Processor:
         Raises
         ------
         :class:`TypeError`
-            If result is not instance of :class:`aiohttp.web.Response`
+            If reply is not instance of :class:`aiohttp.web.Response`
             after processing by all middlewares.
         """
         for middleware in self.middlewares:
-            if isinstance(result, Response):
+            if isinstance(reply, Response):
                 break
             if hasattr(middleware, 'process_data'):
-                result = yield from middleware.process_data(request, result)
-        if not isinstance(result, Response):
+                reply = yield from middleware.process_data(request, reply)
+        if not isinstance(reply, Response):
             raise TypeError(
                 'Middlewares have not properly converted data to response')
-        return result
+        return reply
 
     @asyncio.coroutine
     def process_response(self, request, response):
-        """Process response (courutine).
+        """Process response (coroutine).
 
         Response will be processed by every middleware with
         process_response method in reverse order.
@@ -163,7 +163,7 @@ class Processor:
 
     @asyncio.coroutine
     def process_exception(self, request, exception):
-        """Process exception (courutine).
+        """Process exception (coroutine).
 
         Exception will be processed by every middleware with
         process_exception method in reverse order.

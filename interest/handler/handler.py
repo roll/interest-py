@@ -89,8 +89,8 @@ class Handler(ServerHttpProtocol):
             request = yield from processor.process_request(request)
             if not match:
                 raise match.exception
-            result = yield from match.route.handler(request)
-            response = yield from processor.process_result(request, result)
+            reply = yield from match.route.handler(request)
+            response = yield from processor.process_reply(request, reply)
             response = yield from processor.process_response(request, response)
         except HTTPException as exception:
             try:

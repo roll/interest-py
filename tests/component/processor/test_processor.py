@@ -64,15 +64,15 @@ class ProcessorTest(unittest.TestCase):
         coroutine = self.processor.process_request('request')
         self.assertEqual(self.unyield(coroutine), 'request[*][*]')
 
-    def test_process_result(self):
+    def test_process_reply(self):
         mock_isinstance = lambda obj, cls: '[*]' in obj
-        coroutine = self.processor.process_result('request', 'result')
+        coroutine = self.processor.process_reply('request', 'reply')
         with patch.object(component, 'isinstance', mock_isinstance):
-            self.assertEqual(self.unyield(coroutine), 'result[*]')
+            self.assertEqual(self.unyield(coroutine), 'reply[*]')
 
-    def test_process_result_no_middlewares(self):
+    def test_process_reply_no_middlewares(self):
         self.processor = component.Processor('service')
-        coroutine = self.processor.process_result('request', 'result')
+        coroutine = self.processor.process_reply('request', 'reply')
         self.assertRaises(TypeError, self.unyield, coroutine)
 
     def test_process_response(self):

@@ -36,7 +36,7 @@ class HandlerTest(unittest.TestCase):
         self.service.loop.time.return_value = 10
         self.service.dispatcher.resolve = c(lambda req: match)
         self.service.processor.process_request = c(lambda req: req)
-        self.service.processor.process_result = c(lambda req, res: response)
+        self.service.processor.process_reply = c(lambda req, rep: response)
         self.service.processor.process_response = c(lambda req, res: res)
         self.service.processor.process_exception = c(lambda req, ex: ex)
         loop = asyncio.get_event_loop()
