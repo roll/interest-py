@@ -38,10 +38,10 @@ class Interaction(dict):
 
     Extended keys
     -------------
-    {key}i: str
-        Request header by key.
-    {key}o: str
-        Response header by key.
+    <key:req>: str
+        Request's header by key.
+    <key:res>: str
+        Response's header by key.
 
     Example
     -------
@@ -52,10 +52,10 @@ class Interaction(dict):
         '127.0.0.1',
         >>> interaction['length']
         '193'
-        >>> interaction['{content-type}o']
+        >>> interaction['<content-type:res>']
         '-'
         >>> interaction.extended = True
-        >>> interaction['{content-type}o']
+        >>> interaction['<content-type:res>']
         'application/json; charset=utf-8'
 
     Notes
@@ -69,8 +69,8 @@ class Interaction(dict):
     # Public
 
     def __init__(self, *, request, response, transport, duration):
-        self.__inheaders = getattr(request, 'headers', None)
-        self.__outheaders = getattr(response, 'headers', None)
+        self.__reqheads = getattr(request, 'headers', None)
+        self.__resheads = getattr(response, 'headers', None)
         self.__request = request
         self.__response = response
         self.__transport = transport
@@ -79,16 +79,17 @@ class Interaction(dict):
         self.__populate()
 
     def __missing__(self, key):
+        default = '-'
         if self.extended:
-            headers = None
-            if key.startswith('{'):
-                if key.endswith('}i'):
-                    headers = self.__inheaders
-                elif key.endswith('}o'):
-                    headers = self.__outheaders
-            if headers is not None:
-                return str(headers.get(key[1:-2], '-'))
-        return '-'
+            if key.startswith('<'):
+                headers = None
+                if key.endswith(':req>'):
+                    headers = self.__reqheads
+                elif key.endswith(':res>'):
+                    headers = self.__resheads
+                if headers is not None:
+                    return headers.get(key[1:-5], default)
+        return default
 
     @property
     def extended(self):

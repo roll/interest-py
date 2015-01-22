@@ -33,8 +33,8 @@ class InteractionTest(unittest.TestCase):
 
     def test_key_existent_with_extended_is_true(self):
         self.interaction.extended = True
-        self.assertEqual(self.interaction['{key}i'], 'value')
-        self.assertEqual(self.interaction['{key}o'], 'value')
+        self.assertEqual(self.interaction['<key:req>'], 'value')
+        self.assertEqual(self.interaction['<key:res>'], 'value')
 
     def test_extended(self):
         self.assertEqual(self.interaction.extended, False)
