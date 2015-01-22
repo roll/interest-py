@@ -6,7 +6,7 @@
 
 Interest
 =====================
-Interest is a REST framework on top of aiohttp/asyncio (experimental).
+Interest is a REST framework on top of asyncio and aiohttp.
 
 .. Block: badges
 
@@ -36,6 +36,7 @@ Here is a base usage example.
 
   .. code-block:: python
 
+    import asyncio
     import logging
     from aiohttp.web import Response, HTTPCreated
     from interest import Service, Resource, Middleware, get, put
@@ -58,12 +59,14 @@ Here is a base usage example.
     
         # Public
     
+        @asyncio.coroutine
         def process_data(self, request, data):
             response = Response(
                 text=self.service.formatter.encode(data),
                 content_type=self.service.formatter.content_type)
             return response
     
+        @asyncio.coroutine
         def process_exception(self, request, exception):
             data = {'message': str(exception)}
             exception.text = self.service.formatter.encode(data)
