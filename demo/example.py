@@ -1,7 +1,7 @@
 import sys
 import asyncio
 import logging
-from aiohttp.web import Response, HTTPException, HTTPCreated
+from aiohttp.web import Response, HTTPException, HTTPCreated, HTTPServerError
 from interest import Service, Resource, Middleware, get, put
 
 
@@ -23,18 +23,18 @@ class Interface(Middleware):
     # Public
 
     @asyncio.coroutine
-    def process_data(self, request, data):
-        response = Response(
-            text=self.service.formatter.encode(data),
-            content_type=self.service.formatter.content_type)
-        return response
-
-    @asyncio.coroutine
-    def process_response(self, request, response):
-        if isinstance(response, HTTPException):
-            data = {'message': str(response)}
-            response.text = self.service.formatter.encode(data)
-            response.content_type = self.service.formatter.content_type
+    def process_request(self, request):
+        try:
+            response = Response()
+            payload = yield from self.handler(request)
+        except HTTPException as exception:
+            response = exception
+            payload = {'message': str(response)}
+        except Exception as exception:
+            response = HTTPServerError()
+            payload = {'message': 'Something went wrong!'}
+        response.text = self.service.formatter.encode(payload)
+        response.content_type = self.service.formatter.content_type
         return response
 
 

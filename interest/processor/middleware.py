@@ -1,29 +1,17 @@
+import asyncio
 from abc import ABCMeta
 
 
 class Middleware(metaclass=ABCMeta):
     """Middleware representation.
 
-    Middlewares is used by :class:`.Processor` to process request,
-    data, response and exception. Middleware **MAY** have process_*
-    hooks which will be used by processor. Those methods **MUST**
-    be coroutins. See hooks list below.
+    Middlewares is used by :class:`.Processor` to process
+    handlers and requests.
 
     Parameters
     ----------
     service: :class:`.Service`
         Service instance.
-
-    Hooks
-    -----
-    process_request(request)
-        Process request (coroutine).
-    process_data(request, data)
-        Process data (coroutine).
-    process_response(request, response)
-        Process response (coroutine).
-    process_exception(request, exception)
-        Process exception (coroutine).
 
     Example
     -------
@@ -49,9 +37,33 @@ class Middleware(metaclass=ABCMeta):
 
     def __init__(self, service):
         self.__service = service
+        self.__handler = self.process_request
 
     @property
     def service(self):
         """:class:`.Service` instance (read-only).
         """
         return self.__service
+
+    @asyncio.coroutine
+    def process_handler(self, handler):
+        """Process a handler.
+        """
+        self.handler = handler
+        return self.process_request
+
+    @asyncio.coroutine
+    def process_request(self, request):
+        """Process a request (no-op).
+        """
+        pass
+
+    @property
+    def handler(self):
+        """Handler (read/write).
+        """
+        return self.__handler
+
+    @handler.setter
+    def handler(self, value):
+        self.__handler = value

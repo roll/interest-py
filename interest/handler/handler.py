@@ -1,7 +1,7 @@
 import asyncio
 import traceback
 from aiohttp.server import ServerHttpProtocol
-from aiohttp.web import Request, HTTPException
+from aiohttp.web import Request
 from .interaction import Interaction
 
 
@@ -83,40 +83,20 @@ class Handler(ServerHttpProtocol):
         Parameters
         ----------
         message
-            Message.
+            Request's message.
         payload
-            Payload.
+            Request's payload.
         """
         start_time = self.service.loop.time()
-        dispatcher = self.service.dispatcher
-        processor = self.service.processor
         request = Request(
             None, message, payload,
             self.transport, self.reader, self.writer)
-        match = yield from dispatcher.resolve(request)
-        request.match = match
-        try:
-            try:
-                request = yield from processor.process_request(request)
-                if not match:
-                    raise match.exception
-                reply = yield from match.route.handler(request)
-                response = yield from processor.process_reply(request, reply)
-            except HTTPException as exception:
-                response = exception
-            try:
-                response = (yield from
-                    processor.process_response(request, response))
-            except HTTPException as exception:
-                response = exception
-        except Exception as exception:
-            response = (yield from
-                processor.process_exception(request, exception))
-        resp_message = response.start(request)
+        response = yield from self.service.processor.respond(request)
+        resp_msg = response.start(request)
         yield from response.write_eof()
-        self.keep_alive(resp_message.keep_alive())
+        self.keep_alive(resp_msg.keep_alive())
         stop_time = self.service.loop.time()
-        self.log_access(message, None, resp_message, stop_time - start_time)
+        self.log_access(message, None, resp_msg, stop_time - start_time)
 
     # Internal (ServerHttpProtocol's API hooks)
 

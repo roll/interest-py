@@ -1,6 +1,7 @@
 import asyncio
 from builtins import isinstance
 from aiohttp.web import StreamResponse
+from ..helpers import FeedbackList
 
 
 class Processor:
@@ -39,7 +40,9 @@ class Processor:
 
     def __init__(self, service):
         self.__service = service
-        self.__middlewares = []
+        self.__middlewares = FeedbackList(
+            self.__on_middlewares_change)
+        self.__handler = self.process_request
 
     @property
     def service(self):
@@ -69,7 +72,37 @@ class Processor:
         self.middlewares.append(middleware)
 
     @asyncio.coroutine
+    def process_handler(self, handler=None):
+        if handler is None:
+            handler = self.process_request
+        for middleware in reversed(self.middlewares):
+            handler = yield from  middleware.process_handler(handler)
+        self.handler = handler
+        return handler
+
+    @asyncio.coroutine
     def process_request(self, request):
+        """Process a request (coroutine).
+        """
+        match = yield from self.service.dispatcher.resolve(request)
+        request.match = match
+        if not match:
+            raise match.exception
+        reply = yield from match.route.handler(request)
+        return reply
+
+    @property
+    def handler(self):
+        """Handler (read/write).
+        """
+        return self.__handler
+
+    @handler.setter
+    def handler(self, value):
+        self.__handler = value
+
+    @asyncio.coroutine
+    def respond(self, request):
         """Process request (coroutine).
 
         Request will be processed by every middleware with
@@ -85,103 +118,12 @@ class Processor:
         :class:`aiohttp.web.Request`
             Processed request instance.
         """
-        for middleware in self.middlewares:
-            if hasattr(middleware, 'process_request'):
-                request = yield from middleware.process_request(request)
-        return request
-
-    @asyncio.coroutine
-    def process_reply(self, request, reply):
-        """Process reply (coroutine).
-
-        While reply is not instance of :class:`aiohttp.web.StreamResponse`
-        it will be processed by middlewares with process_data method
-        in reverse order.
-
-        Parameters
-        ----------
-        request: :class:`aiohttp.web.Request`
-            Request instance.
-        reply: dict/:class:`aiohttp.web.StreamResponse`
-            Endpoint's return.
-
-        Returns
-        -------
-        :class:`aiohttp.web.StreamResponse`
-            Response instance.
-
-        Raises
-        ------
-        :class:`TypeError`
-            If reply is not instance of :class:`aiohttp.web.StreamResponse`
-            after processing by all middlewares.
-        """
-        for middleware in self.middlewares:
-            if isinstance(reply, StreamResponse):
-                break
-            if hasattr(middleware, 'process_data'):
-                reply = yield from middleware.process_data(request, reply)
-        if not isinstance(reply, StreamResponse):
-            raise TypeError(
-                'Middlewares have not properly converted data to response')
-        return reply
-
-    @asyncio.coroutine
-    def process_response(self, request, response):
-        """Process response (coroutine).
-
-        Response will be processed by every middleware with
-        process_response method in reverse order.
-
-        Parameters
-        ----------
-        request: :class:`aiohttp.web.Request`
-            Request instance.
-        response: :class:`aiohttp.web.StreamResponse`
-            Response instance.
-
-        Returns
-        -------
-        :class:`aiohttp.web.StreamResponse`
-            Processed response instance.
-        """
-        for middleware in reversed(self.middlewares):
-            if hasattr(middleware, 'process_response'):
-                response = (yield from
-                    middleware.process_response(request, response))
+        response = yield from self.handler(request)
+        if not isinstance(response, StreamResponse):
+            raise TypeError('Last reply is not a StreamResponse')
         return response
 
-    @asyncio.coroutine
-    def process_exception(self, request, exception):
-        """Process exception (coroutine).
+    # Private
 
-        Exception will be processed by middlewares with process_exception
-        method in reverse order until :class:`aiohttp.web.StreamResponse`
-        will be returned otherwise processed exception will be raised.
-
-        Parameters
-        ----------
-        request: :class:`aiohttp.web.Request`
-            Request instance.
-        exception: :class:`aiohttp.web.HTTPException`
-            Exception instance.
-
-        Returns
-        -------
-        :class:`aiohttp.web.StreamResponse`
-            Response instance.
-
-        Raises
-        ------
-        :class:`Exception`
-            If no one middleware returns :class:`aiohttp.web.StreamResponse`
-            methods raises processed exception.
-        """
-        for middleware in self.middlewares:
-            if hasattr(middleware, 'process_exception'):
-                result = (yield from
-                    middleware.process_exception(request, exception))
-                if isinstance(exception, StreamResponse):
-                    return result
-                exception = result
-        raise exception
+    def __on_middlewares_change(self):
+        self.service.loop.run_until_complete(self.process_handler())
