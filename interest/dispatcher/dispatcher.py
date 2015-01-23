@@ -30,13 +30,24 @@ class Dispatcher:
 
     @property
     def service(self):
+        """:class:`.Service` instance (read-only).
+        """
         return self.__service
 
     @property
     def resources(self):
+        """List of middlewares.
+        """
         return self.__resources
 
     def add_resource(self, resource):
+        """Add a resource.
+
+        Parameters
+        ----------
+        resource: type
+            :class:`.Resource` subclass.
+        """
         resource = resource(self.service)
         self.resources.append(resource)
 

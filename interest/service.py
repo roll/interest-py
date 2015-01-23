@@ -74,16 +74,22 @@ class Service(dict):
         return True
 
     def add_middleware(self, middleware):
-        """Add a middleware.
+        """Add a middleware to the responder.
 
-        .. seealso:: Proxy: :meth:`.Responder.add_middleware`
+        Parameters
+        ----------
+        middleware: type
+            :class:`.Middleware` subclass.
         """
         self.responder.add_middleware(middleware)
 
     def add_resource(self, resource):
-        """Add a resource.
+        """Add a middleware to the dispatcher.
 
-        .. seealso:: Proxy: :meth:`.Dispatcher.add_resource`
+        Parameters
+        ----------
+        resource: type
+            :class:`.Resource` subclass.
         """
         self.dispatcher.add_resource(resource)
 

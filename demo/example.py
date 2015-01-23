@@ -5,19 +5,6 @@ from aiohttp.web import Response, HTTPException, HTTPCreated, HTTPServerError
 from interest import Service, Resource, Middleware, get, put
 
 
-class Comment(Resource):
-
-    # Public
-
-    @get('/{id}')
-    def read(self, request):
-        return {'id': request.match['id']}
-
-    @put
-    def upsert(self, request):
-        raise HTTPCreated()
-
-
 class Interface(Middleware):
 
     # Public
@@ -38,6 +25,19 @@ class Interface(Middleware):
         return response
 
 
+class Comment(Resource):
+
+    # Public
+
+    @get('/{id}')
+    def read(self, request):
+        return {'id': request.match['id']}
+
+    @put
+    def upsert(self, request):
+        raise HTTPCreated()
+
+
 try:
     hostname = sys.argv[1]
 except Exception:
@@ -49,6 +49,6 @@ except Exception:
 
 logging.basicConfig(level=logging.DEBUG)
 service = Service(path='/api/v1')
-service.add_resource(Comment)
 service.add_middleware(Interface)
+service.add_resource(Comment)
 service.listen(hostname=hostname, port=port)
