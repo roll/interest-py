@@ -3,6 +3,7 @@
 import re
 import asyncio
 from aiohttp.web import HTTPNotFound, HTTPMethodNotAllowed
+from ..helpers import FeedbackList
 from .route import DynamicRoute, PlainRoute
 from .match import ExistentMatch, NonExistentMatch
 
@@ -22,7 +23,8 @@ class Dispatcher:
 
     def __init__(self, service):
         self.__service = service
-        self.__resources = []
+        self.__resources = FeedbackList(
+            self.__on_resources_change)
         self._urls = []
         self._routes = {}
 
@@ -133,3 +135,6 @@ class Dispatcher:
                     service=self.service,
                     resource=resource,
                     dispatcher=self)
+
+    def __on_resources_change(self):
+        pass
