@@ -16,5 +16,5 @@ class FactoryMiddleware(Middleware, metaclass=ABCMeta):
 
     @asyncio.coroutine
     def __call__(self, request):
-        handler = self.factory(None, self.next)
+        handler = yield from self.factory(None, self.next)
         return (yield from handler(request))
