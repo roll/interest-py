@@ -16,12 +16,12 @@ class ServiceTest(unittest.TestCase):
         self.formatter = Mock()
         self.dispatcher = Mock()
         self.processor = Mock()
-        self.handler = Mock()
+        self.protocol = Mock()
         self.Logger = Mock(return_value=self.logger)
         self.Formatter = Mock(return_value=self.formatter)
         self.Dispatcher = Mock(return_value=self.dispatcher)
         self.Processor = Mock(return_value=self.processor)
-        self.Handler = Mock(return_value=self.handler)
+        self.Protocol = Mock(return_value=self.protocol)
         self.service = component.Service(
             path=self.path,
             loop=self.loop,
@@ -29,7 +29,7 @@ class ServiceTest(unittest.TestCase):
             formatter=self.Formatter,
             dispatcher=self.Dispatcher,
             processor=self.Processor,
-            handler=self.Handler)
+            protocol=self.Protocol)
 
     # Tests
 
@@ -39,7 +39,7 @@ class ServiceTest(unittest.TestCase):
         self.Formatter.assert_called_with(self.service)
         self.Dispatcher.assert_called_with(self.service)
         self.Processor.assert_called_with(self.service)
-        self.Handler.assert_called_with(self.service)
+        self.Protocol.assert_called_with(self.service)
 
     def test__bool__(self):
         self.assertTrue(self.service)
@@ -58,7 +58,7 @@ class ServiceTest(unittest.TestCase):
         self.service.listen(hostname='hostname', port='port')
         # Check loop calls
         self.loop.create_server.assert_called_with(
-            self.handler.fork, 'hostname', 'port')
+            self.protocol.fork, 'hostname', 'port')
         self.loop.run_until_complete.assert_called_with(
             self.loop.create_server.return_value)
         self.loop.run_forever.assert_called_with()
@@ -109,9 +109,9 @@ class ServiceTest(unittest.TestCase):
         self.service.processor = 'value'
         self.assertEqual(self.service.processor, 'value')
 
-    def test_handler(self):
-        self.assertEqual(self.service.handler, self.handler)
+    def test_protocol(self):
+        self.assertEqual(self.service.protocol, self.protocol)
 
-    def test_handler_setter(self):
-        self.service.handler = 'value'
-        self.assertEqual(self.service.handler, 'value')
+    def test_protocol_setter(self):
+        self.service.protocol = 'value'
+        self.assertEqual(self.service.protocol, 'value')

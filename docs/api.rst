@@ -59,15 +59,15 @@ Middleware
 
 .. autoclass:: interest.Middleware
 
-Handler
--------
+Protocol
+--------
 
-.. autoclass:: interest.Handler
+.. autoclass:: protocol.Protocol
 
 Interaction
 -----------
 
-.. autoclass:: interest.Interaction
+.. autoclass:: protocol.Interaction
     
 version
 -------

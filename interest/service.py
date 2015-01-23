@@ -1,9 +1,9 @@
 import asyncio
 from .dispatcher import Dispatcher  # @UnusedImport
 from .formatter import JSONFormatter  # @UnusedImport
-from .handler import Handler  # @UnusedImport
 from .logger import SystemLogger  # @UnusedImport
 from .processor import Processor  # @UnusedImport
+from .protocol import Protocol  # @UnusedImport
 
 
 class Service(dict):
@@ -29,8 +29,8 @@ class Service(dict):
         :class:`.Dispatcher` subclass.
     processor: type
         :class:`.Processor` subclass.
-    handler: type
-        :class:`.Handler` subclass.
+    protocol: type
+        :class:`.Protocol` subclass.
 
     Example
     -------
@@ -45,7 +45,7 @@ class Service(dict):
             formatter=CustomFormatter,
             dispatcher=CustomDispatcher,
             processor=CustomProcessor,
-            handler=Customhandler)
+            protocol=CustomProtocol)
         service['data'] = 'data'
         service.add_resource(CustomResourse)
         service.add_middleware(CustomMiddleware)
@@ -58,7 +58,8 @@ class Service(dict):
 
     def __init__(self, *, path='', loop=None,
                  logger=SystemLogger, formatter=JSONFormatter,
-                 dispatcher=Dispatcher, processor=Processor, handler=Handler):
+                 dispatcher=Dispatcher, processor=Processor,
+                 protocol=Protocol):
         if loop is None:
             loop = asyncio.get_event_loop()
         self.__path = path
@@ -67,7 +68,7 @@ class Service(dict):
         self.__formatter = formatter(self)
         self.__dispatcher = dispatcher(self)
         self.__processor = processor(self)
-        self.__handler = handler(self)
+        self.__protocol = protocol(self)
 
     def __bool__(self):
         return True
@@ -96,7 +97,7 @@ class Service(dict):
         port:
             Port like 80.
         """
-        server = self.loop.create_server(self.handler.fork, hostname, port)
+        server = self.loop.create_server(self.protocol.fork, hostname, port)
         server = self.loop.run_until_complete(server)
         self.logger.info(
             'Start listening at http://{hostname}:{port}'.
@@ -159,11 +160,11 @@ class Service(dict):
         self.__processor = value
 
     @property
-    def handler(self):
-        """:class:`.Handler` instance (read/write).
+    def protocol(self):
+        """:class:`.Protocol` instance (read/write).
         """
-        return self.__handler
+        return self.__protocol
 
-    @handler.setter
-    def handler(self, value):
-        self.__handler = value
+    @protocol.setter
+    def protocol(self, value):
+        self.__protocol = value

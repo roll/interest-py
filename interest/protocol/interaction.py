@@ -4,7 +4,7 @@ from aiohttp.helpers import atoms
 class Interaction(dict):
     """Interaction representation.
 
-    Interaction object represents interaction between :class:`.Handler`
+    Interaction object represents interaction between :class:`.Protocol`
     and client as dict ready to use with text templates. Dict is safe.
     If key is missing client gets '-' symbol. All values are strings.
     See available items below.

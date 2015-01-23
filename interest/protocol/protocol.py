@@ -5,22 +5,22 @@ from aiohttp.web import Request
 from .interaction import Interaction
 
 
-class Handler(ServerHttpProtocol):
-    """Handler representation.
+class Protocol(ServerHttpProtocol):
+    """Protocol representation.
 
-    Handler is used by :class:`.Service` for handling HTTP requests
+    Protocol is used by :class:`.Service` for handling HTTP requests
     on low-level. It's derived from :class:`aiohttp.server.ServerHttpProtocol`
     and implements :class:`asyncio.Protocol`.
 
     Example
     -------
-    You can tweak some handler parameters like keep alive timeout
-    by subclassing Handler. Also you can fully reimplent service's request
+    You can tweak some protocol parameters like connection timeout
+    by subclassing Protocol. Also you can fully reimplent service's request
     handling logic. Of course it's not recommended but it's possible.
     May be you want to implement a different middleware interface,
     change dispatching logic or provide some optimization::
 
-        class CustomHandler(Handler):
+        class CustomProtocol(Protocol):
 
             # Basic
 
@@ -38,7 +38,7 @@ class Handler(ServerHttpProtocol):
                 yield from response.write_eof()
                 self.keep_alive(response_message.keep_alive())
 
-        service = Service(path='/api/v1', handler=CustomHandler)
+        service = Service(path='/api/v1', protocol=CustomProtocol)
 
     Parameters
     ----------
