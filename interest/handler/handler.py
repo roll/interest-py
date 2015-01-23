@@ -24,7 +24,7 @@ class Handler(ServerHttpProtocol):
 
             # Basic
 
-            # TODO: add parameters tweak!
+            connection_timeout = 30
 
             # Advanced
 
@@ -48,12 +48,22 @@ class Handler(ServerHttpProtocol):
 
     # Public
 
+    connection_timeout = 75
+    """Time to keep connection opened in seconds.
+    """
+    request_timeout = 15
+    """Slow request timeout in seconds.
+    """
+
     def __init__(self, service):
         self.__service = service
         loop = None
         if service is not None:
             loop = service.loop
-        super().__init__(loop=loop)
+        super().__init__(
+            loop=loop,
+            keep_alive=self.connection_timeout,
+            timeout=self.request_timeout)
 
     @property
     def service(self):
