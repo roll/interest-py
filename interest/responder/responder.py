@@ -41,7 +41,6 @@ class Responder:
         self.__service = service
         self.__middlewares = FeedbackList(
             self.__on_middlewares_change)
-        self.__handler = self.process_request
 
     @property
     def service(self):
@@ -72,10 +71,9 @@ class Responder:
 
     @asyncio.coroutine
     def respond(self, request):
-        """Process request (coroutine).
+        """Respond a response to a request (coroutine).
 
-        Request will be processed by every middleware with
-        process_request method in straight order.
+        Request will be processed by middleware chain in straight order.
 
         Parameters
         ----------
@@ -84,26 +82,23 @@ class Responder:
 
         Returns
         -------
-        :class:`aiohttp.web.Request`
-            Processed request instance.
+        :class:`aiohttp.web.StreamResponse`
+            Response instance.
+
+        Raises
+        ------
+        :class:`TypeError`
+            If middleware chain doesn't return
+            :class:`aiohttp.web.StreamResponse`.
         """
-        reply = yield from self.handler(request)
-        if not isinstance(reply, StreamResponse):
+        response = yield from (self.middlewares + [self.last])[0](request)
+        if not isinstance(response, StreamResponse):
             raise TypeError('Last reply is not a StreamResponse')
-        return reply
+        return response
 
     @asyncio.coroutine
-    def process_handler(self, handler=None):
-        if handler is None:
-            handler = self.process_request
-        for middleware in reversed(self.middlewares):
-            handler = yield from middleware.process_handler(handler)
-        self.handler = handler
-        return handler
-
-    @asyncio.coroutine
-    def process_request(self, request):
-        """Process a request (coroutine).
+    def last(self, request):
+        """Call the last (virtual) middleware (coroutine).
         """
         match = yield from self.service.dispatcher.resolve(request)
         request.match = match
@@ -112,17 +107,10 @@ class Responder:
         reply = yield from match.route.handler(request)
         return reply
 
-    @property
-    def handler(self):
-        """Handler (read/write).
-        """
-        return self.__handler
-
-    @handler.setter
-    def handler(self, value):
-        self.__handler = value
-
     # Private
 
     def __on_middlewares_change(self):
-        self.service.loop.run_until_complete(self.process_handler())
+        next_middleware = self.last
+        for middleware in reversed(self.middlewares):
+            middleware.next = next_middleware
+            next_middleware = middleware

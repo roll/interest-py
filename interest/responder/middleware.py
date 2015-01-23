@@ -3,7 +3,7 @@ from abc import ABCMeta
 
 
 class Middleware(metaclass=ABCMeta):
-    """Middleware representation.
+    """Middleware representation (abstract).
 
     Middlewares is used by :class:`.Responder` to process
     handlers and requests.
@@ -37,7 +37,12 @@ class Middleware(metaclass=ABCMeta):
 
     def __init__(self, service):
         self.__service = service
-        self.__handler = self.process_request
+
+    @asyncio.coroutine
+    def __call__(self, request):
+        """Process a request (coroutine) (proxy).
+        """
+        return (yield from self.next(request))
 
     @property
     def service(self):
@@ -46,24 +51,7 @@ class Middleware(metaclass=ABCMeta):
         return self.__service
 
     @asyncio.coroutine
-    def process_handler(self, handler):
-        """Process a handler.
+    def next(self, request):
+        """Call the next middleware (coroutine).
         """
-        self.handler = handler
-        return self.process_request
-
-    @asyncio.coroutine
-    def process_request(self, request):
-        """Process a request (no-op).
-        """
-        pass
-
-    @property
-    def handler(self):
-        """Handler (read/write).
-        """
-        return self.__handler
-
-    @handler.setter
-    def handler(self, value):
-        self.__handler = value
+        raise RuntimeError('Middleware is not ready')

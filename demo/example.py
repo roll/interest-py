@@ -23,10 +23,10 @@ class Interface(Middleware):
     # Public
 
     @asyncio.coroutine
-    def process_request(self, request):
+    def __call__(self, request):
         try:
             response = Response()
-            payload = yield from self.handler(request)
+            payload = yield from self.next(request)
         except HTTPException as exception:
             response = exception
             payload = {'message': str(response)}
