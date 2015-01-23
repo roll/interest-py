@@ -72,19 +72,19 @@ class Service(dict):
     def __bool__(self):
         return True
 
-    def add_middleware(self, *middlewares, source=None):
-        """Add a one or many middlewares.
+    def add_middleware(self, middleware):
+        """Add a middleware.
 
         .. seealso:: Proxy: :meth:`.Processor.add_middleware`
         """
-        self.processor.add_middleware(*middlewares, source=source)
+        self.processor.add_middleware(middleware)
 
-    def add_resource(self, *resources, source=None):
-        """Add a one or many resources.
+    def add_resource(self, resource):
+        """Add a resource.
 
         .. seealso:: Proxy: :meth:`.Dispatcher.add_resource`
         """
-        self.dispatcher.add_resource(*resources, source=source)
+        self.dispatcher.add_resource(resource)
 
     def listen(self, *, hostname, port):
         """Listen forever on TCP/IP socket.

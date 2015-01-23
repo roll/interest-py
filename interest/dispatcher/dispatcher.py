@@ -5,7 +5,6 @@ import asyncio
 from aiohttp.web import HTTPNotFound, HTTPMethodNotAllowed
 from .route import DynamicRoute, PlainRoute
 from .match import ExistentMatch, NonExistentMatch
-from .resource import Resource
 
 
 class Dispatcher:
@@ -35,15 +34,9 @@ class Dispatcher:
     def resources(self):
         return self.__resources
 
-    def add_resource(self, *resources, source=None):
-        for resource in resources:
-            resource = resource(self.service)
-            self.resources.append(resource)
-        if source is not None:
-            for resource in vars(source).values():
-                if isinstance(resource, type):
-                    if issubclass(resource, Resource):
-                        self.add_resource(resource)
+    def add_resource(self, resource):
+        resource = resource(self.service)
+        self.resources.append(resource)
 
     def add_route(self, method, path, handler, *, name=None):
         assert path.startswith('/')

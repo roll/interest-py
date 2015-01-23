@@ -17,13 +17,10 @@ class ProcessorTest(unittest.TestCase):
 
     # Helpers
 
-    def make_mock_middleware_class(self, instance=None):
-        class MockMiddleware(component.Middleware):
-            # Public
-            if instance:
-                def __new__(cls, service):
-                    if instance is not None:
-                        return instance
+    def make_mock_middleware_class(self):
+        class MockMiddleware:
+            def __init__(self, service):
+                pass
             @asyncio.coroutine
             def process_request(self, request):
                 return request + '[*]'
@@ -52,13 +49,14 @@ class ProcessorTest(unittest.TestCase):
         self.assertEqual(len(self.processor.middlewares), 2)
 
     def test_add_middleware(self):
-        M1 = self.make_mock_middleware_class('m1')
-        M2 = self.make_mock_middleware_class('m2')
-        source = Mock()
-        source.M3 = self.make_mock_middleware_class('m3')
+        Middleware = Mock()
         self.processor = component.Processor('service')
-        self.processor.add_middleware(M1, M2, source=source)
-        self.assertEqual(self.processor.middlewares, ['m1', 'm2', 'm3'])
+        self.processor.add_middleware(Middleware)
+        self.assertEqual(
+            self.processor.middlewares,
+            [Middleware.return_value])
+        # Check Middleware call
+        Middleware.assert_called_with('service')
 
     def test_process_request(self):
         coroutine = self.processor.process_request('request')

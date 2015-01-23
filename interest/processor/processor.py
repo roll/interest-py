@@ -1,7 +1,6 @@
 import asyncio
 from builtins import isinstance
 from aiohttp.web import StreamResponse
-from .middleware import Middleware
 
 
 class Processor:
@@ -58,25 +57,16 @@ class Processor:
         """
         return self.__middlewares
 
-    def add_middleware(self, *middlewares, source=None):
-        """Add a one or many middlewares.
+    def add_middleware(self, middleware):
+        """Add a middleware.
 
         Parameters
         ----------
-        middleware[1..n]: type
+        middleware: type
             :class:`.Middleware` subclass.
-        source: object
-            Object contains :class:`.Middleware` subclasses as attributes.
-            All ot them will be added as middlewares in random order.
         """
-        for middleware in middlewares:
-            middleware = middleware(self.service)
-            self.middlewares.append(middleware)
-        if source is not None:
-            for middleware in vars(source).values():
-                if isinstance(middleware, type):
-                    if issubclass(middleware, Middleware):
-                        self.add_middleware(middleware)
+        middleware = middleware(self.service)
+        self.middlewares.append(middleware)
 
     @asyncio.coroutine
     def process_request(self, request):

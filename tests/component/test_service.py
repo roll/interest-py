@@ -47,14 +47,12 @@ class ServiceTest(unittest.TestCase):
     def test_add_middleware(self):
         self.service.add_middleware('middleware')
         # Check processor call
-        self.processor.add_middleware.assert_called_with(
-            'middleware', source=None)
+        self.processor.add_middleware.assert_called_with('middleware')
 
     def test_add_resource(self):
         self.service.add_resource('resource')
         # Check dispatcher call
-        self.dispatcher.add_resource.assert_called_with(
-            'resource', source=None)
+        self.dispatcher.add_resource.assert_called_with('resource')
 
     def test_listen(self):
         self.service.listen(hostname='hostname', port='port')
