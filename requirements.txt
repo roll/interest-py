@@ -5,7 +5,6 @@ runfile
 sphinx
 sphinx-settings
 sphinx-rtd-theme
-sugarbowl
 aiohttp>=0.14
 nose
 coverage

@@ -79,6 +79,7 @@ class ProcessorTest(unittest.TestCase):
         coroutine = self.processor.process_response('request', 'response')
         self.assertEqual(self.unyield(coroutine), 'response[*][*]')
 
+    @patch.object(component, 'StreamResponse', str)
     def test_process_exception(self):
         coroutine = self.processor.process_exception('request', 'exception')
-        self.assertEqual(self.unyield(coroutine), 'exception[*][*]')
+        self.assertEqual(self.unyield(coroutine), 'exception[*]')

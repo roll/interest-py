@@ -86,18 +86,22 @@ class Handler(ServerHttpProtocol):
         match = yield from dispatcher.resolve(request)
         request.match = match
         try:
-            request = yield from processor.process_request(request)
-            if not match:
-                raise match.exception
-            reply = yield from match.route.handler(request)
-            response = yield from processor.process_reply(request, reply)
-            response = yield from processor.process_response(request, response)
-        except HTTPException as exception:
             try:
-                response = (yield from
-                    processor.process_exception(request, exception))
+                request = yield from processor.process_request(request)
+                if not match:
+                    raise match.exception
+                reply = yield from match.route.handler(request)
+                response = yield from processor.process_reply(request, reply)
             except HTTPException as exception:
                 response = exception
+            try:
+                response = (yield from
+                    processor.process_response(request, response))
+            except HTTPException as exception:
+                response = exception
+        except Exception as exception:
+            response = (yield from
+                processor.process_exception(request, exception))
         resp_message = response.start(request)
         yield from response.write_eof()
         self.keep_alive(resp_message.keep_alive())
