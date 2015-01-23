@@ -1,9 +1,9 @@
-from abc import ABCMeta
+from ..helpers import OrderedMetaclass
 from .binding import Binding
 
 
-class Resource(metaclass=ABCMeta):
-    """Resource representation.
+class Resource(metaclass=OrderedMetaclass):
+    """Resource representation (abstract).
     """
 
     # Public
