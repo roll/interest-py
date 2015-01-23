@@ -3,6 +3,17 @@ from importlib import import_module
 
 
 class PluginImporter:
+    """Plugin importer.
+
+    Example
+    -------
+    Add to myapp.plugins something like that::
+
+        importer = PluginImporter(virtual='myapp.plugins.', actual='myapp_')
+        importer.register()
+        del PluginImporter
+        del importer
+    """
 
     # Public
 
