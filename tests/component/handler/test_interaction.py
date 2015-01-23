@@ -28,17 +28,9 @@ class InteractionTest(unittest.TestCase):
     def test_key_existent(self):
         self.assertEqual(self.interaction['host'], 'host')
 
-    def test_key_non_existent(self):
-        self.assertEqual(self.interaction['non_existent'], '-')
-
-    def test_key_existent_with_extended_is_true(self):
-        self.interaction.extended = True
+    def test_key_extended(self):
         self.assertEqual(self.interaction['<key:req>'], 'value')
         self.assertEqual(self.interaction['<key:res>'], 'value')
 
-    def test_extended(self):
-        self.assertEqual(self.interaction.extended, False)
-
-    def test_extended_setter(self):
-        self.interaction.extended = 'value'
-        self.assertEqual(self.interaction.extended, 'value')
+    def test_key_non_existent(self):
+        self.assertEqual(self.interaction['non_existent'], '-')

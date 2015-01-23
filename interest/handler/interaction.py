@@ -7,16 +7,14 @@ class Interaction(dict):
     Interaction object represents interaction between :class:`.Handler`
     and client as dict ready to use with text templates. Dict is safe.
     If key is missing client gets '-' symbol. All values are strings.
-    By default there are available basic keys. When you set
-    interaction.extended to True there are available also extended keys.
-    See key lists below.
+    See available items below.
 
     Parameters
     ----------
     .. warning:: Parameters are not a part of the public API.
 
-    Basic keys
-    ----------
+    Items
+    -----
     agent: str
         Client's agent representation.
     duration: str
@@ -35,9 +33,6 @@ class Interaction(dict):
         Response status.
     time: str
         Time when handling have been done (GMT).
-
-    Extended keys
-    -------------
     <key:req>: str
         Request's header by key.
     <key:res>: str
@@ -52,9 +47,6 @@ class Interaction(dict):
         '127.0.0.1',
         >>> interaction['length']
         '193'
-        >>> interaction['<content-type:res>']
-        '-'
-        >>> interaction.extended = True
         >>> interaction['<content-type:res>']
         'application/json; charset=utf-8'
 
@@ -75,31 +67,19 @@ class Interaction(dict):
         self.__response = response
         self.__transport = transport
         self.__duration = duration
-        self.__extended = False
         self.__populate()
 
     def __missing__(self, key):
         default = '-'
-        if self.extended:
-            if key.startswith('<'):
-                headers = None
-                if key.endswith(':req>'):
-                    headers = self.__reqheads
-                elif key.endswith(':res>'):
-                    headers = self.__resheads
-                if headers is not None:
-                    return headers.get(key[1:-5], default)
+        if key.startswith('<'):
+            headers = None
+            if key.endswith(':req>'):
+                headers = self.__reqheads
+            elif key.endswith(':res>'):
+                headers = self.__resheads
+            if headers is not None:
+                return headers.get(key[1:-5], default)
         return default
-
-    @property
-    def extended(self):
-        """Extended flag (read/write).
-        """
-        return self.__extended
-
-    @extended.setter
-    def extended(self, value):
-        self.__extended = value
 
     # Private
 
