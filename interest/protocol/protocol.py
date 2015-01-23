@@ -91,7 +91,7 @@ class Protocol(ServerHttpProtocol):
         request = Request(
             None, message, payload,
             self.transport, self.reader, self.writer)
-        response = yield from self.service.processor.respond(request)
+        response = yield from self.service.responder.respond(request)
         resp_msg = response.start(request)
         yield from response.write_eof()
         self.keep_alive(resp_msg.keep_alive())

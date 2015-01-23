@@ -5,7 +5,7 @@ from abc import ABCMeta
 class Middleware(metaclass=ABCMeta):
     """Middleware representation.
 
-    Middlewares is used by :class:`.Processor` to process
+    Middlewares is used by :class:`.Responder` to process
     handlers and requests.
 
     Parameters

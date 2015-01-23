@@ -15,12 +15,12 @@ class ServiceTest(unittest.TestCase):
         self.logger = Mock()
         self.formatter = Mock()
         self.dispatcher = Mock()
-        self.processor = Mock()
+        self.responder = Mock()
         self.protocol = Mock()
         self.Logger = Mock(return_value=self.logger)
         self.Formatter = Mock(return_value=self.formatter)
         self.Dispatcher = Mock(return_value=self.dispatcher)
-        self.Processor = Mock(return_value=self.processor)
+        self.Responder = Mock(return_value=self.responder)
         self.Protocol = Mock(return_value=self.protocol)
         self.service = component.Service(
             path=self.path,
@@ -28,7 +28,7 @@ class ServiceTest(unittest.TestCase):
             logger=self.Logger,
             formatter=self.Formatter,
             dispatcher=self.Dispatcher,
-            processor=self.Processor,
+            responder=self.Responder,
             protocol=self.Protocol)
 
     # Tests
@@ -38,7 +38,7 @@ class ServiceTest(unittest.TestCase):
         self.Logger.assert_called_with(self.service)
         self.Formatter.assert_called_with(self.service)
         self.Dispatcher.assert_called_with(self.service)
-        self.Processor.assert_called_with(self.service)
+        self.Responder.assert_called_with(self.service)
         self.Protocol.assert_called_with(self.service)
 
     def test__bool__(self):
@@ -46,8 +46,8 @@ class ServiceTest(unittest.TestCase):
 
     def test_add_middleware(self):
         self.service.add_middleware('middleware')
-        # Check processor call
-        self.processor.add_middleware.assert_called_with('middleware')
+        # Check responder call
+        self.responder.add_middleware.assert_called_with('middleware')
 
     def test_add_resource(self):
         self.service.add_resource('resource')
@@ -102,12 +102,12 @@ class ServiceTest(unittest.TestCase):
         self.service.dispatcher = 'value'
         self.assertEqual(self.service.dispatcher, 'value')
 
-    def test_processor(self):
-        self.assertEqual(self.service.processor, self.processor)
+    def test_responder(self):
+        self.assertEqual(self.service.responder, self.responder)
 
-    def test_processor_setter(self):
-        self.service.processor = 'value'
-        self.assertEqual(self.service.processor, 'value')
+    def test_responder_setter(self):
+        self.service.responder = 'value'
+        self.assertEqual(self.service.responder, 'value')
 
     def test_protocol(self):
         self.assertEqual(self.service.protocol, self.protocol)

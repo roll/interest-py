@@ -4,19 +4,18 @@ from aiohttp.web import StreamResponse
 from ..helpers import FeedbackList
 
 
-class Processor:
-    """Processor representation.
+class Responder:
+    """Responder representation.
 
-    Processor is used by :class:`.Service` for
-    request/response/reply/exception processing for every HTTP request.
-    Processor uses middlewares to make actual job.
+    Responder is used by :class:`.Service` to respond a response
+    on a HTTP request. Responder uses middlewares to make actual job.
 
     Example
     -------
     For example we don't want to process our responds by middlewares
     in production for performance's sake (save some CPU ticks)::
 
-        class ProductionProcessor(Processor):
+        class ProductionResponder(Responder):
 
             # Public
 
@@ -24,11 +23,11 @@ class Processor:
             def process_response(self, request, response):
                 return response
 
-        service = Service(path='/api/v1', processor=ProductionProcessor)
+        service = Service(path='/api/v1', responder=ProductionResponder)
 
     Actually we can exclude all middleware logic at all reimplementing
-    all Processor.process_* methods. In that case we have to do all
-    actual job in Processor's methods.
+    all Responder.process_* methods. In that case we have to do all
+    actual job in Responder's methods.
 
     Parameters
     ----------
@@ -52,7 +51,7 @@ class Processor:
 
     @property
     def middlewares(self):
-        """List of processor middlewares.
+        """List of middlewares.
 
         Order corresponds with order of adding and affects order of
         middlewares applying. Client may add middleware instance
@@ -88,17 +87,17 @@ class Processor:
         :class:`aiohttp.web.Request`
             Processed request instance.
         """
-        response = yield from self.handler(request)
-        if not isinstance(response, StreamResponse):
+        reply = yield from self.handler(request)
+        if not isinstance(reply, StreamResponse):
             raise TypeError('Last reply is not a StreamResponse')
-        return response
+        return reply
 
     @asyncio.coroutine
     def process_handler(self, handler=None):
         if handler is None:
             handler = self.process_request
         for middleware in reversed(self.middlewares):
-            handler = yield from  middleware.process_handler(handler)
+            handler = yield from middleware.process_handler(handler)
         self.handler = handler
         return handler
 

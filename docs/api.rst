@@ -49,10 +49,10 @@ Match
 
 .. autoclass:: interest.Match
 
-Processor
+Responder
 ---------
 
-.. autoclass:: interest.Processor
+.. autoclass:: interest.Responder
 
 Middleware
 ----------
@@ -62,12 +62,12 @@ Middleware
 Protocol
 --------
 
-.. autoclass:: protocol.Protocol
+.. autoclass:: interest.Protocol
 
 Interaction
 -----------
 
-.. autoclass:: protocol.Interaction
+.. autoclass:: interest.Interaction
     
 version
 -------

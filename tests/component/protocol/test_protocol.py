@@ -34,7 +34,7 @@ class ProtocolTest(unittest.TestCase):
         match.route.protocol = c(lambda req: req)
         self.protocol.log_access = Mock()
         self.service.loop.time.return_value = 10
-        self.service.processor.respond = c(lambda request: response)
+        self.service.responder.respond = c(lambda request: response)
         loop = asyncio.get_event_loop()
         loop.run_until_complete(
             self.protocol.handle_request('message', 'payload'))
