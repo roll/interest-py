@@ -1,6 +1,6 @@
 import unittest
 from importlib import import_module
-component = import_module('interest.helpers.cachedproperty')
+component = import_module('interest.helpers.cache')
 
 
 class cachedpropertyTest(unittest.TestCase):

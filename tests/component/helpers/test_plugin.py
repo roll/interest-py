@@ -1,7 +1,7 @@
 import unittest
 from importlib import import_module
 from unittest.mock import patch
-component = import_module('interest.helpers.plugins')
+component = import_module('interest.helpers.plugin')
 
 
 class PluginImporterTest(unittest.TestCase):

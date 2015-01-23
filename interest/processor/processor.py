@@ -72,6 +72,28 @@ class Processor:
         self.middlewares.append(middleware)
 
     @asyncio.coroutine
+    def respond(self, request):
+        """Process request (coroutine).
+
+        Request will be processed by every middleware with
+        process_request method in straight order.
+
+        Parameters
+        ----------
+        request: :class:`aiohttp.web.Request`
+            Request instance.
+
+        Returns
+        -------
+        :class:`aiohttp.web.Request`
+            Processed request instance.
+        """
+        response = yield from self.handler(request)
+        if not isinstance(response, StreamResponse):
+            raise TypeError('Last reply is not a StreamResponse')
+        return response
+
+    @asyncio.coroutine
     def process_handler(self, handler=None):
         if handler is None:
             handler = self.process_request
@@ -100,28 +122,6 @@ class Processor:
     @handler.setter
     def handler(self, value):
         self.__handler = value
-
-    @asyncio.coroutine
-    def respond(self, request):
-        """Process request (coroutine).
-
-        Request will be processed by every middleware with
-        process_request method in straight order.
-
-        Parameters
-        ----------
-        request: :class:`aiohttp.web.Request`
-            Request instance.
-
-        Returns
-        -------
-        :class:`aiohttp.web.Request`
-            Processed request instance.
-        """
-        response = yield from self.handler(request)
-        if not isinstance(response, StreamResponse):
-            raise TypeError('Last reply is not a StreamResponse')
-        return response
 
     # Private
 
