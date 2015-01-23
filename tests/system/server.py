@@ -4,7 +4,7 @@ import socket
 import asyncio
 import aiohttp
 import subprocess
-from sugarbowl import cachedproperty
+from interest.helpers import cachedproperty
 
 
 class Server:

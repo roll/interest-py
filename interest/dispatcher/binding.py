@@ -2,7 +2,7 @@ import asyncio
 import inspect
 from abc import ABCMeta
 from functools import partial
-from sugarbowl import Function
+from ..helpers import Function
 
 
 class Binding(Function, metaclass=ABCMeta):
