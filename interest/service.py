@@ -81,17 +81,19 @@ class Service(dict):
         middleware: type
             :class:`.Middleware` subclass.
         """
-        self.responder.add_middleware(middleware)
+        middleware = middleware(self)
+        self.responder.middlewares.append(middleware)
 
     def add_resource(self, resource):
-        """Add a middleware to the dispatcher.
+        """Add a resource to the dispatcher.
 
         Parameters
         ----------
         resource: type
             :class:`.Resource` subclass.
         """
-        self.dispatcher.add_resource(resource)
+        resource = resource(self)
+        self.dispatcher.resources.append(resource)
 
     def listen(self, *, hostname, port):
         """Listen forever on TCP/IP socket.

@@ -45,14 +45,18 @@ class ServiceTest(unittest.TestCase):
         self.assertTrue(self.service)
 
     def test_add_middleware(self):
-        self.service.add_middleware('middleware')
+        Middleware = Mock()
+        self.service.add_middleware(Middleware)
         # Check responder call
-        self.responder.add_middleware.assert_called_with('middleware')
+        self.responder.middlewares.append.assert_called_with(
+            Middleware.return_value)
 
     def test_add_resource(self):
-        self.service.add_resource('resource')
+        Resource = Mock()
+        self.service.add_resource(Resource)
         # Check dispatcher call
-        self.dispatcher.add_resource.assert_called_with('resource')
+        self.dispatcher.resources.append.assert_called_with(
+            Resource.return_value)
 
     def test_listen(self):
         self.service.listen(hostname='hostname', port='port')

@@ -12,9 +12,10 @@ class ResponderTest(unittest.TestCase):
     def setUp(self):
         self.service = Mock()
         self.Middleware = self.make_mock_middleware_class()
+        self.middleware = self.Middleware(self.service)
         self.responder = component.Responder(self.service)
-        self.responder.add_middleware(self.Middleware)
-        self.responder.add_middleware(self.Middleware)
+        self.responder.middlewares.append(self.middleware)
+        self.responder.middlewares.append(self.middleware)
 
     # Helpers
 
@@ -42,13 +43,3 @@ class ResponderTest(unittest.TestCase):
 
     def test_middlewares(self):
         self.assertEqual(len(self.responder.middlewares), 2)
-
-    def test_add_middleware(self):
-        Middleware = Mock()
-        self.responder = component.Responder(self.service)
-        self.responder.add_middleware(Middleware)
-        self.assertEqual(
-            self.responder.middlewares,
-            [Middleware.return_value])
-        # Check Middleware call
-        Middleware.assert_called_with(self.service)

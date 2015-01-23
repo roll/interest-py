@@ -40,16 +40,10 @@ class Dispatcher:
         """
         return self.__resources
 
-    def add_resource(self, resource):
-        """Add a resource.
-
-        Parameters
-        ----------
-        resource: type
-            :class:`.Resource` subclass.
-        """
-        resource = resource(self.service)
-        self.resources.append(resource)
+    # TODO: implement
+    @asyncio.coroutine
+    def dispatch(self, request):
+        pass
 
     def add_route(self, method, path, handler, *, name=None):
         assert path.startswith('/')

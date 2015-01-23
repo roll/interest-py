@@ -58,17 +58,6 @@ class Responder:
         """
         return self.__middlewares
 
-    def add_middleware(self, middleware):
-        """Add a middleware.
-
-        Parameters
-        ----------
-        middleware: type
-            :class:`.Middleware` subclass.
-        """
-        middleware = middleware(self.service)
-        self.middlewares.append(middleware)
-
     @asyncio.coroutine
     def respond(self, request):
         """Respond a response to a request (coroutine).
