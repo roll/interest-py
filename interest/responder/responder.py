@@ -99,7 +99,9 @@ class Responder:
     # Private
 
     def __on_middlewares_change(self):
-        next_middleware = self.last
+        next_middleware = None
         for middleware in reversed(self.middlewares):
-            middleware.next = next_middleware
+            middleware.respond = self.last
+            if next_middleware is not None:
+                middleware.next = next_middleware
             next_middleware = middleware
