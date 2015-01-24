@@ -5,7 +5,7 @@ from abc import ABCMeta
 class Middleware(metaclass=ABCMeta):
     """Middleware representation (abstract).
 
-    Middlewares is used by :class:`.Responder` to process
+    Middlewares is used by :class:`.Processor` to process
     handlers and requests.
 
     Parameters
@@ -16,7 +16,7 @@ class Middleware(metaclass=ABCMeta):
     Example
     -------
     By default interest doesn't know what to do with data returned
-    by responder. We have to implement convertation midleware::
+    by processor. We have to implement convertation midleware::
 
         class ConvertationMiddleware(Middleware):
 

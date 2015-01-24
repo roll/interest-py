@@ -1,6 +1,6 @@
 import unittest
 from importlib import import_module
-component = import_module('interest.responder.middleware')
+component = import_module('interest.processor.middleware')
 
 
 class MiddlewareTest(unittest.TestCase):

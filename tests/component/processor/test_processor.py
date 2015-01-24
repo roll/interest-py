@@ -2,10 +2,10 @@ import asyncio
 import unittest
 from unittest.mock import Mock
 from importlib import import_module
-component = import_module('interest.responder.responder')
+component = import_module('interest.processor.processor')
 
 
-class ResponderTest(unittest.TestCase):
+class ProcessorTest(unittest.TestCase):
 
     # Actions
 
@@ -13,9 +13,9 @@ class ResponderTest(unittest.TestCase):
         self.service = Mock()
         self.Middleware = self.make_mock_middleware_class()
         self.middleware = self.Middleware(self.service)
-        self.responder = component.Responder(self.service)
-        self.responder.middlewares.append(self.middleware)
-        self.responder.middlewares.append(self.middleware)
+        self.processor = component.Processor(self.service)
+        self.processor.middlewares.append(self.middleware)
+        self.processor.middlewares.append(self.middleware)
 
     # Helpers
 
@@ -39,7 +39,7 @@ class ResponderTest(unittest.TestCase):
     # Tests
 
     def test_service(self):
-        self.assertEqual(self.responder.service, self.service)
+        self.assertEqual(self.processor.service, self.service)
 
     def test_middlewares(self):
-        self.assertEqual(len(self.responder.middlewares), 2)
+        self.assertEqual(len(self.processor.middlewares), 2)

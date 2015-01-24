@@ -3,7 +3,7 @@ from .dispatcher import Dispatcher  # @UnusedImport
 from .formatter import JSONFormatter  # @UnusedImport
 from .logger import SystemLogger  # @UnusedImport
 from .protocol import Protocol  # @UnusedImport
-from .responder import Responder  # @UnusedImport
+from .processor import Processor  # @UnusedImport
 
 
 class Service(dict):
@@ -27,8 +27,8 @@ class Service(dict):
         :class:`.Formatter` subclass.
     dispatcher: type
         :class:`.Dispatcher` subclass.
-    responder: type
-        :class:`.Responder` subclass.
+    processor: type
+        :class:`.Processor` subclass.
     protocol: type
         :class:`.Protocol` subclass.
 
@@ -44,7 +44,7 @@ class Service(dict):
             logger=CustomLogger,
             formatter=CustomFormatter,
             dispatcher=CustomDispatcher,
-            responder=CustomResponder,
+            processor=CustomProcessor,
             protocol=CustomProtocol)
         service['data'] = 'data'
         service.add_resource(CustomResourse)
@@ -58,7 +58,7 @@ class Service(dict):
 
     def __init__(self, *, path='', loop=None,
                  logger=SystemLogger, formatter=JSONFormatter,
-                 dispatcher=Dispatcher, responder=Responder,
+                 dispatcher=Dispatcher, processor=Processor,
                  protocol=Protocol):
         if loop is None:
             loop = asyncio.get_event_loop()
@@ -67,14 +67,14 @@ class Service(dict):
         self.__logger = logger(self)
         self.__formatter = formatter(self)
         self.__dispatcher = dispatcher(self)
-        self.__responder = responder(self)
+        self.__processor = processor(self)
         self.__protocol = protocol(self)
 
     def __bool__(self):
         return True
 
     def add_middleware(self, middleware):
-        """Add a middleware to the responder.
+        """Add a middleware to the processor.
 
         Parameters
         ----------
@@ -82,7 +82,7 @@ class Service(dict):
             :class:`.Middleware` subclass.
         """
         middleware = middleware(self)
-        self.responder.middlewares.append(middleware)
+        self.processor.middlewares.append(middleware)
 
     def add_resource(self, resource):
         """Add a resource to the dispatcher.
@@ -158,14 +158,14 @@ class Service(dict):
         self.__dispatcher = value
 
     @property
-    def responder(self):
-        """:class:`.Responder` instance (read/write).
+    def processor(self):
+        """:class:`.Processor` instance (read/write).
         """
-        return self.__responder
+        return self.__processor
 
-    @responder.setter
-    def responder(self, value):
-        self.__responder = value
+    @processor.setter
+    def processor(self, value):
+        self.__processor = value
 
     @property
     def protocol(self):

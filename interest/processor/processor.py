@@ -4,18 +4,18 @@ from aiohttp.web import StreamResponse
 from ..helpers import FeedbackList
 
 
-class Responder:
-    """Responder representation.
+class Processor:
+    """Processor representation.
 
-    Responder is used by :class:`.Service` to respond a response
-    on a HTTP request. Responder uses middlewares to make actual job.
+    Processor is used by :class:`.Service` to process HTTP requests.
+    Processor uses middlewares to make an actual job.
 
     Example
     -------
     For example we don't want to process our responds by middlewares
     in production for performance's sake (save some CPU ticks)::
 
-        class ProductionResponder(Responder):
+        class ProductionProcessor(Processor):
 
             # Public
 
@@ -23,11 +23,11 @@ class Responder:
             def process_response(self, request, response):
                 return response
 
-        service = Service(path='/api/v1', responder=ProductionResponder)
+        service = Service(path='/api/v1', processor=ProductionProcessor)
 
     Actually we can exclude all middleware logic at all reimplementing
-    all Responder.process_* methods. In that case we have to do all
-    actual job in Responder's methods.
+    all Processor.process_* methods. In that case we have to do all
+    actual job in Processor's methods.
 
     Parameters
     ----------
@@ -59,7 +59,7 @@ class Responder:
         return self.__middlewares
 
     @asyncio.coroutine
-    def respond(self, request):
+    def process(self, request):
         """Respond a response to a request (coroutine).
 
         Request will be processed by middleware chain in straight order.
@@ -86,7 +86,7 @@ class Responder:
         return response
 
     @asyncio.coroutine
-    def last(self, request):
+    def respond(self, request):
         """Call the last (virtual) middleware (coroutine).
         """
         match = yield from self.service.dispatcher.resolve(request)
@@ -101,7 +101,7 @@ class Responder:
     def __on_middlewares_change(self):
         next_middleware = None
         for middleware in reversed(self.middlewares):
-            middleware.respond = self.last
+            middleware.respond = self.respond
             if next_middleware is not None:
                 middleware.next = next_middleware
             next_middleware = middleware

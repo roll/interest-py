@@ -4,6 +4,6 @@ from .dispatcher import (Dispatcher, Resource,
 from .formatter import Formatter, JSONFormatter
 from .logger import Logger, SystemLogger
 from .protocol import Protocol, Interaction
-from .responder import Responder, Middleware, FactoryMiddleware
+from .processor import Processor, Middleware, FactoryMiddleware
 from .service import Service
 version = '0.1.0'  # REPLACE: version = '{{ version }}'

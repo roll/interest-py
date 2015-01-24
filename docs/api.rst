@@ -49,10 +49,10 @@ Match
 
 .. autoclass:: interest.Match
 
-Responder
+Processor
 ---------
 
-.. autoclass:: interest.Responder
+.. autoclass:: interest.Processor
 
 Middleware
 ----------
