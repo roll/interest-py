@@ -1,2 +1,2 @@
 from .interaction import Interaction
-from .protocol import Protocol
+from .handler import Handler

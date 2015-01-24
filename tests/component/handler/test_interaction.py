@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import Mock, patch
 from importlib import import_module
-component = import_module('interest.protocol.interaction')
+component = import_module('interest.handler.interaction')
 
 
 class InteractionTest(unittest.TestCase):
