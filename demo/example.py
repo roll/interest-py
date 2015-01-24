@@ -30,9 +30,9 @@ class Comment(Resource):
 
     # Public
 
-    @get('/{id}')
+    @get('/<id:int>')
     def read(self, request):
-        return {'id': request.match['id']}
+        return {'id': request.route['id']}
 
     @put
     def upsert(self, request):

@@ -30,5 +30,7 @@ class Resource(metaclass=OrderedMetaclass):
             attr = getattr(self, name)
             binding = getattr(attr, Binding.MARKER, None)
             if binding is not None:
+                # TODO: reimp
+                binding.resource = self
                 bindings.append(binding)
         return bindings

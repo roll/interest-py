@@ -36,23 +36,11 @@ Here is a base usage example.
 
   .. code-block:: python
 
+    import json
     import asyncio
     import logging
-    from aiohttp.web import Response, HTTPException, HTTPCreated
+    from aiohttp.web import Response, HTTPCreated, HTTPException, HTTPServerError
     from interest import Service, Resource, Middleware, get, put
-    
-    
-    class Comment(Resource):
-    
-        # Public
-    
-        @get('/{id}')
-        def read(self, request):
-            return {'id': request.match['id']}
-    
-        @put
-        def upsert(self, request):
-            raise HTTPCreated()
     
     
     class Interface(Middleware):
@@ -60,19 +48,32 @@ Here is a base usage example.
         # Public
     
         @asyncio.coroutine
-        def process_data(self, request, data):
-            response = Response(
-                text=self.service.formatter.encode(data),
-                content_type=self.service.formatter.content_type)
+        def __call__(self, request):
+            try:
+                response = Response()
+                payload = yield from self.next(request)
+            except HTTPException as exception:
+                response = exception
+                payload = {'message': str(response)}
+            except Exception as exception:
+                response = HTTPServerError()
+                payload = {'message': 'Something went wrong!'}
+            response.text = json.dumps(payload)
+            response.content_type = 'application/json'
             return response
     
-        @asyncio.coroutine
-        def process_response(self, request, response):
-            if isinstance(response, HTTPException):
-                data = {'message': str(response)}
-                response.text = self.service.formatter.encode(data)
-                response.content_type = self.service.formatter.content_type
-            return response
+    
+    class Comment(Resource):
+    
+        # Public
+    
+        @get('/<id:int>')
+        def read(self, request):
+            return {'id': request.route['id']}
+    
+        @put
+        def upsert(self, request):
+            raise HTTPCreated()
   
     
     logging.basicConfig(level=logging.INFO)
@@ -94,7 +95,7 @@ Here is a base usage example.
   .. code-block:: bash
 
     $ curl -X GET http://127.0.0.1:9000/api/v1/comment/1; echo
-    {"id": "1"}
+    {"id": 1}
     $ curl -X PUT http://127.0.0.1:9000/api/v1/comment; echo
     {"message": "Created"}
 

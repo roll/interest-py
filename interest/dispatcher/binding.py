@@ -6,7 +6,7 @@ from ..helpers import Function
 
 
 class Binding(Function, metaclass=ABCMeta):
-    """Binding representation.
+    """Binding representation (abstract).
     """
 
     # Public
@@ -28,11 +28,17 @@ class Binding(Function, metaclass=ABCMeta):
             return Function.FUNCTION
         return Function.DECORATOR
 
-    def register(self, *, service, resource, dispatcher):
-        method = type(self).__name__.lower()
-        fullpath = service.path + resource.path + self.__path
-        bresponder = partial(self.__responder, resource)
-        dispatcher.add_route(method, fullpath, bresponder)
+    @property
+    def path(self):
+        return self.__path
+
+    @property
+    def methods(self):
+        return [type(self).__name__.upper()]
+
+    @property
+    def responder(self):
+        return partial(self.__responder, self.resource)
 
 
 class get(Binding):

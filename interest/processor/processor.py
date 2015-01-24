@@ -87,13 +87,10 @@ class Processor:
 
     @asyncio.coroutine
     def respond(self, request):
-        """Call the last (virtual) middleware (coroutine).
+        """Respond to a request (coroutine).
         """
-        match = yield from self.service.dispatcher.resolve(request)
-        request.match = match
-        if not match:
-            raise match.exception
-        reply = yield from match.route.handler(request)
+        request.route = yield from self.service.dispatcher.dispatch(request)
+        reply = yield from request.route.responder(request)
         return reply
 
     # Private

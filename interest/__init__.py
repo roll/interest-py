@@ -1,6 +1,6 @@
 from .dispatcher import (Dispatcher, Resource,
                          Binding, get, post, put, delete, patch, head, options,
-                         Match, ExistentMatch, NonExistentMatch)
+                         Route, ExistentRoute, NonExistentRoute)
 from .handler import Handler, Record
 from .logger import Logger, SystemLogger
 from .processor import Processor, Middleware, FactoryMiddleware
