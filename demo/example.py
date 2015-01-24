@@ -1,4 +1,5 @@
 import sys
+import json
 import asyncio
 import logging
 from aiohttp.web import Response, HTTPException, HTTPCreated, HTTPServerError
@@ -20,8 +21,8 @@ class Interface(Middleware):
         except Exception as exception:
             response = HTTPServerError()
             payload = {'message': 'Something went wrong!'}
-        response.text = self.service.formatter.encode(payload)
-        response.content_type = self.service.formatter.content_type
+        response.text = json.dumps(payload)
+        response.content_type = 'application/json'
         return response
 
 

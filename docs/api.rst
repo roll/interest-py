@@ -16,12 +16,6 @@ Logger
 .. autoclass:: interest.Logger
 .. autoclass:: interest.SystemLogger
 
-Formatter
----------
-
-.. autoclass:: interest.Formatter
-.. autoclass:: interest.JSONFormatter
-
 Dispatcher
 ----------
 
@@ -59,8 +53,8 @@ Middleware
 
 .. autoclass:: interest.Middleware
 
-Protocol
---------
+Handler
+-------
 
 .. autoclass:: interest.Protocol
 

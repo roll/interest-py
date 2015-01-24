@@ -80,7 +80,7 @@ class Processor:
             If middleware chain doesn't return
             :class:`aiohttp.web.StreamResponse`.
         """
-        response = yield from (self.middlewares + [self.last])[0](request)
+        response = yield from (self.middlewares + [self.respond])[0](request)
         if not isinstance(response, StreamResponse):
             raise TypeError('Last reply is not a StreamResponse')
         return response

@@ -13,12 +13,10 @@ class ServiceTest(unittest.TestCase):
         self.path = 'path'
         self.loop = Mock()
         self.logger = Mock()
-        self.formatter = Mock()
         self.dispatcher = Mock()
         self.processor = Mock()
         self.handler = Mock()
         self.Logger = Mock(return_value=self.logger)
-        self.Formatter = Mock(return_value=self.formatter)
         self.Dispatcher = Mock(return_value=self.dispatcher)
         self.Processor = Mock(return_value=self.processor)
         self.Handler = Mock(return_value=self.handler)
@@ -26,7 +24,6 @@ class ServiceTest(unittest.TestCase):
             path=self.path,
             loop=self.loop,
             logger=self.Logger,
-            formatter=self.Formatter,
             dispatcher=self.Dispatcher,
             processor=self.Processor,
             handler=self.Handler)
@@ -36,7 +33,6 @@ class ServiceTest(unittest.TestCase):
     def test(self):
         # Check class calls
         self.Logger.assert_called_with(self.service)
-        self.Formatter.assert_called_with(self.service)
         self.Dispatcher.assert_called_with(self.service)
         self.Processor.assert_called_with(self.service)
         self.Handler.assert_called_with(self.service)
@@ -91,13 +87,6 @@ class ServiceTest(unittest.TestCase):
     def test_logger_setter(self):
         self.service.logger = 'value'
         self.assertEqual(self.service.logger, 'value')
-
-    def test_formatter(self):
-        self.assertEqual(self.service.formatter, self.formatter)
-
-    def test_formatter_setter(self):
-        self.service.formatter = 'value'
-        self.assertEqual(self.service.formatter, 'value')
 
     def test_dispatcher(self):
         self.assertEqual(self.service.dispatcher, self.dispatcher)
