@@ -1,10 +1,10 @@
 from aiohttp.helpers import atoms
 
 
-class Interaction(dict):
-    """Interaction representation.
+class Record(dict):
+    """Record representation.
 
-    Interaction object represents interaction between :class:`.Handler`
+    Record object represents interaction between :class:`.Handler`
     and client as dict ready to use with text templates. Dict is safe.
     If key is missing client gets '-' symbol. All values are strings.
     See available items below.
@@ -43,11 +43,11 @@ class Interaction(dict):
     Usually we have Intercation instance in :meth:`.Logger.access` call.
     Imagine our interactive console works in context of this method::
 
-        >>> interaction['host']
+        >>> record['host']
         '127.0.0.1',
-        >>> interaction['length']
+        >>> record['length']
         '193'
-        >>> interaction['<content-type:res>']
+        >>> record['<content-type:res>']
         'application/json; charset=utf-8'
 
     Notes

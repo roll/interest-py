@@ -19,8 +19,8 @@ class SystemLogger(Logger):
 
             name = 'myapp'
 
-            def access(self, interaction):
-                print(self.template % interaction)
+            def access(self, record):
+                print(self.template % record)
 
             def debug(self, message, *args, **kwargs):
                 pass
@@ -46,8 +46,8 @@ class SystemLogger(Logger):
         """
         return self.__system
 
-    def access(self, interaction):
-        self.info(self.template % interaction)
+    def access(self, record):
+        self.info(self.template % record)
 
     def debug(self, message, *args, **kwargs):
         self.system.debug(message, *args, **kwargs)

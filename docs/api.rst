@@ -58,10 +58,10 @@ Handler
 
 .. autoclass:: interest.Handler
 
-Interaction
------------
+Record
+------
 
-.. autoclass:: interest.Interaction
+.. autoclass:: interest.Record
     
 version
 -------

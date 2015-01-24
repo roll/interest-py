@@ -1,2 +1,2 @@
-from .interaction import Interaction
 from .handler import Handler
+from .record import Record

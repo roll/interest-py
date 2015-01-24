@@ -45,13 +45,13 @@ class Logger(metaclass=ABCMeta):
         """
         return self.__service
 
-    def access(self, interaction):
+    def access(self, record):
         """Log access event (no-op).
 
         Parameters
         ----------
-        interaction: :class:`.Interaction`
-            Interaction dict to use with template.
+        record: :class:`.Record`
+            Record dict to use with template.
         """
         pass
 

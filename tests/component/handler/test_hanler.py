@@ -46,21 +46,21 @@ class HandlerTest(unittest.TestCase):
         self.handler.log_access.assert_called_with(
             'message', None, response.start.return_value, 0)
 
-    @patch.object(component, 'Interaction')
-    def test_log_access(self, Interaction):
+    @patch.object(component, 'Record')
+    def test_log_access(self, Record):
         self.handler.log_access('message', 'environ', 'response', 'time')
-        # Check Interaction call
-        Interaction.assert_called_with(
+        # Check Record call
+        Record.assert_called_with(
             request='message', response='response',
             transport=self.handler.transport, duration='time')
         # Check service.logger call
         self.service.logger.access.assert_called_with(
-            Interaction.return_value)
+            Record.return_value)
 
     @patch.object(component, 'traceback')
-    @patch.object(component, 'Interaction')
-    def test_log_access_with_error(self, Interaction, traceback):
-        Interaction.side_effect = RuntimeError()
+    @patch.object(component, 'Record')
+    def test_log_access_with_error(self, Record, traceback):
+        Record.side_effect = RuntimeError()
         self.handler.log_access('message', 'environ', 'response', 'time')
         # Check service.logger call
         self.service.logger.error.assert_called_with(

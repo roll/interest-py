@@ -25,12 +25,12 @@ class SystemLoggerTest(unittest.TestCase):
             format = Mock()
         return MockLogger
 
-    def make_mock_interaction_class(self):
-        class MockInteraction(dict):
+    def make_mock_record_class(self):
+        class MockRecord(dict):
             # Public
             def __getitem__(self, key):
                 return key
-        return MockInteraction
+        return MockRecord
 
     # Tests
 
@@ -42,8 +42,8 @@ class SystemLoggerTest(unittest.TestCase):
         self.logging.getLogger.assert_called_with(self.logger.name)
 
     def test_access(self):
-        interaction = self.make_mock_interaction_class()()
-        self.assertIsNone(self.logger.access(interaction))
+        record = self.make_mock_record_class()()
+        self.assertIsNone(self.logger.access(record))
         # Check system.info call
         self.logger.system.info.assert_called_with(
             'host time "request" status length "referer" "agent"')

@@ -2,7 +2,7 @@ import asyncio
 import traceback
 from aiohttp.server import ServerHttpProtocol
 from aiohttp.web import Request
-from .interaction import Interaction
+from .record import Record
 
 
 class Handler(ServerHttpProtocol):
@@ -102,10 +102,10 @@ class Handler(ServerHttpProtocol):
 
     def log_access(self, message, environ, response, time):
         try:
-            interaction = Interaction(
+            record = Record(
                 request=message, response=response,
                 transport=self.transport, duration=time)
-            self.service.logger.access(interaction)
+            self.service.logger.access(record)
         except:
             self.service.logger.error(traceback.format_exc())
 
