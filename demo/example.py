@@ -2,7 +2,7 @@ import sys
 import json
 import asyncio
 import logging
-from aiohttp.web import Response, HTTPException, HTTPCreated, HTTPServerError
+from aiohttp.web import Response, HTTPCreated, HTTPException, HTTPServerError
 from interest import Service, Resource, Middleware, get, put
 
 

@@ -56,7 +56,7 @@ Middleware
 Handler
 -------
 
-.. autoclass:: interest.Protocol
+.. autoclass:: interest.Handler
 
 Interaction
 -----------
