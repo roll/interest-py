@@ -24,6 +24,11 @@ class Chain(Iterable, Sized):
     def __len__(self):
         return len(self.__list)
 
+    def __repr__(self):
+        template = '<Chain elements="{list}">'
+        compiled = template.format(list=self.__list)
+        return compiled
+
     def add(self, value, place=None):
         if place is None:
             self.__list.append(value)

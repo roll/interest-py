@@ -69,6 +69,20 @@ class Dispatcher:
             return ExistentRoute(binding.responder, match1)
         return route
 
+    def match(self, request, *, path=None, methods=None, prefix=False):
+        match = ExistentMatch()
+        if path is not None:
+            path = self.service.path + path
+            match1 = self.__match_path(request, path, prefix)
+            if not match1:
+                return NonExistentMatch()
+            match = match1
+        if methods is not None:
+            match2 = self.__match_methods(request, methods)
+            if not match2:
+                return NonExistentMatch()
+        return match
+
     # Private
 
     def __add_converters(self):

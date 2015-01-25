@@ -17,6 +17,11 @@ class ExistentMatch(Match):
     def __bool__(self):
         return True
 
+    def __repr__(self):
+        template = '<ExistentMatch data="{dict}">'
+        compiled = template.format(dict=super().__repr__())
+        return compiled
+
 
 class NonExistentMatch(Match):
 
@@ -24,3 +29,8 @@ class NonExistentMatch(Match):
 
     def __bool__(self):
         return False
+
+    def __repr__(self):
+        template = '<NonExistentMatch data="{dict}">'
+        compiled = template.format(dict=super().__repr__())
+        return compiled
