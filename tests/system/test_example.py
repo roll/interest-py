@@ -23,7 +23,7 @@ class ExampleTest(unittest.TestCase):
         self.assertEqual(
             response.headers['CONTENT-TYPE'],
             'application/json; charset=utf-8')
-        self.assertEqual(response.json, {'key': 7, 'session': True})
+        self.assertEqual(response.json, {'key': 7, 'user': True})
 
     def test_upsert(self):
         response = self.server.make_request('PUT', '/api/v1/comment')

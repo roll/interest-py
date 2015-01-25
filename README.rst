@@ -48,7 +48,7 @@ Here is a base usage example.
     
         @asyncio.coroutine
         def __call__(self, request):
-            request.session = True
+            request.user = True
             response = yield from self.next(request)
             return response
     
@@ -77,7 +77,7 @@ Here is a base usage example.
     
         @http.get('/<key:int>')
         def read(self, request, key):
-        return {'key': key, 'session': request.session}
+            return {'key': key, 'user': request.user}
     
         @http.put
         def upsert(self, request):
@@ -104,7 +104,7 @@ Here is a base usage example.
   .. code-block:: bash
 
     $ curl -X GET http://127.0.0.1:9000/api/v1/comment/1; echo
-    {"key": 1, "session": true}
+    {"key": 1, "user": true}
     $ curl -X PUT http://127.0.0.1:9000/api/v1/comment; echo
     {"message": "Created"}
 
