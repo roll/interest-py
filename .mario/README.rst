@@ -54,7 +54,7 @@ Here is a base usage example.
     
         @http.get('/<key:int>')
         def read(self, request, key):
-            return {'key': key}
+        return {'key': key, 'session': request.session}
     
         @http.put
         def upsert(self, request):
@@ -81,7 +81,7 @@ Here is a base usage example.
   .. code-block:: bash
 
     $ curl -X GET http://127.0.0.1:9000/api/v1/comment/1; echo
-    {"key": 1}
+    {"key": 1, "session": true}
     $ curl -X PUT http://127.0.0.1:9000/api/v1/comment; echo
     {"message": "Created"}
 

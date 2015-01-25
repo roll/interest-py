@@ -11,7 +11,7 @@ class Session(Middleware):
 
     @asyncio.coroutine
     def __call__(self, request):
-        request.session = 'session'
+        request.session = True
         response = yield from self.next(request)
         return response
 
@@ -40,7 +40,7 @@ class Comment(Resource):
 
     @http.get('/<key:int>')
     def read(self, request, key):
-        return {'key': key}
+        return {'key': key, 'session': request.session}
 
     @http.put
     def upsert(self, request):
