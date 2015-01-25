@@ -39,11 +39,13 @@ class Comment(Resource):
 
     @http.get('/<key:int>')
     def read(self, request, key):
-        return {'key': key, 'user': request.user}
+        return {'key': key}
 
     @http.put
     def upsert(self, request):
-        raise http.Created()
+        if request.user:
+            raise http.Created()
+        raise http.HTTPUnauthorized()
 
 
 try:

@@ -38,8 +38,7 @@ Here is a base usage example.
         def __call__(self, request):
             try:
                 response = http.Response()
-                route = yield from self.service.dispatcher.dispatch(request)
-                payload = yield from route.responder(request, **route.match)
+                payload = yield from self.next(request)
             except http.Exception as exception:
                 response = exception
                 payload = {'message': str(response)}
@@ -54,12 +53,14 @@ Here is a base usage example.
     
         @http.get('/<key:int>')
         def read(self, request, key):
-            return {'key': key, 'user': request.user}
+            return {'key': key}
     
         @http.put
         def upsert(self, request):
-            raise http.Created()
-    
+            if request.user:
+                raise http.Created()
+            raise http.HTTPUnauthorized()
+
     
     logging.basicConfig(level=logging.DEBUG)
     service = Service(path='/api/v1')
