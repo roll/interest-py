@@ -43,7 +43,7 @@ class Dispatcher:
 
     @asyncio.coroutine
     def dispatch(self, request):
-        route = NonExistentRoute(self.fallback, HTTPNotFound())
+        route = NonExistentRoute(HTTPNotFound())
         # Check the service
         path = self.service.path
         match = self.__match_path(request, path, prefix=True)
@@ -67,14 +67,9 @@ class Dispatcher:
             match2 = self.__match_methods(request, binding.methods)
             if match2 is None:
                 return NonExistentRoute(
-                    self.fallback,
                     HTTPMethodNotAllowed(request.method, binding.methods))
             return ExistentRoute(binding.responder, match1)
         return route
-
-    @asyncio.coroutine
-    def fallback(self, request):
-        raise request.route.exception
 
     # Private
 

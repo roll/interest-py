@@ -6,7 +6,7 @@ from aiohttp.web import Response, HTTPCreated, HTTPException, HTTPServerError
 from interest import Service, Resource, Middleware, get, put
 
 
-class Interface(Middleware):
+class Responder(Middleware):
 
     # Public
 
@@ -14,7 +14,8 @@ class Interface(Middleware):
     def __call__(self, request):
         try:
             response = Response()
-            payload = yield from self.next(request)
+            route = yield from self.service.dispatcher.dispatch(request)
+            payload = yield from route.responder(request, **route.match)
         except HTTPException as exception:
             response = exception
             payload = {'message': str(response)}
@@ -30,9 +31,9 @@ class Comment(Resource):
 
     # Public
 
-    @get('/<id:int>')
-    def read(self, request):
-        return {'id': request.route['id']}
+    @get('/<key:int>')
+    def read(self, request, *, key):
+        return {'key': key}
 
     @put
     def upsert(self, request):
@@ -50,6 +51,6 @@ except Exception:
 
 logging.basicConfig(level=logging.DEBUG)
 service = Service(path='/api/v1')
-service.add_middleware(Interface)
+service.add_middleware(Responder)
 service.add_resource(Comment)
 service.listen(hostname=hostname, port=port)

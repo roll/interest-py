@@ -80,25 +80,18 @@ class Processor:
             If middleware chain doesn't return
             :class:`aiohttp.web.StreamResponse`.
         """
-        response = yield from (self.middlewares + [self.respond])[0](request)
+        if not self.middlewares:
+            raise RuntimeError('No middlawares added')
+        response = yield from self.middlewares[0](request)
         if not isinstance(response, StreamResponse):
-            raise TypeError('Last reply is not a StreamResponse')
+            raise RuntimeError('Last reply is not a StreamResponse')
         return response
-
-    @asyncio.coroutine
-    def respond(self, request):
-        """Respond to a request (coroutine).
-        """
-        request.route = yield from self.service.dispatcher.dispatch(request)
-        reply = yield from request.route.responder(request)
-        return reply
 
     # Private
 
     def __on_middlewares_change(self):
         next_middleware = None
         for middleware in reversed(self.middlewares):
-            middleware.respond = self.respond
             if next_middleware is not None:
                 middleware.next = next_middleware
             next_middleware = middleware

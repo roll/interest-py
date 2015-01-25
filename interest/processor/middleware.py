@@ -54,10 +54,4 @@ class Middleware(metaclass=ABCMeta):
     def next(self, request):
         """Call the next middleware (coroutine).
         """
-        return (yield from self.respond(request))
-
-    @asyncio.coroutine
-    def respond(self, request):
-        """Respond to a request (coroutine).
-        """
-        raise RuntimeError('Middleware is not ready')
+        raise RuntimeError('No next middleware')

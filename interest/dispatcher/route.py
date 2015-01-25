@@ -1,3 +1,4 @@
+import asyncio
 from abc import ABCMeta, abstractmethod
 
 
@@ -16,6 +17,11 @@ class Route(dict, metaclass=ABCMeta):
     def responder(self):
         pass  # pragma: no cover
 
+    @property
+    @abstractmethod
+    def match(self):
+        pass  # pragma: no cover
+
 
 class ExistentRoute(Route):
     """ExistentRoute representation.
@@ -25,7 +31,7 @@ class ExistentRoute(Route):
 
     def __init__(self, responder, match):
         self.__responder = responder
-        super().__init__(match)
+        self.__match = match
 
     def __bool__(self):
         return True
@@ -34,6 +40,10 @@ class ExistentRoute(Route):
     def responder(self):
         return self.__responder
 
+    @property
+    def match(self):
+        return self.__match
+
 
 class NonExistentRoute(Route):
     """NonExistentRoute representation.
@@ -41,17 +51,16 @@ class NonExistentRoute(Route):
 
     # Public
 
-    def __init__(self, responder, exception):
-        self.__responder = responder
+    def __init__(self, exception):
         self.__exception = exception
 
     def __bool__(self):
         return False
 
-    @property
-    def responder(self):
-        return self.__responder
+    @asyncio.coroutine
+    def responder(self, *args, **kwargs):
+        raise self.__exception
 
     @property
-    def exception(self):
-        return self.__exception
+    def match(self):
+        return {}
