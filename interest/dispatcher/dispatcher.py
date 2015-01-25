@@ -8,8 +8,8 @@ from .converter import (FloatConverter, IntegerConverter,
 class Dispatcher:
     """Dispatcher representation.
 
-    Dispatcher is NOT used by :class:`.Service`. Dispatcher presents
-    as service's attribute for the user routing needs.
+    Dispatcher is used by :class:`.Service` to dispatch requests.
+    Dispatcher presents as service's attribute for the user routing needs.
 
     Parameters
     ----------
