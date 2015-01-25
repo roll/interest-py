@@ -10,6 +10,7 @@ class PatternTest(unittest.TestCase):
 
     P = component.PlainPattern
     R = component.RegexPattern
+    N = component.NonExistentMatch()
     E = Exception
 
     converters = {
@@ -22,7 +23,8 @@ class PatternTest(unittest.TestCase):
 
     fixtures = [
         # Pattern, path, prefix, match, type/exception
-        ['/<>', None, False, None, E],
+        ['/<>', None, None, None, E],
+        ['/test', '/test2', False, N, P],
         ['/test', '/test', False, {}, P],
         ['/<key>', '/value', False, {'key': 'value'}, R],
         ['/<key:str>', '/5', False, {'key': '5'}, R],

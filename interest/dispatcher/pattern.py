@@ -1,5 +1,6 @@
 import re
 from abc import ABCMeta, abstractmethod
+from ..helpers import ExistentMatch, NonExistentMatch
 
 
 class Pattern(metaclass=ABCMeta):
@@ -70,13 +71,13 @@ class PlainPattern(Pattern):
         return compiled
 
     def match(self, path, prefix=False):
-        match = {}
+        match = ExistentMatch()
         if prefix:
             if not path.startswith(self.__pattern):
-                return None
+                return NonExistentMatch()
             return match
         if path != self.__pattern:
-            return None
+            return NonExistentMatch()
         return match
 
 
@@ -101,18 +102,18 @@ class RegexPattern(Pattern):
         return compiled
 
     def match(self, path, prefix=False):
-        match = {}
+        match = ExistentMatch()
         pattern = self.__full
         if prefix:
             pattern = self.__left
         result = pattern.match(path)
         if not result:
-            return None
+            return NonExistentMatch()
         for name, value in result.groupdict().items():
             name, meta = name.rsplit('_', 1)
             try:
                 value = self.__convs[meta].convert(value)
             except Exception:
-                return None
+                return NonExistentMatch()
             match[name] = value
         return match
