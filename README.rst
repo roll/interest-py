@@ -42,7 +42,18 @@ Here is a base usage example.
     from interest import Service, Middleware, Resource, http
     
     
-    class Interface(Middleware):
+    class Session(Middleware):
+    
+        # Public
+    
+        @asyncio.coroutine
+        def __call__(self, request):
+            request.session = 'session'
+            response = yield from self.next(request)
+            return response
+    
+    
+    class Restful(Middleware):
     
         # Public
     
@@ -76,9 +87,19 @@ Here is a base usage example.
             raise http.Created()
     
     
+    try:
+        hostname = sys.argv[1]
+    except Exception:
+        hostname = '127.0.0.1'
+    try:
+        port = int(sys.argv[2])
+    except Exception:
+        port = 9000
+    
     logging.basicConfig(level=logging.DEBUG)
     service = Service(path='/api/v1')
-    service.add_middleware(Interface)
+    service.add_middleware(Session)
+    service.add_middleware(Restful)
     service.add_resource(Comment)
     service.listen(hostname='127.0.0.1', port=9000)
     

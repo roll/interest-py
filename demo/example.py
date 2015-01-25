@@ -5,7 +5,18 @@ import logging
 from interest import Service, Middleware, Resource, http
 
 
-class Interface(Middleware):
+class Session(Middleware):
+
+    # Public
+
+    @asyncio.coroutine
+    def __call__(self, request):
+        request.session = 'session'
+        response = yield from self.next(request)
+        return response
+
+
+class Restful(Middleware):
 
     # Public
 
@@ -50,6 +61,7 @@ except Exception:
 
 logging.basicConfig(level=logging.DEBUG)
 service = Service(path='/api/v1')
-service.add_middleware(Interface)
+service.add_middleware(Session)
+service.add_middleware(Restful)
 service.add_resource(Comment)
 service.listen(hostname=hostname, port=port)
