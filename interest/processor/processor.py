@@ -1,7 +1,6 @@
 import asyncio
 from builtins import isinstance
-from aiohttp.web import StreamResponse
-from ..helpers import Chain
+from ..helpers import Chain, http
 
 
 class Processor:
@@ -66,24 +65,24 @@ class Processor:
 
         Parameters
         ----------
-        request: :class:`aiohttp.web.Request`
+        request: :class:`.http.Request`
             Request instance.
 
         Returns
         -------
-        :class:`aiohttp.web.StreamResponse`
+        :class:`.http.StreamResponse`
             Response instance.
 
         Raises
         ------
         :class:`TypeError`
             If middleware chain doesn't return
-            :class:`aiohttp.web.StreamResponse`.
+            :class:`.http.StreamResponse`.
         """
         if not self.middlewares:
             raise RuntimeError('No middlawares added')
         response = yield from self.middlewares[0](request)
-        if not isinstance(response, StreamResponse):
+        if not isinstance(response, http.StreamResponse):
             raise RuntimeError('Last reply is not a StreamResponse')
         return response
 

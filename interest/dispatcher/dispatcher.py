@@ -1,9 +1,7 @@
 import asyncio
-from aiohttp.web import HTTPNotFound, HTTPMethodNotAllowed
-from ..helpers import Chain
+from ..helpers import Chain, ExistentMatch, NonExistentMatch, http
 from .pattern import Pattern
 from .route import ExistentRoute, NonExistentRoute
-from ..helpers import ExistentMatch, NonExistentMatch
 from .converter import (FloatConverter, IntegerConverter,
                         PathConverter, StringConverter)
 
@@ -41,7 +39,7 @@ class Dispatcher:
 
     @asyncio.coroutine
     def dispatch(self, request):
-        route = NonExistentRoute(HTTPNotFound())
+        route = NonExistentRoute(http.NotFound())
         # Check the service
         path = self.service.path
         match = self.__match_path(request, path, prefix=True)
@@ -65,7 +63,7 @@ class Dispatcher:
             match2 = self.__match_methods(request, binding.methods)
             if not match2:
                 return NonExistentRoute(
-                    HTTPMethodNotAllowed(request.method, binding.methods))
+                    http.MethodNotAllowed(request.method, binding.methods))
             return ExistentRoute(binding.responder, match1)
         return route
 

@@ -1,15 +1,14 @@
 import asyncio
 import traceback
-from aiohttp.server import ServerHttpProtocol
-from aiohttp.web import Request
+from ..helpers import http
 from .record import Record
 
 
-class Handler(ServerHttpProtocol):
+class Handler(http.Handler):
     """Handler representation.
 
     Handler is used by :class:`.Service` for handling HTTP requests
-    on low-level. It's derived from :class:`aiohttp.server.ServerHttpProtocol`
+    on low-level. It's derived from :class:`.http.Handler`
     and implements :class:`asyncio.Protocol`.
 
     Example
@@ -88,7 +87,7 @@ class Handler(ServerHttpProtocol):
             Request's payload.
         """
         start_time = self.service.loop.time()
-        request = Request(
+        request = http.Request(
             None, message, payload,
             self.transport, self.reader, self.writer)
         response = yield from self.service.processor.process(request)

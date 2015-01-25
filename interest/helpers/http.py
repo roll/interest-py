@@ -1,5 +1,5 @@
 import asyncio
-from aiohttp import web
+from aiohttp import server, web
 from functools import partial
 
 
@@ -9,6 +9,7 @@ class Metaclass(type):
 
     def __new__(cls, name, bases, attrs):
         cls = type.__new__(cls, name, bases, attrs)
+        cls.Handler = server.ServerHttpProtocol
         cls.Request = web.Request
         cls.Response = web.Response
         cls.StreamResponse = web.StreamResponse
