@@ -18,10 +18,7 @@ class Dispatcher:
         self.__converters = Chain()
         self.__patterns = {}
         # Add default converters
-        self.converters.add(StringConverter(service))
-        self.converters.add(IntegerConverter(service))
-        self.converters.add(FloatConverter(service))
-        self.converters.add(PathConverter(service))
+        self.__add_converters()
 
     @property
     def service(self):
@@ -72,6 +69,12 @@ class Dispatcher:
         return route
 
     # Private
+
+    def __add_converters(self):
+        self.converters.add(StringConverter(self.service))
+        self.converters.add(IntegerConverter(self.service))
+        self.converters.add(FloatConverter(self.service))
+        self.converters.add(PathConverter(self.service))
 
     def __match_path(self, request, path, prefix=False):
         if path not in self.__patterns:
