@@ -25,7 +25,7 @@ Here is a base usage example.
     
         @asyncio.coroutine
         def __call__(self, request):
-            request.session = 'session'
+            request.session = True
             response = yield from self.next(request)
             return response
     
