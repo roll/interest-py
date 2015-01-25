@@ -1,3 +1,4 @@
+from ..adapter import http
 from ..helpers import OrderedMetaclass
 from .binding import Binding
 
@@ -37,8 +38,8 @@ class Resource(metaclass=OrderedMetaclass):
                 if name.startswith('_'):
                     continue
                 attr = getattr(self, name)
-                factory = getattr(attr, Binding.MARKER, None)
-                if factory is not None:
-                    binding = factory(attr)
+                data = getattr(attr, http.MARKER, None)
+                if data is not None:
+                    binding = Binding(attr, **data)
                     self.__bindings.append(binding)
         return self.__bindings

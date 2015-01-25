@@ -1,4 +1,5 @@
-from .dispatcher import Dispatcher, Binding, Converter, Resource, Route, http
+from .adapter import http
+from .dispatcher import Dispatcher, Resource, Binding, Converter, Route
 from .handler import Handler, Record
 from .logger import Logger, SystemLogger
 from .processor import Processor, Middleware, FactoryMiddleware

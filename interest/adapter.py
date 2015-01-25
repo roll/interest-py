@@ -1,7 +1,6 @@
 import asyncio
 from aiohttp import web
 from functools import partial
-from .binding import Binding
 
 
 class Metaclass(type):
@@ -24,6 +23,8 @@ class Metaclass(type):
 class http(metaclass=Metaclass):
 
     # Public
+
+    MARKER = '_interest.http'
 
     @classmethod
     def any(cls, param):
@@ -67,8 +68,8 @@ class http(metaclass=Metaclass):
 
     @classmethod
     def __register(cls, function, *, path=None, methods=None):
-        factory = partial(Binding, path=path, methods=methods)
         if not asyncio.iscoroutine(function):
             function = asyncio.coroutine(function)
-        setattr(function, Binding.MARKER, factory)
+        data = {'path': path, 'methods': methods}
+        setattr(function, cls.MARKER, data)
         return function
