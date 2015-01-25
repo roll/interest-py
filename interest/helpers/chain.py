@@ -5,7 +5,7 @@ class Chain(Iterable, Sized):
 
     # Public
 
-    def __init__(self, listener):
+    def __init__(self, listener=None):
         self.__listener = listener
         self.__list = []
         self.__dict = {}
@@ -31,4 +31,5 @@ class Chain(Iterable, Sized):
             self.__list.insert(place, value)
         # TODO: allow only unique?
         self.__dict.setdefault(value.name, value)
-        self.__listener()
+        if self.__listener is not None:
+            self.__listener()

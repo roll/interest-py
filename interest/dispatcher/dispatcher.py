@@ -14,13 +14,12 @@ class Dispatcher:
 
     def __init__(self, service):
         self.__service = service
-        self.__resources = Chain(
-            self.__on_resources_change)
-        self.__converters = {
-            'str': StringConverter(),
-            'path': PathConverter(),
-            'int': IntegerConverter(),
-            'float': FloatConverter()}
+        self.__resources = Chain()
+        self.__converters = Chain()
+        self.__converters.add(StringConverter())
+        self.__converters.add(IntegerConverter())
+        self.__converters.add(FloatConverter())
+        self.__converters.add(PathConverter())
         self.__patterns = {}
 
     @property
