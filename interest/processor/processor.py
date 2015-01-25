@@ -1,7 +1,7 @@
 import asyncio
 from builtins import isinstance
 from aiohttp.web import StreamResponse
-from ..helpers import FeedbackList
+from ..helpers import Chain
 
 
 class Processor:
@@ -39,7 +39,7 @@ class Processor:
 
     def __init__(self, service):
         self.__service = service
-        self.__middlewares = FeedbackList(
+        self.__middlewares = Chain(
             self.__on_middlewares_change)
 
     @property

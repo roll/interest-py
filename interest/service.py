@@ -79,7 +79,7 @@ class Service(dict):
             :class:`.Middleware` subclass.
         """
         middleware = middleware(self)
-        self.processor.middlewares.append(middleware)
+        self.processor.middlewares.add(middleware)
 
     def add_resource(self, resource):
         """Add a resource to the dispatcher.
