@@ -24,8 +24,7 @@ class Restful(Middleware):
     def __call__(self, request):
         try:
             response = http.Response()
-            route = yield from self.service.dispatcher.dispatch(request)
-            payload = yield from route.responder(request, **route.match)
+            payload = yield from self.next(request)
         except http.Exception as exception:
             response = exception
             payload = {'message': str(response)}

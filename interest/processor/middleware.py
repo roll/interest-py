@@ -56,4 +56,6 @@ class Middleware(metaclass=ABCMeta):
     def next(self, request):
         """Call the next middleware (coroutine).
         """
-        raise RuntimeError('No next middleware')
+        route = yield from self.service.dispatcher.dispatch(request)
+        reply = yield from route.responder(request, **route.match)
+        return reply
