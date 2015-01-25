@@ -51,7 +51,7 @@ class ServiceTest(unittest.TestCase):
         Resource = Mock()
         self.service.add_resource(Resource)
         # Check dispatcher call
-        self.dispatcher.resources.append.assert_called_with(
+        self.dispatcher.resources.add.assert_called_with(
             Resource.return_value)
 
     def test_listen(self):

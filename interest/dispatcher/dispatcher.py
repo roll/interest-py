@@ -1,6 +1,6 @@
 import asyncio
 from aiohttp.web import HTTPNotFound, HTTPMethodNotAllowed
-from ..helpers import FeedbackList
+from ..helpers import Chain
 from .pattern import Pattern
 from .route import ExistentRoute, NonExistentRoute
 from .converter import (FloatConverter, IntegerConverter,
@@ -14,7 +14,7 @@ class Dispatcher:
 
     def __init__(self, service):
         self.__service = service
-        self.__resources = FeedbackList(
+        self.__resources = Chain(
             self.__on_resources_change)
         self.__converters = {
             'str': StringConverter(),

@@ -90,7 +90,7 @@ class Service(dict):
             :class:`.Resource` subclass.
         """
         resource = resource(self)
-        self.dispatcher.resources.append(resource)
+        self.dispatcher.resources.add(resource)
 
     def listen(self, *, hostname, port):
         """Listen forever on TCP/IP socket.
