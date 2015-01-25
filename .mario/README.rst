@@ -20,7 +20,7 @@ Here is a base usage example.
     from interest import Service, Resource, Middleware, get, put
     
     
-    class Interface(Middleware):
+    class Responder(Middleware):
     
         # Public
     
@@ -28,7 +28,8 @@ Here is a base usage example.
         def __call__(self, request):
             try:
                 response = Response()
-                payload = yield from self.next(request)
+                route = yield from self.service.dispatcher.dispatch(request)
+                payload = yield from route.responder(request, **route.match)
             except HTTPException as exception:
                 response = exception
                 payload = {'message': str(response)}
@@ -44,9 +45,9 @@ Here is a base usage example.
     
         # Public
     
-        @get('/<id:int>')
-        def read(self, request):
-            return {'id': request.route['id']}
+        @get('/<key:int>')
+        def read(self, request, *, key):
+            return {'key': key}
     
         @put
         def upsert(self, request):
