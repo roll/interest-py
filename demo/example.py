@@ -6,7 +6,7 @@ from aiohttp.web import Response, HTTPCreated, HTTPException, HTTPServerError
 from interest import Service, Resource, Middleware, get, put
 
 
-class Responder(Middleware):
+class Interface(Middleware):
 
     # Public
 
@@ -51,6 +51,6 @@ except Exception:
 
 logging.basicConfig(level=logging.DEBUG)
 service = Service(path='/api/v1')
-service.add_middleware(Responder)
+service.add_middleware(Interface)
 service.add_resource(Comment)
 service.listen(hostname=hostname, port=port)
