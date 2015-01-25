@@ -16,11 +16,12 @@ class Dispatcher:
         self.__service = service
         self.__resources = Chain()
         self.__converters = Chain()
-        self.__converters.add(StringConverter())
-        self.__converters.add(IntegerConverter())
-        self.__converters.add(FloatConverter())
-        self.__converters.add(PathConverter())
         self.__patterns = {}
+        # Add default converters
+        self.converters.add(StringConverter(service))
+        self.converters.add(IntegerConverter(service))
+        self.converters.add(FloatConverter(service))
+        self.converters.add(PathConverter(service))
 
     @property
     def service(self):
@@ -86,6 +87,3 @@ class Dispatcher:
             if request.method not in methods:
                 return None
         return match
-
-    def __on_resources_change(self):
-        pass

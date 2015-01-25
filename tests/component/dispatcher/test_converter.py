@@ -8,28 +8,28 @@ class PatternTest(unittest.TestCase):
     # Tests
 
     def test_string(self):
-        converter = component.StringConverter()
+        converter = component.StringConverter('service')
         pattern = '^' + converter.pattern + '$'
         self.assertRegex('string', pattern)
         self.assertNotRegex('string/', pattern)
         self.assertEqual(converter.convert('string'), 'string')
 
     def test_integer(self):
-        converter = component.IntegerConverter()
+        converter = component.IntegerConverter('service')
         pattern = '^' + converter.pattern + '$'
         self.assertRegex('1', pattern)
         self.assertNotRegex('1/', pattern)
         self.assertEqual(converter.convert('1'), 1)
 
     def test_float(self):
-        converter = component.FloatConverter()
+        converter = component.FloatConverter('service')
         pattern = '^' + converter.pattern + '$'
         self.assertRegex('1.1', pattern)
         self.assertNotRegex('1.1/', pattern)
         self.assertEqual(converter.convert('1.1'), 1.1)
 
     def test_path(self):
-        converter = component.PathConverter()
+        converter = component.PathConverter('service')
         pattern = '^' + converter.pattern + '$'
         self.assertRegex('my/path', pattern)
         self.assertNotRegex('my/path>', pattern)

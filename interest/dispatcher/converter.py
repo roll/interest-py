@@ -5,6 +5,20 @@ class Converter(metaclass=ABCMeta):
 
     # Public
 
+    def __init__(self, service):
+        self.__service = service
+
+    def __repr__(self):
+        template = (
+            '<Converter name="{self.name}" pattern="{self.pattern}"'
+            'convert="{self.convert}">')
+        compiled = template.format(self=self)
+        return compiled
+
+    @property
+    def service(self):
+        return self.__service
+
     @property
     @abstractmethod
     def name(self):

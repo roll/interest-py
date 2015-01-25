@@ -92,6 +92,17 @@ class Service(dict):
         resource = resource(self)
         self.dispatcher.resources.add(resource)
 
+    def add_converter(self, converter):
+        """Add a converter to the dispatcher.
+
+        Parameters
+        ----------
+        resource: type
+            :class:`.Resource` subclass.
+        """
+        converter = converter(self)
+        self.dispatcher.converters.add(converter)
+
     def listen(self, *, hostname, port):
         """Listen forever on TCP/IP socket.
 

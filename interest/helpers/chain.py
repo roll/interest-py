@@ -29,7 +29,6 @@ class Chain(Iterable, Sized):
             self.__list.append(value)
         else:
             self.__list.insert(place, value)
-        # TODO: allow only unique?
-        self.__dict.setdefault(value.name, value)
+        self.__dict[value.name] = value
         if self.__listener is not None:
             self.__listener()
