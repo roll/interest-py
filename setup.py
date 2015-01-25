@@ -31,7 +31,7 @@ setup(
     classifiers=[],       
     description='Interest is a web framework on top of asyncio and aiohttp.',
     data_files=data_files,
-    download_url='https://github.com/interest-hub/interest/tarball/0.1.0',
+    download_url='https://github.com/interest-hub/interest/tarball/0.2.0',
     entry_points={},
     license='MIT License',
     long_description=long_description,
@@ -45,4 +45,4 @@ setup(
     url='https://github.com/interest-hub/interest',
     tests_require=['nose', 'coverage'],
     test_suite='nose.collector',
-    version='0.1.0')
+    version='0.2.0')
