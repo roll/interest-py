@@ -13,7 +13,7 @@ if data_files:
 
 # Block: long_description
 from glob import iglob
-long_description = 'Interest is a REST framework on top of asyncio and aiohttp.'
+long_description = 'Interest is a resource based web framework on top of asyncio and aiohttp.'
 for filepath in iglob('README.*'):
     with open(filepath) as file:
         long_description = file.read()
@@ -29,7 +29,7 @@ setup(
     author='roll',
     author_email='roll@respect31.com',
     classifiers=[],       
-    description='Interest is a REST framework on top of asyncio and aiohttp.',
+    description='Interest is a resource based web framework on top of asyncio and aiohttp.',
     data_files=data_files,
     download_url='https://github.com/interest-hub/interest/tarball/0.1.0',
     entry_points={},
