@@ -64,15 +64,6 @@ Here is a base usage example.
             raise http.Created()
     
     
-    try:
-        hostname = sys.argv[1]
-    except Exception:
-        hostname = '127.0.0.1'
-    try:
-        port = int(sys.argv[2])
-    except Exception:
-        port = 9000
-    
     logging.basicConfig(level=logging.DEBUG)
     service = Service(path='/api/v1')
     service.add_middleware(Session)
