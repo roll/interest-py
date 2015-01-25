@@ -1,5 +1,4 @@
-from ..adapter import http
-from ..helpers import OrderedMetaclass
+from ..helpers import OrderedMetaclass, http
 from .binding import Binding
 
 

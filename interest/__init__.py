@@ -1,6 +1,6 @@
-from .adapter import http
 from .dispatcher import Dispatcher, Resource, Binding, Converter, Route
 from .handler import Handler, Record
+from .helpers import http
 from .logger import Logger, SystemLogger
 from .processor import Processor, Middleware, FactoryMiddleware
 from .service import Service
