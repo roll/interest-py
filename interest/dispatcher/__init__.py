@@ -1,4 +1,6 @@
-from .binding import Binding, get, post, put, delete, patch, head, options
+from .binding import Binding
+from .converter import Converter
 from .dispatcher import Dispatcher
+from .protocol import http
 from .resource import Resource
-from .route import Route, ExistentRoute, NonExistentRoute
+from .route import Route

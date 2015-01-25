@@ -3,7 +3,7 @@ import json
 import asyncio
 import logging
 from aiohttp.web import Response, HTTPCreated, HTTPException, HTTPServerError
-from interest import Service, Resource, Middleware, get, put
+from interest import Service, Resource, Middleware, http
 
 
 class Interface(Middleware):
@@ -31,11 +31,11 @@ class Comment(Resource):
 
     # Public
 
-    @get('/<key:int>')
-    def read(self, request, *, key):
+    @http.get('/<key:int>')
+    def read(self, request, key):
         return {'key': key}
 
-    @put
+    @http.put
     def upsert(self, request):
         raise HTTPCreated()
 

@@ -10,6 +10,14 @@ class Resource(metaclass=OrderedMetaclass):
 
     def __init__(self, service):
         self.__service = service
+        self.__bindings = None
+
+    def __repr__(self):
+        template = (
+            '<Resource path="{self.path}" '
+            'bindings="{self.bindings}">')
+        compiled = template.format(self=self)
+        return compiled
 
     @property
     def service(self):
@@ -21,16 +29,16 @@ class Resource(metaclass=OrderedMetaclass):
 
     @property
     def bindings(self):
-        bindings = []
-        for name in dir(self):
-            if name == 'bindings':
-                continue
-            if name.startswith('_'):
-                continue
-            attr = getattr(self, name)
-            binding = getattr(attr, Binding.MARKER, None)
-            if binding is not None:
-                # TODO: reimp
-                binding.resource = self
-                bindings.append(binding)
-        return bindings
+        if self.__bindings is None:
+            self.__bindings = []
+            for name in self.__order__:
+                if name == 'bindings':
+                    continue
+                if name.startswith('_'):
+                    continue
+                attr = getattr(self, name)
+                factory = getattr(attr, Binding.MARKER, None)
+                if factory is not None:
+                    binding = factory(attr)
+                    self.__bindings.append(binding)
+        return self.__bindings
