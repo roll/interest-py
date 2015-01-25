@@ -55,8 +55,8 @@ Here is a base usage example.
     
     logging.basicConfig(level=logging.INFO)
     service = Service(path='/api/v1')
-    service.add_resource(Comment)
     service.add_middleware(Interface)
+    service.add_resource(Comment)
     service.listen(hostname='127.0.0.1', port=9000)
     
 - run the server using python3 interpreter:
