@@ -24,7 +24,7 @@ class Chain(Iterable, Sized):
     def __len__(self):
         return len(self.__list)
 
-    def add(self, value, *, place=None):
+    def add(self, value, place=None):
         if place is None:
             self.__list.append(value)
         else:

@@ -24,8 +24,9 @@ class Pattern(metaclass=ABCMeta):
                 meta = match.group('meta')
                 if meta is None:
                     meta = 'str'
-                conv = convs.get(meta, None)
-                if conv is None:
+                try:
+                    conv = convs[meta]
+                except KeyError:
                     raise ValueError(
                         'Unsupported converter {meta}'.format(meta=meta))
                 part = cls.REGEX_TEMPLATE.format(
