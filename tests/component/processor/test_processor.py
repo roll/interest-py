@@ -14,8 +14,8 @@ class ProcessorTest(unittest.TestCase):
         self.Middleware = self.make_mock_middleware_class()
         self.middleware = self.Middleware(self.service)
         self.processor = component.Processor(self.service)
-        self.processor.middlewares.append(self.middleware)
-        self.processor.middlewares.append(self.middleware)
+        self.processor.middlewares.add(self.middleware)
+        self.processor.middlewares.add(self.middleware)
 
     # Helpers
 

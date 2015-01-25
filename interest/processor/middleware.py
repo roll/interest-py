@@ -50,6 +50,10 @@ class Middleware(metaclass=ABCMeta):
         """
         return self.__service
 
+    @property
+    def name(self):
+        return type(self).__name__.lower()
+
     @asyncio.coroutine
     def next(self, request):
         """Call the next middleware (coroutine).

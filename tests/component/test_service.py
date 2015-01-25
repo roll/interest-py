@@ -44,7 +44,7 @@ class ServiceTest(unittest.TestCase):
         Middleware = Mock()
         self.service.add_middleware(Middleware)
         # Check processor call
-        self.processor.middlewares.append.assert_called_with(
+        self.processor.middlewares.add.assert_called_with(
             Middleware.return_value)
 
     def test_add_resource(self):

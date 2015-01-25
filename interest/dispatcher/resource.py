@@ -24,8 +24,12 @@ class Resource(metaclass=OrderedMetaclass):
         return self.__service
 
     @property
+    def name(self):
+        return type(self).__name__.lower()
+
+    @property
     def path(self):
-        return '/' + type(self).__name__.lower()
+        return '/' + self.name
 
     @property
     def bindings(self):
