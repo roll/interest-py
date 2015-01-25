@@ -8,14 +8,12 @@ class Chain(Iterable, Sized):
     def __init__(self, listener):
         self.__listener = listener
         self.__list = []
+        self.__dict = {}
 
     def __getitem__(self, param):
         if isinstance(param, int):
             return self.__list[param]
-        for value in self.__list:
-            if value.name == param:
-                return value
-        raise KeyError(param)
+        return self.__dict[param]
 
     def __iter__(self):
         return self.__list.__iter__()
@@ -31,4 +29,6 @@ class Chain(Iterable, Sized):
             self.__list.append(value)
         else:
             self.__list.insert(place, value)
+        # TODO: allow only unique?
+        self.__dict.setdefault(value.name, value)
         self.__listener()

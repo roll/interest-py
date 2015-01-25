@@ -21,6 +21,8 @@ class ProcessorTest(unittest.TestCase):
 
     def make_mock_middleware_class(self):
         class MockMiddleware:
+            # Public
+            name = 'middleware'
             def __init__(self, service):
                 pass
             @asyncio.coroutine
