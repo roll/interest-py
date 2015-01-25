@@ -20,16 +20,14 @@ class Service(dict):
         Path prefix for HTTP path routing.
     loop: object
         Custom asyncio's loop.
-    logger: type
-        :class:`.Logger` subclass.
-    formatter: type
-        :class:`.Formatter` subclass.
-    dispatcher: type
-        :class:`.Dispatcher` subclass.
     processor: type
         :class:`.Processor` subclass.
+    dispatcher: type
+        :class:`.Dispatcher` subclass.
     handler: type
         :class:`.Handler` subclass.
+    logger: type
+        :class:`.Logger` subclass.
 
     Example
     -------
@@ -40,14 +38,13 @@ class Service(dict):
         service = Service(
             path='/api/v1',
             loop=custom_loop,
-            logger=CustomLogger,
-            formatter=CustomFormatter,
-            dispatcher=CustomDispatcher,
             processor=CustomProcessor,
-            handler=CustomHandler)
+            dispatcher=CustomDispatcher,
+            handler=CustomHandler,
+            logger=CustomLogger)
         service['data'] = 'data'
-        service.add_resource(CustomResourse)
         service.add_middleware(CustomMiddleware)
+        service.add_resource(CustomResourse)
         service.listen('127.0.0.1', 9000)
 
     .. seealso:: API: :attr:`dict`
@@ -56,16 +53,16 @@ class Service(dict):
     # Public
 
     def __init__(self, *, path='', loop=None,
-                 logger=SystemLogger, dispatcher=Dispatcher,
-                 processor=Processor, handler=Handler):
+                 processor=Processor, dispatcher=Dispatcher,
+                 handler=Handler, logger=SystemLogger):
         if loop is None:
             loop = asyncio.get_event_loop()
         self.__path = path
         self.__loop = loop
-        self.__logger = logger(self)
-        self.__dispatcher = dispatcher(self)
         self.__processor = processor(self)
+        self.__dispatcher = dispatcher(self)
         self.__handler = handler(self)
+        self.__logger = logger(self)
 
     def __bool__(self):
         return True
@@ -98,7 +95,7 @@ class Service(dict):
         Parameters
         ----------
         resource: type
-            :class:`.Resource` subclass.
+            :class:`.Converter` subclass.
         """
         converter = converter(self)
         self.dispatcher.converters.add(converter)
@@ -136,14 +133,14 @@ class Service(dict):
         return self.__loop
 
     @property
-    def logger(self):
-        """:class:`.Logger` instance (read/write).
+    def processor(self):
+        """:class:`.Processor` instance (read/write).
         """
-        return self.__logger
+        return self.__processor
 
-    @logger.setter
-    def logger(self, value):
-        self.__logger = value
+    @processor.setter
+    def processor(self, value):
+        self.__processor = value
 
     @property
     def dispatcher(self):
@@ -156,16 +153,6 @@ class Service(dict):
         self.__dispatcher = value
 
     @property
-    def processor(self):
-        """:class:`.Processor` instance (read/write).
-        """
-        return self.__processor
-
-    @processor.setter
-    def processor(self, value):
-        self.__processor = value
-
-    @property
     def handler(self):
         """:class:`.Handler` instance (read/write).
         """
@@ -174,3 +161,13 @@ class Service(dict):
     @handler.setter
     def handler(self, value):
         self.__handler = value
+
+    @property
+    def logger(self):
+        """:class:`.Logger` instance (read/write).
+        """
+        return self.__logger
+
+    @logger.setter
+    def logger(self, value):
+        self.__logger = value

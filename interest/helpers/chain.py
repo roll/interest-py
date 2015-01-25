@@ -2,6 +2,8 @@ from collections.abc import Iterable, Sized
 
 
 class Chain(Iterable, Sized):
+    """Chain representation.
+    """
 
     # Public
 

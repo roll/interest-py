@@ -2,6 +2,8 @@ from abc import ABCMeta, abstractmethod
 
 
 class Match(dict, metaclass=ABCMeta):
+    """Match representation.
+    """
 
     # Public
 

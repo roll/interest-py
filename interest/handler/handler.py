@@ -15,9 +15,8 @@ class Handler(http.Handler):
     -------
     You can tweak some handler parameters like connection timeout
     by subclassing handler. Also you can fully reimplent service's request
-    handling logic. Of course it's not recommended but it's possible.
-    May be you want to implement a different middleware interface,
-    change dispatching logic or provide some optimization::
+    handling logic. Of course it's not recommended but it's possible. May
+    be you want to implement a different middleware interface and so on::
 
         class CustomHandler(Handler):
 

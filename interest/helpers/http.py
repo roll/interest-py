@@ -11,8 +11,8 @@ class Metaclass(type):
         cls = type.__new__(cls, name, bases, attrs)
         cls.Handler = server.ServerHttpProtocol
         cls.Request = web.Request
-        cls.Response = web.Response
         cls.StreamResponse = web.StreamResponse
+        cls.Response = web.Response
         cls.WebSocketResponse = web.WebSocketResponse
         for name, obj in vars(web).items():
             if name.startswith('HTTP'):
@@ -22,6 +22,14 @@ class Metaclass(type):
 
 
 class http(metaclass=Metaclass):
+    """Adapter between Interst and aiohttp and binding maker.
+
+    Naming: aiohttp.web.HTTP* -> http.*
+
+    *under development*
+
+    .. seealso:: http://aiohttp.readthedocs.org/en/
+    """
 
     # Public
 
@@ -33,30 +41,44 @@ class http(metaclass=Metaclass):
 
     @classmethod
     def get(cls, param):
+        """Bind a get responder.
+        """
         return cls.__process(param, methods=['GET'])
 
     @classmethod
     def post(cls, param):
+        """Bind a post responder.
+        """
         return cls.__process(param, methods=['POST'])
 
     @classmethod
     def put(cls, param):
+        """Bind a put responder.
+        """
         return cls.__process(param, methods=['PUT'])
 
     @classmethod
     def delete(cls, param):
+        """Bind a delete responder.
+        """
         return cls.__process(param, methods=['DELETE'])
 
     @classmethod
     def patch(cls, param):
+        """Bind a patch responder.
+        """
         return cls.__process(param, methods=['PATCH'])
 
     @classmethod
     def head(cls, param):
+        """Bind a head responder.
+        """
         return cls.__process(param, methods=['HEAD'])
 
     @classmethod
     def options(cls, param):
+        """Bind a options responder.
+        """
         return cls.__process(param, methods=['OPTIONS'])
 
     # Private

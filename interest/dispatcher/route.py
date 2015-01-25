@@ -3,7 +3,7 @@ from abc import ABCMeta, abstractmethod
 
 
 class Route(dict, metaclass=ABCMeta):
-    """Route representation.
+    """Route representation (abstract).
     """
 
     # Public
@@ -15,11 +15,15 @@ class Route(dict, metaclass=ABCMeta):
     @property
     @abstractmethod
     def responder(self):
+        """Responder coroutine.
+        """
         pass  # pragma: no cover
 
     @property
     @abstractmethod
     def match(self):
+        """:class:`.Match` instance.
+        """
         pass  # pragma: no cover
 
 

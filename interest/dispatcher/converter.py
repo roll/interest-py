@@ -2,6 +2,13 @@ from abc import ABCMeta, abstractmethod
 
 
 class Converter(metaclass=ABCMeta):
+    """Converter representation (abstract).
+
+    Parameters
+    ----------
+    service: :class:`Service`
+        Service instance.
+    """
 
     # Public
 
@@ -17,20 +24,38 @@ class Converter(metaclass=ABCMeta):
 
     @property
     def service(self):
+        """:class:`.Service` instance (read-only).
+        """
         return self.__service
 
     @property
     @abstractmethod
     def name(self):
+        """Converter's name.
+        """
         pass  # pragma: no cover
 
     @property
     @abstractmethod
     def pattern(self):
+        """Converter's pattern.
+        """
         pass  # pragma: no cover
 
     @abstractmethod
-    def convert(self, value):
+    def convert(self, string):
+        """Convert the given string.
+
+        Parameters
+        ----------
+        string: str
+            String to convert.
+
+        Returns
+        -------
+        object
+            Converted string.
+        """
         pass  # pragma: no cover
 
 

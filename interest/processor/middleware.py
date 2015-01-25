@@ -5,8 +5,7 @@ from abc import ABCMeta
 class Middleware(metaclass=ABCMeta):
     """Middleware representation (abstract).
 
-    Middlewares is used by :class:`.Processor` to process
-    handlers and requests.
+    Middlewares is used by :class:`.Processor` to process requests.
 
     Parameters
     ----------
@@ -15,22 +14,19 @@ class Middleware(metaclass=ABCMeta):
 
     Example
     -------
-    By default interest doesn't know what to do with data returned
-    by processor. We have to implement convertation midleware::
+    By default interest doesn't know what to do with any request.
+    We have to implement a minimal midleware::
 
-        class ConvertationMiddleware(Middleware):
+        class MinimalMiddleware(Middleware):
 
             # Public
 
             @asyncio.coroutine
-            def process_data(self, request, data):
-                response = Response(
-                    text=self.service.formatter.encode(data),
-                    content_type=self.service.formatter.content_type)
-                return response
+            def __call__(self, request):
+                return Response(text='Hello World!')
 
         service = Service(path='/api/v1')
-        service.add_middleware(ConvertationMiddleware)
+        service.add_middleware(MinimalMiddleware)
     """
 
     # Public
@@ -40,7 +36,7 @@ class Middleware(metaclass=ABCMeta):
 
     @asyncio.coroutine
     def __call__(self, request):
-        """Process a request (coroutine) (proxy).
+        """Process a request (coroutine).
         """
         return (yield from self.next(request))
 
@@ -52,6 +48,8 @@ class Middleware(metaclass=ABCMeta):
 
     @property
     def name(self):
+        """Middlewares' name.
+        """
         return type(self).__name__.lower()
 
     @asyncio.coroutine

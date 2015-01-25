@@ -7,7 +7,13 @@ class Processor:
     """Processor representation.
 
     Processor is used by :class:`.Service` to process HTTP requests.
-    Processor uses middlewares to make an actual job.
+    Processor uses middlewares to include user code in request processing.
+    Processor needs at least one middleware to work.
+
+    Parameters
+    ----------
+    service: :class:`Service`
+        Service instance.
 
     Example
     -------
@@ -19,19 +25,12 @@ class Processor:
             # Public
 
             @asyncio.coroutine
-            def process_response(self, request, response):
-                return response
+            def process(self, request):
+                return http.Response()
 
         service = Service(path='/api/v1', processor=ProductionProcessor)
 
-    Actually we can exclude all middleware logic at all reimplementing
-    all Processor.process_* methods. In that case we have to do all
-    actual job in Processor's methods.
-
-    Parameters
-    ----------
-    service: :class:`Service`
-        Service instance.
+    Of course it makes no sense but there is for example's sake.
     """
 
     # Public
@@ -49,7 +48,7 @@ class Processor:
 
     @property
     def middlewares(self):
-        """List of middlewares.
+        """:class:`.Chain` of middlewares.
 
         Order corresponds with order of adding and affects order of
         middlewares applying. Client may add middleware instance
@@ -61,7 +60,7 @@ class Processor:
     def process(self, request):
         """Respond a response to a request (coroutine).
 
-        Request will be processed by middleware chain in straight order.
+        Request will be processed by middlewares chain in straight order.
 
         Parameters
         ----------
@@ -75,8 +74,8 @@ class Processor:
 
         Raises
         ------
-        :class:`TypeError`
-            If middleware chain doesn't return
+        :class:`RuntimeError`
+            If middlewares chain doesn't return
             :class:`.http.StreamResponse`.
         """
         if not self.middlewares:

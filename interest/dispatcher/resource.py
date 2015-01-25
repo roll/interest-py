@@ -4,6 +4,11 @@ from .binding import Binding
 
 class Resource(metaclass=OrderedMetaclass):
     """Resource representation (abstract).
+
+    Parameters
+    ----------
+    service: :class:`Service`
+        Service instance.
     """
 
     # Public
@@ -21,18 +26,26 @@ class Resource(metaclass=OrderedMetaclass):
 
     @property
     def service(self):
+        """:class:`.Service` instance (read-only).
+        """
         return self.__service
 
     @property
     def name(self):
+        """Resource's name.
+        """
         return type(self).__name__.lower()
 
     @property
     def path(self):
+        """Resource's path.
+        """
         return '/' + self.name
 
     @property
     def bindings(self):
+        """Resource's list of :class:`.Binding`.
+        """
         if self.__bindings is None:
             self.__bindings = []
             for name in self.__order__:

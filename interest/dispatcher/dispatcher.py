@@ -7,6 +7,14 @@ from .converter import (FloatConverter, IntegerConverter,
 
 class Dispatcher:
     """Dispatcher representation.
+
+    Dispatcher is NOT used by :class:`.Service`. Dispatcher presents
+    as service's attribute for the user routing needs.
+
+    Parameters
+    ----------
+    service: :class:`Service`
+        Service instance.
     """
 
     # Public
@@ -27,18 +35,30 @@ class Dispatcher:
 
     @property
     def resources(self):
-        """List of resources.
+        """:class:`.Chain` of resources.
         """
         return self.__resources
 
     @property
     def converters(self):
-        """Dict of converters.
+        """:class:`.Chain` of converters.
         """
         return self.__converters
 
     @asyncio.coroutine
     def dispatch(self, request):
+        """Dispatch a request.
+
+        Parameters
+        ----------
+        request: :class:`.http.Request`
+            Request instance.
+
+        Returns
+        -------
+        :class:`.Route`
+            Route instance.
+        """
         route = NonExistentRoute(http.NotFound())
         # Check the service
         path = self.service.path
@@ -68,6 +88,24 @@ class Dispatcher:
         return route
 
     def match(self, request, *, path=None, methods=None, prefix=False):
+        """Check if request matchs the given parameters.
+
+        Parameters
+        ----------
+        request: :class:`.http.Request`
+            Request instance.
+        path: str
+            HTTP path relative to the service.path.
+        methods: list
+            HTTP methods.
+        prefix: bool
+            If True it works like str.startswith for path.
+
+        Returns
+        -------
+        :class:`.Match`
+            Match instance.
+        """
         match = ExistentMatch()
         if path is not None:
             path = self.service.path + path

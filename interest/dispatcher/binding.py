@@ -1,10 +1,12 @@
 class Binding:
     """Binding representation.
+
+    Parameters
+    ----------
+    .. warning:: Parameters are not a part of the public API.
     """
 
     # Public
-
-    MARKER = '_interest.binding'
 
     def __init__(self, responder, *, path=None, methods=None):
         if path is None:
@@ -24,12 +26,18 @@ class Binding:
 
     @property
     def path(self):
+        """HTTP path relative to the resource.
+        """
         return self.__path
 
     @property
     def methods(self):
+        """HTTP methods.
+        """
         return self.__methods
 
     @property
     def responder(self):
+        """Responder coroutine.
+        """
         return self.__responder

@@ -10,12 +10,15 @@ Service
 
 .. autoclass:: interest.Service
 
-Logger
-------
+Processor
+---------
 
-.. autoclass:: interest.Logger
-.. autoclass:: interest.SystemLogger
+.. autoclass:: interest.Processor
 
+Middleware
+----------
+
+.. autoclass:: interest.Middleware
 Dispatcher
 ----------
 
@@ -26,32 +29,20 @@ Resource
 
 .. autoclass:: interest.Resource
 
+Converter
+---------
+
+.. autoclass:: interest.Converter
+
 Binding
 -------
 
 .. autoclass:: interest.Binding
-.. autoclass:: interest.get
-.. autoclass:: interest.post
-.. autoclass:: interest.put
-.. autoclass:: interest.delete
-.. autoclass:: interest.patch
-.. autoclass:: interest.head
-.. autoclass:: interest.options
 
-Match
+Route
 -----
 
-.. autoclass:: interest.Match
-
-Processor
----------
-
-.. autoclass:: interest.Processor
-
-Middleware
-----------
-
-.. autoclass:: interest.Middleware
+.. autoclass:: interest.Route
 
 Handler
 -------
@@ -62,6 +53,27 @@ Record
 ------
 
 .. autoclass:: interest.Record
+
+Logger
+------
+
+.. autoclass:: interest.Logger
+.. autoclass:: interest.SystemLogger
+
+Chain
+-----
+
+.. autoclass:: interest.Chain
+
+Match
+-----
+
+.. autoclass:: interest.Match
+
+http
+----
+
+.. autoclass:: interest.http
     
 version
 -------
