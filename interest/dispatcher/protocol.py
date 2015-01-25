@@ -1,9 +1,27 @@
 import asyncio
+from aiohttp import web
 from functools import partial
 from .binding import Binding
 
 
-class http:
+class Metaclass(type):
+
+    # Public
+
+    def __new__(cls, name, bases, attrs):
+        cls = type.__new__(cls, name, bases, attrs)
+        cls.Request = web.Request
+        cls.Response = web.Response
+        cls.StreamResponse = web.StreamResponse
+        cls.WebSocketResponse = web.WebSocketResponse
+        for name, obj in vars(web).items():
+            if name.startswith('HTTP'):
+                name = name.replace('HTTP', '', 1)
+                setattr(cls, name, obj)
+        return cls
+
+
+class http(metaclass=Metaclass):
 
     # Public
 

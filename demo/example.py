@@ -2,8 +2,7 @@ import sys
 import json
 import asyncio
 import logging
-from aiohttp.web import Response, HTTPCreated, HTTPException, HTTPServerError
-from interest import Service, Resource, Middleware, http
+from interest import Service, Middleware, Resource, http
 
 
 class Interface(Middleware):
@@ -13,14 +12,14 @@ class Interface(Middleware):
     @asyncio.coroutine
     def __call__(self, request):
         try:
-            response = Response()
+            response = http.Response()
             route = yield from self.service.dispatcher.dispatch(request)
             payload = yield from route.responder(request, **route.match)
-        except HTTPException as exception:
+        except http.Exception as exception:
             response = exception
             payload = {'message': str(response)}
         except Exception as exception:
-            response = HTTPServerError()
+            response = http.ServerError()
             payload = {'message': 'Something went wrong!'}
         response.text = json.dumps(payload)
         response.content_type = 'application/json'
@@ -37,7 +36,7 @@ class Comment(Resource):
 
     @http.put
     def upsert(self, request):
-        raise HTTPCreated()
+        raise http.Created()
 
 
 try:
