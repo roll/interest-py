@@ -43,9 +43,6 @@ Here is a base usage example.
             except http.Exception as exception:
                 response = exception
                 payload = {'message': str(response)}
-            except Exception as exception:
-                response = http.ServerError()
-                payload = {'message': 'Something went wrong!'}
             response.text = json.dumps(payload)
             response.content_type = 'application/json'
             return response
