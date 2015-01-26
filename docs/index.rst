@@ -13,11 +13,12 @@ Contents
 
 .. toctree::
    
-     Introduction <intro>
-     start
-     design
-     api
-     tips
+     Introduction <introduction>
+     tutorial
+     guide
+     reference
+     questions
+     changes
 
 Indices
 -------
