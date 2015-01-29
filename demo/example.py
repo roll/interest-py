@@ -45,7 +45,7 @@ class Comment(Resource):
     def upsert(self, request):
         if request.user:
             raise http.Created()
-        raise http.HTTPUnauthorized()
+        raise http.Unauthorized()
 
 
 # Create service
