@@ -110,6 +110,20 @@ Here is a base usage example.
     {"message": "Created"}
 
 
+.. Block: application
+
+Application
+-----------
+Package's `public API  <http://interest.readthedocs.org/en/latest/reference.html>`_
+follows `semver <http://semver.org/>`_ versioning model:
+
+- DEVELOP: 0.X[Breaking changes][API changes].X[Minor changes]
+- PRODUCT: X[Breaking changes].X[API changes].X[Minor changes]
+
+Be careful on DEVELOP stage package is under active development
+and can be drastically changed or even deleted. Don't use package
+in production before PRODUCT stage is reached.
+
 .. Block: requirements
 
 Requirements
@@ -125,21 +139,7 @@ Requirements
 
 Installation
 ------------
-- pip install interest
-
-.. Block: application
-
-Application
------------
-Package's `public API  <http://interest.readthedocs.org/en/latest/reference.html>`_
-follows `semver <http://semver.org/>`_ versioning model:
-
-- DEVELOP: 0.X[Breaking changes][API changes].X[Minor changes]
-- PRODUCT: X[Breaking changes].X[API changes].X[Minor changes]
-
-Be careful on DEVELOP stage package is under active development
-and can be drastically changed or even deleted. Don't use package
-in production before PRODUCT stage is reached.
+- pip3 install interest
 
 .. Block: contribution
 
