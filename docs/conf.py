@@ -2,6 +2,7 @@ import os
 import sphinx
 import sphinx_rtd_theme
 from sphinx_settings import Settings
+copyset = '2015, Respect31'  # REPLACE: copyset = '{{ copyright }}'
 project = 'interest'  # REPLACE: project = '{{ name }}'
 version = '0.2.0'  # REPLACE: version = '{{ version }}'
 
@@ -19,6 +20,7 @@ class Settings(Settings):
 
     # Project
 
+    copyright = copyset
     project = project
     version = version
 
@@ -26,7 +28,6 @@ class Settings(Settings):
 
     html_theme = 'sphinx_rtd_theme'
     html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
-    html_show_copyright = False
 
     # Autodoc
 
