@@ -34,12 +34,6 @@ class Middleware(metaclass=ABCMeta):
     def __init__(self, service):
         self.__service = service
 
-    @asyncio.coroutine
-    def __call__(self, request):
-        """Process a request (coroutine).
-        """
-        return (yield from self.next(request))
-
     @property
     def service(self):
         """:class:`.Service` instance (read-only).
@@ -51,6 +45,12 @@ class Middleware(metaclass=ABCMeta):
         """Middlewares' name.
         """
         return type(self).__name__.lower()
+
+    @asyncio.coroutine
+    def process(self, request):
+        """Process a request (coroutine).
+        """
+        return (yield from self.next(request))
 
     @asyncio.coroutine
     def next(self, request):

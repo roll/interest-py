@@ -80,7 +80,7 @@ class Processor:
         """
         if not self.middlewares:
             raise RuntimeError('No middlawares added')
-        response = yield from self.middlewares[0](request)
+        response = yield from self.middlewares[0].process(request)
         if not isinstance(response, http.StreamResponse):
             raise RuntimeError('Last reply is not a StreamResponse')
         return response
@@ -91,5 +91,5 @@ class Processor:
         next_middleware = None
         for middleware in reversed(self.middlewares):
             if next_middleware is not None:
-                middleware.next = next_middleware
+                middleware.next = next_middleware.process
             next_middleware = middleware

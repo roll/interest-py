@@ -26,10 +26,7 @@ class ProcessorTest(unittest.TestCase):
             def __init__(self, service):
                 pass
             @asyncio.coroutine
-            def process_handler(self, handler):
-                return handler + '[*]'
-            @asyncio.coroutine
-            def process_request(self, request):
+            def process(self, request):
                 return request + '[*]'
         return MockMiddleware
 
