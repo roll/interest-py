@@ -4,4 +4,4 @@ from .helpers import Chain, Match, http
 from .logger import Logger, SystemLogger
 from .processor import Processor, Middleware, FactoryMiddleware
 from .service import Service
-version = '0.2.0'  # REPLACE: version = '{{ version }}'
+version = '0.3.0'  # REPLACE: version = '{{ version }}'
