@@ -1,1 +1,1 @@
-from .project import ProjectModule
+from .module import ProjectModule

@@ -1,7 +1,7 @@
 import os
 import sphinx
 import sphinx_rtd_theme
-from box.sphinx import Settings
+from sphinx_settings import Settings
 project = 'name'  # REPLACE: project = '{{ name }}'
 version = '0.0.0'  # REPLACE: version = '{{ version }}'
 
@@ -35,4 +35,4 @@ class Settings(Settings):
     autodoc_skip_members = ['__weakref__']
 
 
-locals().update(Settings(sphinx=sphinx))
+locals().update(Settings())

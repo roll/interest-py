@@ -21,9 +21,10 @@ python:
 
 {% block install %}
 # Block: install
+{% set packages = install_requires+tests_require %}
 install:
   - pip install coveralls
-  - pip install {{ (install_requires+tests_require)|join(' ') }}
+  - pip install {%- for package in packages %} '{{ package }}'{%- endfor %}  
 {% endblock %}
 
 {% block script %}

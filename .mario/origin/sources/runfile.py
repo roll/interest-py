@@ -12,7 +12,8 @@ class ProjectModule(ProjectModule):
     author_email = '{{ author_email }}'
     copyright = '{{ copyright }}'
     description = '{{ description }}'
-    development_requires = ['sphinx', 'sphinx-rtd-theme', 'box']
+    development_requires = [
+        'runfile', 'mario', 'sphinx', 'sphinx-settings', 'sphinx-rtd-theme']
     license = '{{ license }}'
     name = '{{ name }}'
     interpreters = ['3.3', '3.4']

@@ -1,13 +1,12 @@
-Table of Contents
-=================
+Contents
+--------
 
 .. toctree::
    
-     Introduction <intro>
-     api
+     Introduction <introduction>
+     reference
 
-Indices and Tables
-==================
+Indices
+-------
 
-* :ref:`genindex`
-* :ref:`modindex`
+- :ref:`Main Index<genindex>`

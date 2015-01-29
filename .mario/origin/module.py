@@ -1,12 +1,14 @@
 import os
 import inspect
 from run import Module
-from mario import ProcessModule
+from mario import MarioModule
 
 
 class ProjectModule(Module):
 
     # Public
+
+    mario = MarioModule()
 
     author = '<author>'
     author_email = '<author_email>'
@@ -53,8 +55,6 @@ class ProjectModule(Module):
     @property
     def rtd_name(self):
         return self.name
-
-    process = ProcessModule()
 
     # Private
 

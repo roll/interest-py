@@ -12,7 +12,7 @@ python:
 # Block: install
 install:
   - pip install coveralls
-  - pip install aiohttp>=0.14 nose coverage
+  - pip install 'aiohttp>=0.14' 'nose' 'coverage'  
 
 # Block: script
 script:
