@@ -48,7 +48,7 @@ Here is a base usage example.
         # Public
     
         @asyncio.coroutine
-        def __call__(self, request):
+        def process(self, request):
             request.user = True
             response = yield from self.next(request)
             return response
@@ -59,7 +59,7 @@ Here is a base usage example.
         # Public
     
         @asyncio.coroutine
-        def __call__(self, request):
+        def process(self, request):
             try:
                 response = http.Response()
                 payload = yield from self.next(request)

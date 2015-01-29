@@ -24,3 +24,7 @@ class ProjectModule(ProjectModule):
     tests_require = ['nose', 'coverage']
     test_suite = 'nose.collector'
     version = '0.2.0'
+
+    @property
+    def example(self):
+        return open('demo/example.py').read()
