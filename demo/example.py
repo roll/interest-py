@@ -48,18 +48,13 @@ class Comment(Resource):
         raise http.HTTPUnauthorized()
 
 
-try:
-    hostname = sys.argv[1]
-except Exception:
-    hostname = '127.0.0.1'
-try:
-    port = int(sys.argv[2])
-except Exception:
-    port = 9000
+# Create service
+service = Service(
+    path='/api/v1',
+    middlewares=[Session, Restful],
+    resources=[Comment])
 
+# Listen forever
+argv = dict(enumerate(sys.argv))
 logging.basicConfig(level=logging.DEBUG)
-service = Service(path='/api/v1')
-service.add_middleware(Session)
-service.add_middleware(Restful)
-service.add_resource(Comment)
-service.listen(hostname=hostname, port=port)
+service.listen(hostname=argv.get(1, '127.0.0.1'), port=argv.get(2, 9000))

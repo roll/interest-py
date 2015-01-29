@@ -36,6 +36,7 @@ Here is a base usage example.
 
   .. code-block:: python
 
+    import sys
     import json
     import asyncio
     import logging
@@ -83,14 +84,18 @@ Here is a base usage example.
             if request.user:
                 raise http.Created()
             raise http.HTTPUnauthorized()
-
     
+    
+    # Create service
+    service = Service(
+        path='/api/v1',
+        middlewares=[Session, Restful],
+        resources=[Comment])
+    
+    # Listen forever
+    argv = dict(enumerate(sys.argv))
     logging.basicConfig(level=logging.DEBUG)
-    service = Service(path='/api/v1')
-    service.add_middleware(Session)
-    service.add_middleware(Restful)
-    service.add_resource(Comment)
-    service.listen(hostname='127.0.0.1', port=9000)
+    service.listen(hostname=argv.get(1, '127.0.0.1'), port=argv.get(2, 9000))
     
 - run the server using python3 interpreter:
 

@@ -40,20 +40,6 @@ class ServiceTest(unittest.TestCase):
     def test__bool__(self):
         self.assertTrue(self.service)
 
-    def test_add_middleware(self):
-        Middleware = Mock()
-        self.service.add_middleware(Middleware)
-        # Check processor call
-        self.processor.middlewares.add.assert_called_with(
-            Middleware.return_value)
-
-    def test_add_resource(self):
-        Resource = Mock()
-        self.service.add_resource(Resource)
-        # Check dispatcher call
-        self.dispatcher.resources.add.assert_called_with(
-            Resource.return_value)
-
     def test_listen(self):
         self.service.listen(hostname='hostname', port='port')
         # Check loop calls

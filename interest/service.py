@@ -20,6 +20,12 @@ class Service(dict):
         Path prefix for HTTP path routing.
     loop: object
         Custom asyncio's loop.
+    middlewares: list
+        :class:`.Middleware` subclasses list.
+    resources: list
+        :class:`.Resource` subclasses list.
+    converters: list
+        :class:`.Converter` subclasses list.
     processor: type
         :class:`.Processor` subclass.
     dispatcher: type
@@ -38,13 +44,14 @@ class Service(dict):
         service = Service(
             path='/api/v1',
             loop=custom_loop,
+            middlewares=[CustomMiddleware],
+            resources=[CustomResourse],
+            converters=[CustomConverter],
             processor=CustomProcessor,
             dispatcher=CustomDispatcher,
             handler=CustomHandler,
             logger=CustomLogger)
         service['data'] = 'data'
-        service.add_middleware(CustomMiddleware)
-        service.add_resource(CustomResourse)
         service.listen('127.0.0.1', 9000)
 
     .. seealso:: API: :attr:`dict`
@@ -53,52 +60,30 @@ class Service(dict):
     # Public
 
     def __init__(self, *, path='', loop=None,
+                 middlewares=None, resources=None, converters=None,
                  processor=Processor, dispatcher=Dispatcher,
                  handler=Handler, logger=SystemLogger):
         if loop is None:
             loop = asyncio.get_event_loop()
+        if middlewares is None:
+            middlewares = []
+        if resources is None:
+            resources = []
+        if converters is None:
+            converters = []
         self.__path = path
         self.__loop = loop
         self.__processor = processor(self)
         self.__dispatcher = dispatcher(self)
         self.__handler = handler(self)
         self.__logger = logger(self)
+        # Add the given components
+        self.__add_middlewares(middlewares)
+        self.__add_resources(resources)
+        self.__add_converters(converters)
 
     def __bool__(self):
         return True
-
-    def add_middleware(self, middleware):
-        """Add a middleware to the processor.
-
-        Parameters
-        ----------
-        middleware: type
-            :class:`.Middleware` subclass.
-        """
-        middleware = middleware(self)
-        self.processor.middlewares.add(middleware)
-
-    def add_resource(self, resource):
-        """Add a resource to the dispatcher.
-
-        Parameters
-        ----------
-        resource: type
-            :class:`.Resource` subclass.
-        """
-        resource = resource(self)
-        self.dispatcher.resources.add(resource)
-
-    def add_converter(self, converter):
-        """Add a converter to the dispatcher.
-
-        Parameters
-        ----------
-        resource: type
-            :class:`.Converter` subclass.
-        """
-        converter = converter(self)
-        self.dispatcher.converters.add(converter)
 
     def listen(self, *, hostname, port):
         """Listen forever on TCP/IP socket.
@@ -171,3 +156,20 @@ class Service(dict):
     @logger.setter
     def logger(self, value):
         self.__logger = value
+
+    # Private
+
+    def __add_middlewares(self, middlewares):
+        for middleware in middlewares:
+            middleware = middleware(self)
+            self.processor.middlewares.add(middleware)
+
+    def __add_resources(self, resources):
+        for resource in resources:
+            resource = resource(self)
+            self.dispatcher.resources.add(resource)
+
+    def __add_converters(self, converters):
+        for converter in converters:
+            converter = converter(self)
+            self.dispatcher.converters.add(converter)
