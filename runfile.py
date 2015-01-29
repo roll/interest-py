@@ -13,7 +13,7 @@ class ProjectModule(ProjectModule):
     copyright = '2015, Respect31'
     description = 'Interest is a REST framework on top of aiohttp/asyncio.'
     development_requires = [
-        'mario', 'runfile', 'sphinx', 'sphinx-settings', 'sphinx-rtd-theme']
+        'runfile', 'mario', 'sphinx', 'sphinx-settings', 'sphinx-rtd-theme']
     github_user = 'interest-hub'
     install_requires = ['aiohttp>=0.14']
     interpreters = ['3.4']
