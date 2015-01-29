@@ -5,6 +5,7 @@ Contents
    
      Introduction <introduction>
      reference
+     changes
 
 Indices
 -------

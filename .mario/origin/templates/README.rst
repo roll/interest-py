@@ -32,22 +32,6 @@
      :alt: pypi
 {% endblock %}
 
-{% block application %}
-.. Block: application
-
-Application
------------
-Package's `public API  <http://{{ rtd_name }}.readthedocs.org/en/latest/reference.html>`_
-follows `semver <http://semver.org/>`_ versioning model:
-
-- DEVELOP: 0.X[Breaking changes][API changes].X[Minor changes]
-- PRODUCT: X[Breaking changes].X[API changes].X[Minor changes]
-
-Be careful on DEVELOP stage package is under active development
-and can be drastically changed or even deleted. Don't use package
-in production before PRODUCT stage is reached.
-{% endblock %}
-
 {% block requirements %}
 .. Block: requirements
 
@@ -86,8 +70,27 @@ Contribution
   - {{ maintainer }} <{{ maintainer_email }}>
 {% endblock %}
 
-{% block changelog %}
-.. Block: changelog
+{% block stability %}
+.. Block: stability
+
+Stability
+---------
+Package's `public API  <http://{{ rtd_name }}.readthedocs.org/en/latest/reference.html>`_
+follows `semver <http://semver.org/>`_ versioning model:
+
+- DEVELOP: 0.X[Breaking changes][API changes].X[Minor changes]
+- PRODUCT: X[Breaking changes].X[API changes].X[Minor changes]
+
+Be careful on DEVELOP stage package is under active development
+and can be drastically changed or even deleted. Don't use package
+in production before PRODUCT stage is reached.
+
+For the more information see package's 
+`changelog  <http://{{ rtd_name }}.readthedocs.org/en/latest/changes.html>`_.
+{% endblock %}
+
+{% block license %}
+.. Block: license
 
 License
 -------
