@@ -125,15 +125,6 @@ class Service(Chain, Middleware):
         """
         return self.__handler
 
-    def add(self, *middlewares, **kwargs):
-        for middleware in middlewares:
-            name = None
-            if not asyncio.iscoroutine(middleware):
-                middleware = middleware(self, **kwargs)
-                name = middleware.name
-            super().add(middleware, name=name)
-        self.__on_change()
-
     def listen(self, *, host, port):
         """Listen forever on TCP/IP socket.
 
@@ -232,7 +223,12 @@ class Service(Chain, Middleware):
 
     def __add_middlewares(self, middlewares):
         for middleware in self.MIDDLEWARES + middlewares:
-            self.add(middleware)
+            name = None
+            if not asyncio.iscoroutine(middleware):
+                middleware = middleware(self)
+                name = middleware.name
+            self._add(middleware, name=name)
+        self.__on_change()
 
     def __add_providers(self, providers):
         self.__providers = {}

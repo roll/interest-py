@@ -40,12 +40,6 @@ class Resource(Chain, Middleware, metaclass=OrderedMetaclass):
         """
         return '/' + self.name
 
-    def add(self, *endpoints, **kwargs):
-        for endpoint in endpoints:
-            if not isinstance(endpoint, Endpoint):
-                endpoint = endpoint(self, **kwargs)
-            super().add(endpoint, name=endpoint.name)
-
     @asyncio.coroutine
     def process(self, request):
         for endpoint in self:
@@ -71,4 +65,5 @@ class Resource(Chain, Middleware, metaclass=OrderedMetaclass):
                 continue
             data = getattr(func, http.MARKER, None)
             if data is not None:
-                self.add(Endpoint, name=name, **data)
+                endpoint = Endpoint(self, name=name, **data)
+                self._add(endpoint, name=endpoint.name)
