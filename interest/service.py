@@ -76,6 +76,8 @@ class Service(Middleware):
             providers = self.PROVIDERS
         if converters is None:
             converters = self.CONVERTERS
+        if service is not self:
+            path = service.path + (path or '')
         super().__init__(service, name=name, path=path, methods=methods)
         self.__loop = loop
         self.__logger = logger(self)
