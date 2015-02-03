@@ -170,6 +170,10 @@ class Service(dict):
         return self.dispatcher.match(
             request, path=path, methods=methods, prefix=prefix)
 
+    # TODO: implement
+    def url(self, *args, **kwargs):
+        raise NotImplementedError()
+
     # Private
 
     def __add_middlewares(self, middlewares):
