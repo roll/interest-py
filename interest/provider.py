@@ -10,6 +10,11 @@ class Provider(Configurable, metaclass=ABCMeta):
     def __init__(self, service):
         self.__service = service
 
+    def __repr__(self):
+        template = '<Provider provide="{self.provide}">'
+        compiled = template.format(self=self)
+        return compiled
+
     @property
     def service(self):
         """:class:`.Service` instance (read-only).
