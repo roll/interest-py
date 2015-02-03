@@ -63,25 +63,10 @@ class Service(dict):
         # Add default converters
         self.__add_default_converters()
 
-    def listen(self, *, host, port):
-        """Listen forever on TCP/IP socket.
-
-        Parameters
-        ----------
-        host: str
-            Host like '127.0.0.1'
-        port:
-            Port like 80.
-        """
-        server = self.loop.create_server(self.handler.fork, host, port)
-        server = self.loop.run_until_complete(server)
-        self.logger.info(
-            'Start listening at http://{host}:{port}'.
-            format(host=host, port=port))
-        try:
-            self.loop.run_forever()
-        except KeyboardInterrupt:
-            pass
+    # TODO: optimize on metaclass level to reduce calls stack?
+    @asyncio.coroutine
+    def __call__(self, request):
+        return (yield from self.process(request))
 
     @property
     def path(self):
@@ -106,6 +91,58 @@ class Service(dict):
         """:class:`.Logger` instance (read-only).
         """
         return self.__logger
+
+    def listen(self, *, host, port):
+        """Listen forever on TCP/IP socket.
+
+        Parameters
+        ----------
+        host: str
+            Host like '127.0.0.1'
+        port:
+            Port like 80.
+        """
+        server = self.loop.create_server(self.handler.fork, host, port)
+        server = self.loop.run_until_complete(server)
+        self.logger.info(
+            'Start listening at http://{host}:{port}'.
+            format(host=host, port=port))
+        try:
+            self.loop.run_forever()
+        except KeyboardInterrupt:
+            pass
+
+    @asyncio.coroutine
+    def process(self, request):
+        """Respond a response to a request (coroutine).
+
+        Request will be processed by middlewares chain in straight order.
+
+        Parameters
+        ----------
+        request: :class:`.http.Request`
+            Request instance.
+
+        Returns
+        -------
+        :class:`.http.StreamResponse`
+            Response instance.
+
+        Raises
+        ------
+        :class:`RuntimeError`
+            If middlewares chain doesn't return
+            :class:`.http.StreamResponse`.
+        """
+        if not self.middlewares:
+            raise RuntimeError('No middlawares added')
+        try:
+            response = yield from self.middlewares[0](request)
+        except http.Exception as exception:
+            return exception
+        if not isinstance(response, http.StreamResponse):
+            raise RuntimeError('Last reply is not a StreamResponse')
+        return response
 
     @asyncio.coroutine
     def route(self, request):
@@ -199,38 +236,6 @@ class Service(dict):
         manually to that list.
         """
         return self.__middlewares
-
-    @asyncio.coroutine
-    def process(self, request):
-        """Respond a response to a request (coroutine).
-
-        Request will be processed by middlewares chain in straight order.
-
-        Parameters
-        ----------
-        request: :class:`.http.Request`
-            Request instance.
-
-        Returns
-        -------
-        :class:`.http.StreamResponse`
-            Response instance.
-
-        Raises
-        ------
-        :class:`RuntimeError`
-            If middlewares chain doesn't return
-            :class:`.http.StreamResponse`.
-        """
-        if not self.middlewares:
-            raise RuntimeError('No middlawares added')
-        try:
-            response = yield from self.middlewares[0](request)
-        except http.Exception as exception:
-            return exception
-        if not isinstance(response, http.StreamResponse):
-            raise RuntimeError('Last reply is not a StreamResponse')
-        return response
 
     @property
     def resources(self):
