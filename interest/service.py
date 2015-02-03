@@ -51,12 +51,12 @@ class Service(Middleware, dict):
     LOOP = asyncio.get_event_loop()
     LOGGER = SystemLogger
     HANDLER = Handler
-    PROVIDERS = []
-    CONVERTERS = [
-       StringConverter,
-       IntegerConverter,
-       FloatConverter,
-       PathConverter]
+    PROVIDERS = {}
+    CONVERTERS = {
+       'str': StringConverter,
+       'int': IntegerConverter,
+       'float': FloatConverter,
+       'path': PathConverter}
 
     def __init__(self, service=None, *,
                 path=None, loop=None, logger=None, handler=None,
@@ -230,13 +230,17 @@ class Service(Middleware, dict):
 
     def __add_providers(self, providers):
         self.__providers = {}
-        for provider in self.PROVIDERS + providers:
-            self.__providers[provider.name] = provider(self)
+        classes = self.PROVIDERS.copy()
+        classes.update(providers)
+        for key, cls in classes.items():
+            self.__providers[key] = cls(self)
 
     def __add_converters(self, converters):
         self.__converters = {}
-        for converter in self.CONVERTERS + converters:
-            self.__converters[converter.name] = converter(self)
+        classes = self.CONVERTERS.copy()
+        classes.update(converters)
+        for key, cls in classes.items():
+            self.__converters[key] = cls(self)
 
     def __match_root(self, request, root):
         pattern = self.__get_pattern(root)

@@ -1,9 +1,9 @@
+import asyncio
+from functools import partial
 from abc import ABCMeta, abstractmethod
 
 
 class Provider(metaclass=ABCMeta):
-
-    # Public
 
     # Public
 
@@ -16,9 +16,11 @@ class Provider(metaclass=ABCMeta):
         """
         return self.__service
 
-    @property
     @abstractmethod
-    def name(self):
-        """Provider's name (read-only).
-        """
+    @asyncio.coroutine
+    def provide(self):
         pass  # pragma: no cover
+
+    @classmethod
+    def config(cls, **kwargs):
+        return partial(cls, **kwargs)
