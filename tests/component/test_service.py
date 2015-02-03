@@ -65,3 +65,10 @@ class ServiceTest(unittest.TestCase):
     def test_logger_setter(self):
         self.service.logger = 'value'
         self.assertEqual(self.service.logger, 'value')
+
+    def test_handler(self):
+        self.assertEqual(self.service.handler, self.handler)
+
+    def test_handler_setter(self):
+        self.service.handler = 'value'
+        self.assertEqual(self.service.handler, 'value')

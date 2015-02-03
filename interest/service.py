@@ -76,7 +76,7 @@ class Service(dict):
         port:
             Port like 80.
         """
-        server = self.loop.create_server(self.fork, host, port)
+        server = self.loop.create_server(self.handler.fork, host, port)
         server = self.loop.run_until_complete(server)
         self.logger.info(
             'Start listening at http://{host}:{port}'.
@@ -97,6 +97,16 @@ class Service(dict):
         """asyncio's loop (read-only).
         """
         return self.__loop
+
+    @property
+    def handler(self):
+        """:class:`.Handler` instance (read/write).
+        """
+        return self.__handler
+
+    @handler.setter
+    def handler(self, value):
+        self.__handler = value
 
     @property
     def logger(self):
@@ -244,10 +254,6 @@ class Service(dict):
         """:class:`.Chain` of converters.
         """
         return self.__converters
-
-    @property
-    def fork(self):
-        return self.__handler.fork
 
     # Private
 
