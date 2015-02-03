@@ -44,7 +44,7 @@ class Resource(Chain, Middleware, metaclass=OrderedMetaclass):
         for endpoint in endpoints:
             if not isinstance(endpoint, Endpoint):
                 endpoint = endpoint(self, **kwargs)
-            super().add(endpoint.name, endpoint)
+            super().add(endpoint, name=endpoint.name)
 
     @asyncio.coroutine
     def process(self, request):

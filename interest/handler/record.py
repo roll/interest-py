@@ -68,7 +68,7 @@ class Record(dict):
         self.__response = response
         self.__transport = transport
         self.__duration = duration
-        self.__populate()
+        self.__add_values()
 
     def __missing__(self, key):
         default = '-'
@@ -84,7 +84,7 @@ class Record(dict):
 
     # Private
 
-    def __populate(self):
+    def __add_values(self):
         data = atoms(
             self.__request, None, self.__response,
             self.__transport, self.__duration)

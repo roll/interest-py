@@ -1,6 +1,6 @@
 import asyncio
-from .logger import SystemLogger  # @UnusedImport
-from .handler import Handler  # @UnusedImport
+from .logger import SystemLogger
+from .handler import SystemHandler
 from .helpers import Chain, ExistentMatch, NonExistentMatch, http
 from .pattern import Pattern
 from .middleware import Middleware
@@ -50,7 +50,7 @@ class Service(Chain, Middleware):
     PATH = ''
     LOOP = asyncio.get_event_loop()
     LOGGER = SystemLogger
-    HANDLER = Handler
+    HANDLER = SystemHandler
     PROVIDERS = {}
     CONVERTERS = {
        'str': StringConverter,
@@ -123,9 +123,12 @@ class Service(Chain, Middleware):
 
     def add(self, *middlewares, **kwargs):
         for middleware in middlewares:
-            if not isinstance(middleware, Middleware):
-                middleware = middleware(self, **kwargs)
-            super().add(middleware.name, middleware)
+            name = None
+            if not asyncio.iscoroutine(middleware):
+                if not isinstance(middleware, Middleware):
+                    middleware = middleware(self, **kwargs)
+                name = middleware.name
+            super().add(middleware, name=name)
         self.__on_change()
 
     def listen(self, *, host, port):

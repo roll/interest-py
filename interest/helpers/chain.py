@@ -26,6 +26,7 @@ class Chain(Iterable, Sized):
     def __len__(self):
         return len(self.__list)
 
-    def add(self, key, value):
-        self.__list.append(value)
-        self.__dict[key] = value
+    def add(self, item, name=None):
+        self.__list.append(item)
+        if name is not None:
+            self.__dict[name] = item
