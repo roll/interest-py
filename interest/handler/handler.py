@@ -89,7 +89,7 @@ class Handler(http.Handler):
         request = http.Request(
             None, message, payload,
             self.transport, self.reader, self.writer)
-        response = yield from self.service.processor.process(request)
+        response = yield from self.service.process(request)
         resp_msg = response.start(request)
         yield from response.write_eof()
         self.keep_alive(resp_msg.keep_alive())

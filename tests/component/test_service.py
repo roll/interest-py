@@ -14,18 +14,15 @@ class ServiceTest(unittest.TestCase):
         self.loop = Mock()
         self.logger = Mock()
         self.dispatcher = Mock()
-        self.processor = Mock()
         self.handler = Mock()
         self.Logger = Mock(return_value=self.logger)
         self.Dispatcher = Mock(return_value=self.dispatcher)
-        self.Processor = Mock(return_value=self.processor)
         self.Handler = Mock(return_value=self.handler)
         self.service = component.Service(
             path=self.path,
             loop=self.loop,
             logger=self.Logger,
             dispatcher=self.Dispatcher,
-            processor=self.Processor,
             handler=self.Handler)
 
     # Tests
@@ -34,7 +31,6 @@ class ServiceTest(unittest.TestCase):
         # Check class calls
         self.Logger.assert_called_with(self.service)
         self.Dispatcher.assert_called_with(self.service)
-        self.Processor.assert_called_with(self.service)
         self.Handler.assert_called_with(self.service)
 
     def test__bool__(self):
@@ -80,13 +76,6 @@ class ServiceTest(unittest.TestCase):
     def test_dispatcher_setter(self):
         self.service.dispatcher = 'value'
         self.assertEqual(self.service.dispatcher, 'value')
-
-    def test_processor(self):
-        self.assertEqual(self.service.processor, self.processor)
-
-    def test_processor_setter(self):
-        self.service.processor = 'value'
-        self.assertEqual(self.service.processor, 'value')
 
     def test_handler(self):
         self.assertEqual(self.service.handler, self.handler)

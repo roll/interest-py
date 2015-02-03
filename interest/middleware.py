@@ -5,8 +5,6 @@ from abc import ABCMeta
 class Middleware(metaclass=ABCMeta):
     """Middleware representation (abstract).
 
-    Middlewares is used by :class:`.Processor` to process requests.
-
     Parameters
     ----------
     service: :class:`.Service`

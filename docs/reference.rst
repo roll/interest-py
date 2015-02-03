@@ -10,11 +10,6 @@ Service
 
 .. autoclass:: interest.Service
 
-Processor
----------
-
-.. autoclass:: interest.Processor
-
 Middleware
 ----------
 

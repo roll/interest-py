@@ -34,7 +34,7 @@ class HandlerTest(unittest.TestCase):
         match.route.handler = c(lambda req: req)
         self.handler.log_access = Mock()
         self.service.loop.time.return_value = 10
-        self.service.processor.process = c(lambda request: response)
+        self.service.process = c(lambda request: response)
         loop = asyncio.get_event_loop()
         loop.run_until_complete(
             self.handler.handle_request('message', 'payload'))

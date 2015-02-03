@@ -1,8 +1,8 @@
 import asyncio
+from .helpers import Chain, http
 from .dispatcher import Dispatcher  # @UnusedImport
 from .logger import SystemLogger  # @UnusedImport
 from .handler import Handler  # @UnusedImport
-from .processor import Processor  # @UnusedImport
 
 
 class Service(dict):
@@ -26,8 +26,6 @@ class Service(dict):
         :class:`.Resource` subclasses list.
     converters: list
         :class:`.Converter` subclasses list.
-    processor: type
-        :class:`.Processor` subclass.
     dispatcher: type
         :class:`.Dispatcher` subclass.
     handler: type
@@ -47,7 +45,6 @@ class Service(dict):
             middlewares=[CustomMiddleware],
             resources=[CustomResourse],
             converters=[CustomConverter],
-            processor=CustomProcessor,
             dispatcher=CustomDispatcher,
             handler=CustomHandler,
             logger=CustomLogger)
@@ -61,7 +58,7 @@ class Service(dict):
 
     def __init__(self, *, path='', loop=None,
                  middlewares=None, resources=None, converters=None,
-                 processor=Processor, dispatcher=Dispatcher,
+                 dispatcher=Dispatcher,
                  handler=Handler, logger=SystemLogger):
         if loop is None:
             loop = asyncio.get_event_loop()
@@ -73,10 +70,11 @@ class Service(dict):
             converters = []
         self.__path = path
         self.__loop = loop
-        self.__processor = processor(self)
         self.__dispatcher = dispatcher(self)
         self.__handler = handler(self)
         self.__logger = logger(self)
+        self.__middlewares = Chain(
+            self.__on_middlewares_change)
         # Add the given components
         self.__add_middlewares(middlewares)
         self.__add_resources(resources)
@@ -118,16 +116,6 @@ class Service(dict):
         return self.__loop
 
     @property
-    def processor(self):
-        """:class:`.Processor` instance (read/write).
-        """
-        return self.__processor
-
-    @processor.setter
-    def processor(self, value):
-        self.__processor = value
-
-    @property
     def dispatcher(self):
         """:class:`.Dispatcher` instance (read/write).
         """
@@ -158,10 +146,6 @@ class Service(dict):
         self.__logger = value
 
     @asyncio.coroutine
-    def process(self, request):
-        return (yield from self.processor.process(request))
-
-    @asyncio.coroutine
     def route(self, request):
         return (yield from self.dispatcher.route(request))
 
@@ -174,12 +158,49 @@ class Service(dict):
     def url(self, *args, **kwargs):
         raise NotImplementedError()
 
-    # Private
+    @property
+    def middlewares(self):
+        """:class:`.Chain` of middlewares.
 
-    def __add_middlewares(self, middlewares):
-        for middleware in middlewares:
-            middleware = middleware(self)
-            self.processor.middlewares.add(middleware)
+        Order corresponds with order of adding and affects order of
+        middlewares applying. Client may add middleware instance
+        manually to that list.
+        """
+        return self.__middlewares
+
+    @asyncio.coroutine
+    def process(self, request):
+        """Respond a response to a request (coroutine).
+
+        Request will be processed by middlewares chain in straight order.
+
+        Parameters
+        ----------
+        request: :class:`.http.Request`
+            Request instance.
+
+        Returns
+        -------
+        :class:`.http.StreamResponse`
+            Response instance.
+
+        Raises
+        ------
+        :class:`RuntimeError`
+            If middlewares chain doesn't return
+            :class:`.http.StreamResponse`.
+        """
+        if not self.middlewares:
+            raise RuntimeError('No middlawares added')
+        try:
+            response = yield from self.middlewares[0].process(request)
+        except http.Exception as exception:
+            return exception
+        if not isinstance(response, http.StreamResponse):
+            raise RuntimeError('Last reply is not a StreamResponse')
+        return response
+
+    # Private
 
     def __add_resources(self, resources):
         for resource in resources:
@@ -190,3 +211,15 @@ class Service(dict):
         for converter in converters:
             converter = converter(self)
             self.dispatcher.converters.add(converter)
+
+    def __on_middlewares_change(self):
+        next_middleware = None
+        for middleware in reversed(self.middlewares):
+            if next_middleware is not None:
+                middleware.next = next_middleware.process
+            next_middleware = middleware
+
+    def __add_middlewares(self, middlewares):
+        for middleware in middlewares:
+            middleware = middleware(self)
+            self.middlewares.add(middleware)
