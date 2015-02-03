@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import Mock
 from importlib import import_module
-component = import_module('interest.dispatcher.pattern')
+component = import_module('interest.pattern')
 
 
 class PatternTest(unittest.TestCase):

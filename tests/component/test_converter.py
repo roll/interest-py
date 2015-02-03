@@ -1,6 +1,6 @@
 import unittest
 from importlib import import_module
-component = import_module('interest.dispatcher.converter')
+component = import_module('interest.converter')
 
 
 class PatternTest(unittest.TestCase):

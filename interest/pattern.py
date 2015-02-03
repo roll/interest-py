@@ -1,6 +1,6 @@
 import re
 from abc import ABCMeta, abstractmethod
-from ..helpers import ExistentMatch, NonExistentMatch
+from .helpers import ExistentMatch, NonExistentMatch
 
 
 class Pattern(metaclass=ABCMeta):

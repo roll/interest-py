@@ -13,16 +13,13 @@ class ServiceTest(unittest.TestCase):
         self.path = 'path'
         self.loop = Mock()
         self.logger = Mock()
-        self.dispatcher = Mock()
         self.handler = Mock()
         self.Logger = Mock(return_value=self.logger)
-        self.Dispatcher = Mock(return_value=self.dispatcher)
         self.Handler = Mock(return_value=self.handler)
         self.service = component.Service(
             path=self.path,
             loop=self.loop,
             logger=self.Logger,
-            dispatcher=self.Dispatcher,
             handler=self.Handler)
 
     # Tests
@@ -30,7 +27,6 @@ class ServiceTest(unittest.TestCase):
     def test(self):
         # Check class calls
         self.Logger.assert_called_with(self.service)
-        self.Dispatcher.assert_called_with(self.service)
         self.Handler.assert_called_with(self.service)
 
     def test__bool__(self):
@@ -69,13 +65,6 @@ class ServiceTest(unittest.TestCase):
     def test_logger_setter(self):
         self.service.logger = 'value'
         self.assertEqual(self.service.logger, 'value')
-
-    def test_dispatcher(self):
-        self.assertEqual(self.service.dispatcher, self.dispatcher)
-
-    def test_dispatcher_setter(self):
-        self.service.dispatcher = 'value'
-        self.assertEqual(self.service.dispatcher, 'value')
 
     def test_handler(self):
         self.assertEqual(self.service.handler, self.handler)

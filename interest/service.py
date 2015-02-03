@@ -1,8 +1,11 @@
 import asyncio
-from .helpers import Chain, http
-from .dispatcher import Dispatcher  # @UnusedImport
 from .logger import SystemLogger  # @UnusedImport
 from .handler import Handler  # @UnusedImport
+from .helpers import Chain, ExistentMatch, NonExistentMatch, http
+from .pattern import Pattern
+from .route import ExistentRoute, NonExistentRoute
+from .converter import (FloatConverter, IntegerConverter,
+                        PathConverter, StringConverter)
 
 
 class Service(dict):
@@ -26,8 +29,6 @@ class Service(dict):
         :class:`.Resource` subclasses list.
     converters: list
         :class:`.Converter` subclasses list.
-    dispatcher: type
-        :class:`.Dispatcher` subclass.
     handler: type
         :class:`.Handler` subclass.
     logger: type
@@ -45,7 +46,6 @@ class Service(dict):
             middlewares=[CustomMiddleware],
             resources=[CustomResourse],
             converters=[CustomConverter],
-            dispatcher=CustomDispatcher,
             handler=CustomHandler,
             logger=CustomLogger)
         service['data'] = 'data'
@@ -58,7 +58,6 @@ class Service(dict):
 
     def __init__(self, *, path='', loop=None,
                  middlewares=None, resources=None, converters=None,
-                 dispatcher=Dispatcher,
                  handler=Handler, logger=SystemLogger):
         if loop is None:
             loop = asyncio.get_event_loop()
@@ -70,11 +69,15 @@ class Service(dict):
             converters = []
         self.__path = path
         self.__loop = loop
-        self.__dispatcher = dispatcher(self)
         self.__handler = handler(self)
         self.__logger = logger(self)
+        self.__patterns = {}
+        self.__resources = Chain()
+        self.__converters = Chain()
         self.__middlewares = Chain(
             self.__on_middlewares_change)
+        # Add default converters
+        self.__add_default_converters()
         # Add the given components
         self.__add_middlewares(middlewares)
         self.__add_resources(resources)
@@ -116,16 +119,6 @@ class Service(dict):
         return self.__loop
 
     @property
-    def dispatcher(self):
-        """:class:`.Dispatcher` instance (read/write).
-        """
-        return self.__dispatcher
-
-    @dispatcher.setter
-    def dispatcher(self, value):
-        self.__dispatcher = value
-
-    @property
     def handler(self):
         """:class:`.Handler` instance (read/write).
         """
@@ -147,12 +140,82 @@ class Service(dict):
 
     @asyncio.coroutine
     def route(self, request):
-        return (yield from self.dispatcher.route(request))
+        """Route a request.
 
-    @asyncio.coroutine
+        Parameters
+        ----------
+        request: :class:`.http.Request`
+            Request instance.
+
+        Returns
+        -------
+        :class:`.Route`
+            Route instance.
+        """
+        route = NonExistentRoute(http.NotFound())
+        # Check the service
+        root = self.path
+        match = self.__match_root(request, root)
+        if not match:
+            return route
+        # Check the resources
+        match = False
+        for resource in self.resources:
+            root = self.path + resource.path
+            match = self.__match_root(request, root)
+            if match:
+                break
+        if not match:
+            return route
+        # Check the bingings
+        for binding in resource.bindings:
+            path = self.path + resource.path + binding.path
+            match1 = self.__match_path(request, path)
+            if not match1:
+                continue
+            match2 = self.__match_methods(request, binding.methods)
+            if not match2:
+                return NonExistentRoute(
+                    http.MethodNotAllowed(request.method, binding.methods))
+            return ExistentRoute(binding.responder, match1)
+        return route
+
     def match(self, request, *, root=None, path=None, methods=None):
-        return self.dispatcher.match(
-            request, root=root, path=path, methods=methods)
+        """Check if request matchs the given parameters.
+
+        Parameters
+        ----------
+        request: :class:`.http.Request`
+            Request instance.
+        root: str
+            HTTP path root relative to the service.path.
+        path: str
+            HTTP path relative to the service.path.
+        methods: list
+            HTTP methods.
+
+        Returns
+        -------
+        :class:`.Match`
+            Match instance.
+        """
+        match = ExistentMatch()
+        if root is not None:
+            root = self.path + root
+            lmatch = self.__match_root(request, root)
+            if not lmatch:
+                return NonExistentMatch()
+        if path is not None:
+            path = self.path + path
+            lmatch = self.__match_path(request, path)
+            if not lmatch:
+                return NonExistentMatch()
+            match = lmatch
+        if methods is not None:
+            lmatch = self.__match_methods(request, methods)
+            if not lmatch:
+                return NonExistentMatch()
+        return match
 
     # TODO: implement
     def url(self, *args, **kwargs):
@@ -200,17 +263,35 @@ class Service(dict):
             raise RuntimeError('Last reply is not a StreamResponse')
         return response
 
+    @property
+    def resources(self):
+        """:class:`.Chain` of resources.
+        """
+        return self.__resources
+
+    @property
+    def converters(self):
+        """:class:`.Chain` of converters.
+        """
+        return self.__converters
+
     # Private
+
+    def __add_default_converters(self):
+        self.converters.add(StringConverter(self))
+        self.converters.add(IntegerConverter(self))
+        self.converters.add(FloatConverter(self))
+        self.converters.add(PathConverter(self))
 
     def __add_resources(self, resources):
         for resource in resources:
             resource = resource(self)
-            self.dispatcher.resources.add(resource)
+            self.resources.add(resource)
 
     def __add_converters(self, converters):
         for converter in converters:
             converter = converter(self)
-            self.dispatcher.converters.add(converter)
+            self.converters.add(converter)
 
     def __on_middlewares_change(self):
         next_middleware = None
@@ -223,3 +304,26 @@ class Service(dict):
         for middleware in middlewares:
             middleware = middleware(self)
             self.middlewares.add(middleware)
+
+    def __match_root(self, request, root):
+        pattern = self.__get_pattern(root)
+        match = pattern.match(request.path, left=True)
+        return match
+
+    def __match_path(self, request, path):
+        pattern = self.__get_pattern(path)
+        match = pattern.match(request.path)
+        return match
+
+    def __match_methods(self, request, methods):
+        match = ExistentMatch()
+        if methods is not None:
+            methods = map(str.upper, methods)
+            if request.method not in methods:
+                return NonExistentMatch()
+        return match
+
+    def __get_pattern(self, path):
+        if path not in self.__patterns:
+            self.__patterns[path] = Pattern.create(path, self.converters)
+        return self.__patterns[path]

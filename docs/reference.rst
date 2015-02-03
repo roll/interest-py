@@ -14,10 +14,6 @@ Middleware
 ----------
 
 .. autoclass:: interest.Middleware
-Dispatcher
-----------
-
-.. autoclass:: interest.Dispatcher
 
 Resource
 --------

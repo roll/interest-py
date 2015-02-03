@@ -54,6 +54,6 @@ class Middleware(metaclass=ABCMeta):
     def next(self, request):
         """Call the next middleware (coroutine).
         """
-        route = yield from self.service.dispatcher.route(request)
+        route = yield from self.service.route(request)
         reply = yield from route.responder(request, **route.match)
         return reply
