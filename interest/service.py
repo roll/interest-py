@@ -23,8 +23,6 @@ class Service(dict):
         Path prefix for HTTP path routing.
     loop: object
         Custom asyncio's loop.
-    converters: list
-        :class:`.Converter` subclasses list.
     handler: type
         :class:`.Handler` subclass.
     logger: type
@@ -39,7 +37,6 @@ class Service(dict):
         service = Service(
             path='/api/v1',
             loop=custom_loop,
-            converters=[CustomConverter],
             handler=CustomHandler,
             logger=CustomLogger)
         service['data'] = 'data'
@@ -51,12 +48,9 @@ class Service(dict):
     # Public
 
     def __init__(self, *, path='', loop=None,
-                 converters=None,
                  handler=Handler, logger=SystemLogger):
         if loop is None:
             loop = asyncio.get_event_loop()
-        if converters is None:
-            converters = []
         self.__path = path
         self.__loop = loop
         self.__handler = handler(self)
@@ -67,9 +61,7 @@ class Service(dict):
         self.__middlewares = Chain(
             self.__on_middlewares_change)
         # Add default converters
-        self.__add_default_converters()
-        # Add the given components
-        self.__add_converters(converters)
+        self.__add_converters()
 
     def __bool__(self):
         return True
@@ -265,16 +257,11 @@ class Service(dict):
 
     # Private
 
-    def __add_default_converters(self):
+    def __add_converters(self):
         self.converters.add(StringConverter(self))
         self.converters.add(IntegerConverter(self))
         self.converters.add(FloatConverter(self))
         self.converters.add(PathConverter(self))
-
-    def __add_converters(self, converters):
-        for converter in converters:
-            converter = converter(self)
-            self.converters.add(converter)
 
     def __on_middlewares_change(self):
         next_middleware = None
