@@ -80,7 +80,10 @@ class Processor:
         """
         if not self.middlewares:
             raise RuntimeError('No middlawares added')
-        response = yield from self.middlewares[0].process(request)
+        try:
+            response = yield from self.middlewares[0].process(request)
+        except http.Exception as exception:
+            return exception
         if not isinstance(response, http.StreamResponse):
             raise RuntimeError('Last reply is not a StreamResponse')
         return response
