@@ -1,10 +1,9 @@
 import asyncio
 from abc import ABCMeta
-from functools import partial
-from .helpers import http
+from .helpers import Configurable, http
 
 
-class Middleware(metaclass=ABCMeta):
+class Middleware(Configurable, metaclass=ABCMeta):
     """Middleware representation (abstract).
 
     Parameters
@@ -38,10 +37,6 @@ class Middleware(metaclass=ABCMeta):
     @asyncio.coroutine
     def __call__(self, request):
         return (yield from self.process(request))
-
-    @classmethod
-    def config(cls, **kwargs):
-        return partial(cls, **kwargs)
 
     @property
     def service(self):

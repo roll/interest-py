@@ -1,8 +1,8 @@
 import asyncio
-from functools import partial
+from .helpers import Configurable
 
 
-class Endpoint:
+class Endpoint(Configurable):
 
     # Public
 
@@ -23,10 +23,6 @@ class Endpoint:
             '<Endpoint path="{self.path}" methods="{self.methods}">')
         compiled = template.format(self=self)
         return compiled
-
-    @classmethod
-    def config(cls, **kwargs):
-        return partial(cls, **kwargs)
 
     @property
     def name(self):

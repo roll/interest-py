@@ -1,8 +1,8 @@
-from functools import partial
 from abc import ABCMeta, abstractmethod
+from .helpers import Configurable
 
 
-class Converter(metaclass=ABCMeta):
+class Converter(Configurable, metaclass=ABCMeta):
     """Converter representation (abstract).
 
     Parameters
@@ -22,10 +22,6 @@ class Converter(metaclass=ABCMeta):
             'convert="{self.convert}">')
         compiled = template.format(self=self)
         return compiled
-
-    @classmethod
-    def config(cls, **kwargs):
-        return partial(cls, **kwargs)
 
     @property
     def service(self):

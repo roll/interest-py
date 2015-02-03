@@ -1,8 +1,8 @@
-from functools import partial
 from abc import ABCMeta
+from ..helpers import Configurable
 
 
-class Logger(metaclass=ABCMeta):
+class Logger(Configurable, metaclass=ABCMeta):
     """Base Logger class (abstract).
 
     Logger is used by :class:`.Service` for all logging purposes.
@@ -39,10 +39,6 @@ class Logger(metaclass=ABCMeta):
 
     def __init__(self, service):
         self.__service = service
-
-    @classmethod
-    def config(cls, **kwargs):
-        return partial(cls, **kwargs)
 
     @property
     def service(self):
