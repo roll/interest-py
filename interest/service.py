@@ -63,9 +63,6 @@ class Service(dict):
         # Add default converters
         self.__add_converters()
 
-    def __bool__(self):
-        return True
-
     def listen(self, *, host, port):
         """Listen forever on TCP/IP socket.
 
@@ -100,23 +97,15 @@ class Service(dict):
 
     @property
     def handler(self):
-        """:class:`.Handler` instance (read/write).
+        """:class:`.Handler` instance (read-only).
         """
         return self.__handler
 
-    @handler.setter
-    def handler(self, value):
-        self.__handler = value
-
     @property
     def logger(self):
-        """:class:`.Logger` instance (read/write).
+        """:class:`.Logger` instance (read-only).
         """
         return self.__logger
-
-    @logger.setter
-    def logger(self, value):
-        self.__logger = value
 
     @asyncio.coroutine
     def route(self, request):

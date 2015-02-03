@@ -29,9 +29,6 @@ class ServiceTest(unittest.TestCase):
         self.Logger.assert_called_with(self.service)
         self.Handler.assert_called_with(self.service)
 
-    def test__bool__(self):
-        self.assertTrue(self.service)
-
     def test_listen(self):
         self.service.listen(host='host', port='port')
         # Check loop calls
@@ -62,13 +59,5 @@ class ServiceTest(unittest.TestCase):
     def test_logger(self):
         self.assertEqual(self.service.logger, self.logger)
 
-    def test_logger_setter(self):
-        self.service.logger = 'value'
-        self.assertEqual(self.service.logger, 'value')
-
     def test_handler(self):
         self.assertEqual(self.service.handler, self.handler)
-
-    def test_handler_setter(self):
-        self.service.handler = 'value'
-        self.assertEqual(self.service.handler, 'value')
