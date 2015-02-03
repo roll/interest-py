@@ -56,12 +56,12 @@ class Service(dict):
         self.__handler = handler(self)
         self.__logger = logger(self)
         self.__patterns = {}
+        self.__converters = {}
         self.__resources = Chain()
-        self.__converters = Chain()
         self.__middlewares = Chain(
             self.__on_middlewares_change)
         # Add default converters
-        self.__add_converters()
+        self.__add_default_converters()
 
     def listen(self, *, host, port):
         """Listen forever on TCP/IP socket.
@@ -240,17 +240,17 @@ class Service(dict):
 
     @property
     def converters(self):
-        """:class:`.Chain` of converters.
+        """dict of converters.
         """
         return self.__converters
 
     # Private
 
-    def __add_converters(self):
-        self.converters.add(StringConverter(self))
-        self.converters.add(IntegerConverter(self))
-        self.converters.add(FloatConverter(self))
-        self.converters.add(PathConverter(self))
+    def __add_default_converters(self):
+        self.converters['str'] = StringConverter(self)
+        self.converters['int'] = IntegerConverter(self)
+        self.converters['float'] = FloatConverter(self)
+        self.converters['path'] = PathConverter(self)
 
     def __on_middlewares_change(self):
         next_middleware = None
