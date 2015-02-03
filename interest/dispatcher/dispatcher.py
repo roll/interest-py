@@ -45,6 +45,7 @@ class Dispatcher:
         """
         return self.__converters
 
+    # TODO: not coroutine?
     @asyncio.coroutine
     def dispatch(self, request):
         """Dispatch a request.
@@ -61,15 +62,15 @@ class Dispatcher:
         """
         route = NonExistentRoute(http.NotFound())
         # Check the service
-        path = self.service.path
-        match = self.__match_path(request, path, prefix=True)
+        root = self.service.path
+        match = self.__match_root(request, root)
         if not match:
             return route
         # Check the resources
         match = False
         for resource in self.resources:
-            path = self.service.path + resource.path
-            match = self.__match_path(request, path, prefix=True)
+            root = self.service.path + resource.path
+            match = self.__match_root(request, root)
             if match:
                 break
         if not match:
@@ -87,19 +88,19 @@ class Dispatcher:
             return ExistentRoute(binding.responder, match1)
         return route
 
-    def match(self, request, *, path=None, methods=None, prefix=False):
+    def match(self, request, *, root=None, path=None, methods=None):
         """Check if request matchs the given parameters.
 
         Parameters
         ----------
         request: :class:`.http.Request`
             Request instance.
+        root: str
+            HTTP path root relative to the service.path.
         path: str
             HTTP path relative to the service.path.
         methods: list
             HTTP methods.
-        prefix: bool
-            If True it works like str.startswith for path.
 
         Returns
         -------
@@ -107,15 +108,20 @@ class Dispatcher:
             Match instance.
         """
         match = ExistentMatch()
+        if root is not None:
+            root = self.service.path + root
+            lmatch = self.__match_root(request, root)
+            if not lmatch:
+                return NonExistentMatch()
         if path is not None:
             path = self.service.path + path
-            match1 = self.__match_path(request, path, prefix)
-            if not match1:
+            lmatch = self.__match_path(request, path)
+            if not lmatch:
                 return NonExistentMatch()
-            match = match1
+            match = lmatch
         if methods is not None:
-            match2 = self.__match_methods(request, methods)
-            if not match2:
+            lmatch = self.__match_methods(request, methods)
+            if not lmatch:
                 return NonExistentMatch()
         return match
 
@@ -127,11 +133,14 @@ class Dispatcher:
         self.converters.add(FloatConverter(self.service))
         self.converters.add(PathConverter(self.service))
 
-    def __match_path(self, request, path, prefix=False):
-        if path not in self.__patterns:
-            self.__patterns[path] = Pattern.create(path, self.converters)
-        pattern = self.__patterns[path]
-        match = pattern.match(request.path, prefix=prefix)
+    def __match_root(self, request, root):
+        pattern = self.__get_pattern(root)
+        match = pattern.match(request.path, left=True)
+        return match
+
+    def __match_path(self, request, path):
+        pattern = self.__get_pattern(path)
+        match = pattern.match(request.path)
         return match
 
     def __match_methods(self, request, methods):
@@ -141,3 +150,8 @@ class Dispatcher:
             if request.method not in methods:
                 return NonExistentMatch()
         return match
+
+    def __get_pattern(self, path):
+        if path not in self.__patterns:
+            self.__patterns[path] = Pattern.create(path, self.converters)
+        return self.__patterns[path]

@@ -53,7 +53,7 @@ class Pattern(metaclass=ABCMeta):
             return RegexPattern(pattern, convs)
 
     @abstractmethod
-    def match(self, path, prefix=False):
+    def match(self, path, left=False):
         pass  # pragma: no cover
 
 
@@ -70,9 +70,9 @@ class PlainPattern(Pattern):
         compiled = template.format(pattern=self.__pattern)
         return compiled
 
-    def match(self, path, prefix=False):
+    def match(self, path, left=False):
         match = ExistentMatch()
-        if prefix:
+        if left:
             if not path.startswith(self.__pattern):
                 return NonExistentMatch()
             return match
@@ -101,10 +101,10 @@ class RegexPattern(Pattern):
         compiled = template.format(pattern=self.__pattern)
         return compiled
 
-    def match(self, path, prefix=False):
+    def match(self, path, left=False):
         match = ExistentMatch()
         pattern = self.__full
-        if prefix:
+        if left:
             pattern = self.__left
         result = pattern.match(path)
         if not result:

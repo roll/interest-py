@@ -22,7 +22,7 @@ class PatternTest(unittest.TestCase):
     }
 
     fixtures = [
-        # Pattern, path, prefix, match, type/exception
+        # Pattern, path, left, match, type/exception
         ['/<>', None, None, None, E],
         ['/test', '/test2', False, N, P],
         ['/test', '/test', False, {}, P],
@@ -37,7 +37,7 @@ class PatternTest(unittest.TestCase):
 
     def test(self):
         for fixture in self.fixtures:
-            (pattern, path, prefix, match, tex) = fixture
+            (pattern, path, left, match, tex) = fixture
             if issubclass(tex, Exception):
                 self.assertRaises(tex,
                     component.Pattern.create, pattern, self.converters)
@@ -45,5 +45,5 @@ class PatternTest(unittest.TestCase):
             pattern = component.Pattern.create(pattern, self.converters)
             self.assertIsInstance(pattern, tex, (pattern, fixture))
             self.assertEqual(
-                pattern.match(path, prefix),
+                pattern.match(path, left),
                 match, (pattern, fixture))

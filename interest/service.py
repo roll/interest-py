@@ -166,9 +166,9 @@ class Service(dict):
         return (yield from self.dispatcher.dispatch(request))
 
     @asyncio.coroutine
-    def match(self, request, *, path=None, methods=None, prefix=False):
+    def match(self, request, *, root=None, path=None, methods=None):
         return self.dispatcher.match(
-            request, path=path, methods=methods, prefix=prefix)
+            request, root=root, path=path, methods=methods)
 
     # TODO: implement
     def url(self, *args, **kwargs):
