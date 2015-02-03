@@ -3,14 +3,15 @@ from .logger import SystemLogger  # @UnusedImport
 from .handler import Handler  # @UnusedImport
 from .helpers import Chain, ExistentMatch, NonExistentMatch, http
 from .pattern import Pattern
+from .middleware import Middleware
 from .converter import (FloatConverter, IntegerConverter,
                         PathConverter, StringConverter)
 
 
-class Service(dict):
+class Service(Middleware, dict):
     """Service representation.
 
-    Service provides high-level abstraction for end-user and incapsulates
+    Service provides a high-level abstraction for end-user and incapsulates
     all internal components. Service is a dict. You can use service instance
     to store application data. Service is fully customizable by passing
     subclasses of main interest's classes to the constructor.
@@ -46,10 +47,13 @@ class Service(dict):
 
     # Public
 
-    def __init__(self, *, path='', loop=None,
+    def __init__(self, service=None, *, path='', loop=None,
                  handler=Handler, logger=SystemLogger):
+        if service is None:
+            service = self
         if loop is None:
             loop = asyncio.get_event_loop()
+        super().__init__(service)
         self.__path = path
         self.__loop = loop
         self.__handler = handler(self)
@@ -60,11 +64,6 @@ class Service(dict):
             self.__on_middlewares_change)
         # Add default converters
         self.__add_converters()
-
-    # TODO: optimize on metaclass level to reduce calls stack?
-    @asyncio.coroutine
-    def __call__(self, request):
-        return (yield from self.process(request))
 
     def __repr__(self):
         template = (
