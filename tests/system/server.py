@@ -17,7 +17,7 @@ class Server:
 
     def listen(self):
         self.process = subprocess.Popen(
-            [self.python, self.script, self.hostname, str(self.port)],
+            [self.python, self.script, self.host, str(self.port)],
             env=self.environ)
         time.sleep(1)
 
@@ -41,7 +41,7 @@ class Server:
         return os.path.join(os.path.dirname(__file__), '..', '..', *paths)
 
     def make_url(self, path=''):
-        url = 'http://{self.hostname}:{self.port}'.format(self=self)
+        url = 'http://{self.host}:{self.port}'.format(self=self)
         url += path
         return url
 
@@ -58,7 +58,7 @@ class Server:
         return self.make_path(self.__path)
 
     @cachedproperty
-    def hostname(self):
+    def host(self):
         return '127.0.0.1'
 
     @cachedproperty

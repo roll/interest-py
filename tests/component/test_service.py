@@ -41,17 +41,17 @@ class ServiceTest(unittest.TestCase):
         self.assertTrue(self.service)
 
     def test_listen(self):
-        self.service.listen(hostname='hostname', port='port')
+        self.service.listen(host='host', port='port')
         # Check loop calls
         self.loop.create_server.assert_called_with(
-            self.handler.fork, 'hostname', 'port')
+            self.handler.fork, 'host', 'port')
         self.loop.run_until_complete.assert_called_with(
             self.loop.create_server.return_value)
         self.loop.run_forever.assert_called_with()
 
     def test_listen_keyboard_interrupt(self):
         self.loop.run_forever.side_effect = KeyboardInterrupt()
-        self.service.listen(hostname='hostname', port='port')
+        self.service.listen(host='host', port='port')
 
     def test_path(self):
         self.assertEqual(self.service.path, self.path)

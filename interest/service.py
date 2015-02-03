@@ -85,21 +85,21 @@ class Service(dict):
     def __bool__(self):
         return True
 
-    def listen(self, *, hostname, port):
+    def listen(self, *, host, port):
         """Listen forever on TCP/IP socket.
 
         Parameters
         ----------
-        hostname: str
-            Hostname like '127.0.0.1'
+        host: str
+            Host like '127.0.0.1'
         port:
             Port like 80.
         """
-        server = self.loop.create_server(self.handler.fork, hostname, port)
+        server = self.loop.create_server(self.handler.fork, host, port)
         server = self.loop.run_until_complete(server)
         self.logger.info(
-            'Start listening at http://{hostname}:{port}'.
-            format(hostname=hostname, port=port))
+            'Start listening at http://{host}:{port}'.
+            format(host=host, port=port))
         try:
             self.loop.run_forever()
         except KeyboardInterrupt:
