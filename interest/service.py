@@ -47,23 +47,50 @@ class Service(Middleware, dict):
 
     # Public
 
-    def __init__(self, service=None, *, path='', loop=None,
-                 handler=Handler, logger=SystemLogger):
+    PATH = ''
+    LOOP = asyncio.get_event_loop()
+    LOGGER = SystemLogger
+    HANDLER = Handler
+    PROVIDERS = []
+    CONVERTERS = [
+       StringConverter,
+       IntegerConverter,
+       FloatConverter,
+       PathConverter]
+
+    def __init__(self, service=None, *,
+                path=None, loop=None, logger=None, handler=None,
+                providers=None, converters=None):
         if service is None:
             service = self
+        if path is None:
+            path = self.PATH
         if loop is None:
-            loop = asyncio.get_event_loop()
+            loop = self.LOOP
+        if logger is None:
+            logger = self.LOGGER
+        if handler is None:
+            handler = self.HANDLER
+        if providers is None:
+            providers = self.PROVIDERS
+        if converters is None:
+            converters = self.CONVERTERS
         super().__init__(service)
         self.__path = path
         self.__loop = loop
         self.__handler = handler(self)
         self.__logger = logger(self)
+        self.__middlewares = Chain(self.__on_middlewares_change)
+        self.__add_providers(providers)
+        self.__add_converters(converters)
         self.__patterns = {}
-        self.__converters = {}
-        self.__middlewares = Chain(
-            self.__on_middlewares_change)
-        # Add default converters
-        self.__add_converters()
+
+    def __getattr__(self, name):
+        if name in self.__providers:
+            value = self.__providers[name]
+            setattr(self, name, value)
+            return value
+        raise AttributeError(name)
 
     def __repr__(self):
         template = (
@@ -74,7 +101,7 @@ class Service(Middleware, dict):
 
     @property
     def path(self):
-        """Path prefix for HTTP path routing (read-only).
+        """HTTP path (read-only).
         """
         return self.__path
 
@@ -85,16 +112,16 @@ class Service(Middleware, dict):
         return self.__loop
 
     @property
-    def handler(self):
-        """:class:`.Handler` instance (read-only).
-        """
-        return self.__handler
-
-    @property
     def logger(self):
         """:class:`.Logger` instance (read-only).
         """
         return self.__logger
+
+    @property
+    def handler(self):
+        """:class:`.Handler` instance (read-only).
+        """
+        return self.__handler
 
     def listen(self, *, host, port):
         """Listen forever on TCP/IP socket.
@@ -199,19 +226,17 @@ class Service(Middleware, dict):
         """
         return self.__middlewares
 
-    @property
-    def converters(self):
-        """dict of converters.
-        """
-        return self.__converters
-
     # Private
 
-    def __add_converters(self):
-        self.converters['str'] = StringConverter(self)
-        self.converters['int'] = IntegerConverter(self)
-        self.converters['float'] = FloatConverter(self)
-        self.converters['path'] = PathConverter(self)
+    def __add_providers(self, providers):
+        self.__providers = {}
+        for provider in self.PROVIDERS + providers:
+            self.__providers[provider.name] = provider(self)
+
+    def __add_converters(self, converters):
+        self.__converters = {}
+        for converter in self.CONVERTERS + converters:
+            self.__converters[converter.name] = converter(self)
 
     def __match_root(self, request, root):
         pattern = self.__get_pattern(root)
@@ -233,7 +258,8 @@ class Service(Middleware, dict):
 
     def __get_pattern(self, path):
         if path not in self.__patterns:
-            self.__patterns[path] = Pattern.create(path, self.converters)
+            self.__patterns[path] = Pattern.create(
+                path, self.__converters)
         return self.__patterns[path]
 
     def __on_middlewares_change(self):
