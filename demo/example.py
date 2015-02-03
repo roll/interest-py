@@ -52,7 +52,7 @@ class Comment(Resource):
 service = Service(path='/api/v1')
 service.middlewares.add(Session(service))
 service.middlewares.add(Restful(service))
-service.resources.add(Comment(service))
+service.middlewares.add(Comment(service))
 
 # Listen forever
 argv = dict(enumerate(sys.argv))

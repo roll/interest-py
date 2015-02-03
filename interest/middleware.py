@@ -1,5 +1,6 @@
 import asyncio
 from abc import ABCMeta
+from .helpers import http
 
 
 class Middleware(metaclass=ABCMeta):
@@ -59,6 +60,4 @@ class Middleware(metaclass=ABCMeta):
     def next(self, request):
         """Call the next middleware (coroutine).
         """
-        route = yield from self.service.route(request)
-        reply = yield from route.responder(request, **route.match)
-        return reply
+        raise http.NotFound()

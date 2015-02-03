@@ -93,6 +93,10 @@ class http(metaclass=Metaclass):
     def __register(cls, function, *, path=None, methods=None):
         if not asyncio.iscoroutine(function):
             function = asyncio.coroutine(function)
-        data = {'path': path, 'methods': methods}
+        data = {}
+        if path is not None:
+            data['path'] = path
+        if methods is not None:
+            data['methods'] = methods
         setattr(function, cls.MARKER, data)
         return function

@@ -3,9 +3,10 @@ import inspect
 from .helpers import OrderedMetaclass, http
 from .binding import Binding
 from .endpoint import Endpoint
+from .middleware import Middleware
 
 
-class Resource(metaclass=OrderedMetaclass):
+class Resource(Middleware, metaclass=OrderedMetaclass):
     """Resource representation (abstract).
 
     Parameters
@@ -17,14 +18,9 @@ class Resource(metaclass=OrderedMetaclass):
     # Public
 
     def __init__(self, service):
-        self.__service = service
+        super().__init__(service)
         self.__bindings = None
         self.__add_endpoints()
-
-    # TODO: optimize on metaclass level to reduce calls stack?
-    @asyncio.coroutine
-    def __call__(self, request):
-        return (yield from self.process(request))
 
     def __getitem__(self, param):
         if isinstance(param, int):
@@ -32,7 +28,7 @@ class Resource(metaclass=OrderedMetaclass):
         return self.__endpoints[param]
 
     def __iter__(self):
-        return self.__endpoints.values()
+        return iter(self.__endpoints.values())
 
     def __bool__(self):
         return bool(self.__endpoints)
@@ -67,12 +63,6 @@ class Resource(metaclass=OrderedMetaclass):
         return self.__bindings
 
     @property
-    def service(self):
-        """:class:`.Service` instance (read-only).
-        """
-        return self.__service
-
-    @property
     def name(self):
         """Resource's name.
         """
@@ -84,10 +74,15 @@ class Resource(metaclass=OrderedMetaclass):
         """
         return '/' + self.name
 
+    @property
+    def fullpath(self):
+        # TODO: fix to self.service.fullpath
+        return self.service.path + self.path
+
     @asyncio.coroutine
     def process(self, request):
         for endpoint in self:
-            path = self.service.path + self.path + endpoint.path
+            path = self.path + endpoint.path
             match = self.service.match(request, path=path)
             if not match:
                 continue
@@ -110,5 +105,5 @@ class Resource(metaclass=OrderedMetaclass):
             meth = getattr(self, name)
             data = getattr(func, http.MARKER, None)
             if data is not None:
-                endpoint = Endpoint(meth, **data)
+                endpoint = Endpoint(meth, resource=self, **data)
                 self.__endpoints[name] = endpoint
