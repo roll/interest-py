@@ -1,7 +1,6 @@
 import asyncio
 import inspect
 from .helpers import OrderedMetaclass, http
-from .binding import Binding
 from .endpoint import Endpoint
 from .middleware import Middleware
 
@@ -45,24 +44,6 @@ class Resource(Middleware, metaclass=OrderedMetaclass):
         return compiled
 
     @property
-    def bindings(self):
-        """Resource's list of :class:`.Binding`.
-        """
-        if self.__bindings is None:
-            self.__bindings = []
-            for name in self.__order__:
-                if name == 'bindings':
-                    continue
-                if name.startswith('_'):
-                    continue
-                attr = getattr(self, name)
-                data = getattr(attr, http.MARKER, None)
-                if data is not None:
-                    binding = Binding(attr, **data)
-                    self.__bindings.append(binding)
-        return self.__bindings
-
-    @property
     def name(self):
         """Resource's name.
         """
@@ -73,11 +54,6 @@ class Resource(Middleware, metaclass=OrderedMetaclass):
         """Resource's path.
         """
         return '/' + self.name
-
-    @property
-    def fullpath(self):
-        # TODO: fix to self.service.fullpath
-        return self.service.path + self.path
 
     @asyncio.coroutine
     def process(self, request):

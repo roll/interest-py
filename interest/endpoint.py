@@ -26,9 +26,5 @@ class Endpoint:
         return self.__path
 
     @property
-    def fullpath(self):
-        return self.__resource.path + self.path
-
-    @property
     def methods(self):
         return self.__methods

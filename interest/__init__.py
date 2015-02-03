@@ -1,4 +1,3 @@
-from .binding import Binding
 from .converter import Converter
 from .endpoint import Endpoint
 from .factory import FactoryMiddleware
