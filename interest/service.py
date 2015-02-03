@@ -3,7 +3,6 @@ from .logger import SystemLogger  # @UnusedImport
 from .handler import Handler  # @UnusedImport
 from .helpers import Chain, ExistentMatch, NonExistentMatch, http
 from .pattern import Pattern
-from .route import ExistentRoute, NonExistentRoute
 from .converter import (FloatConverter, IntegerConverter,
                         PathConverter, StringConverter)
 
@@ -57,7 +56,6 @@ class Service(dict):
         self.__logger = logger(self)
         self.__patterns = {}
         self.__converters = {}
-        self.__resources = Chain()
         self.__middlewares = Chain(
             self.__on_middlewares_change)
         # Add default converters
@@ -144,48 +142,6 @@ class Service(dict):
             raise RuntimeError('Last reply is not a StreamResponse')
         return response
 
-    @asyncio.coroutine
-    def route(self, request):
-        """Route a request.
-
-        Parameters
-        ----------
-        request: :class:`.http.Request`
-            Request instance.
-
-        Returns
-        -------
-        :class:`.Route`
-            Route instance.
-        """
-        route = NonExistentRoute(http.NotFound())
-        # Check the service
-        root = self.path
-        match = self.__match_root(request, root)
-        if not match:
-            return route
-        # Check the resources
-        match = False
-        for resource in self.resources:
-            root = self.path + resource.path
-            match = self.__match_root(request, root)
-            if match:
-                break
-        if not match:
-            return route
-        # Check the bingings
-        for binding in resource.bindings:
-            path = self.path + resource.path + binding.path
-            match1 = self.__match_path(request, path)
-            if not match1:
-                continue
-            match2 = self.__match_methods(request, binding.methods)
-            if not match2:
-                return NonExistentRoute(
-                    http.MethodNotAllowed(request.method, binding.methods))
-            return ExistentRoute(binding.responder, match1)
-        return route
-
     def match(self, request, *, root=None, path=None, methods=None):
         """Check if request matchs the given parameters.
 
@@ -236,12 +192,6 @@ class Service(dict):
         manually to that list.
         """
         return self.__middlewares
-
-    @property
-    def resources(self):
-        """:class:`.Chain` of resources.
-        """
-        return self.__resources
 
     @property
     def converters(self):
