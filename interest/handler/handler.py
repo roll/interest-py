@@ -1,5 +1,6 @@
 import asyncio
 import traceback
+from functools import partial
 from ..helpers import http
 from .record import Record
 
@@ -62,6 +63,10 @@ class Handler(http.Handler):
             loop=loop,
             keep_alive=self.connection_timeout,
             timeout=self.request_timeout)
+
+    @classmethod
+    def config(cls, **kwargs):
+        return partial(cls, **kwargs)
 
     @property
     def service(self):

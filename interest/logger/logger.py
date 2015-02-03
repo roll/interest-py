@@ -1,3 +1,4 @@
+from functools import partial
 from abc import ABCMeta
 
 
@@ -38,6 +39,10 @@ class Logger(metaclass=ABCMeta):
 
     def __init__(self, service):
         self.__service = service
+
+    @classmethod
+    def config(cls, **kwargs):
+        return partial(cls, **kwargs)
 
     @property
     def service(self):

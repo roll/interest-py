@@ -10,6 +10,10 @@ class Provider(metaclass=ABCMeta):
     def __init__(self, service):
         self.__service = service
 
+    @classmethod
+    def config(cls, **kwargs):
+        return partial(cls, **kwargs)
+
     @property
     def service(self):
         """:class:`.Service` instance (read-only).
@@ -20,7 +24,3 @@ class Provider(metaclass=ABCMeta):
     @asyncio.coroutine
     def provide(self):
         pass  # pragma: no cover
-
-    @classmethod
-    def config(cls, **kwargs):
-        return partial(cls, **kwargs)

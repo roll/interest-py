@@ -23,6 +23,10 @@ class Converter(metaclass=ABCMeta):
         compiled = template.format(self=self)
         return compiled
 
+    @classmethod
+    def config(cls, **kwargs):
+        return partial(cls, **kwargs)
+
     @property
     def service(self):
         """:class:`.Service` instance (read-only).
@@ -51,10 +55,6 @@ class Converter(metaclass=ABCMeta):
             Converted string.
         """
         pass  # pragma: no cover
-
-    @classmethod
-    def config(cls, **kwargs):
-        return partial(cls, **kwargs)
 
 
 class StringConverter(Converter):
