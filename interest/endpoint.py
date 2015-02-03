@@ -1,15 +1,18 @@
 import asyncio
+from functools import partial
 
 
 class Endpoint:
 
     # Public
 
-    def __init__(self, coroutine, *, resource, path='', methods=None):
-        self.__coroutine = coroutine
+    # TODO: decide about None defaults
+    def __init__(self, resource, *, name, path=None, methods=None):
         self.__resource = resource
+        self.__name = name
         self.__path = path
         self.__methods = methods
+        self.__coroutine = getattr(resource, name)
 
     @asyncio.coroutine
     def __call__(self, request, **kwargs):
@@ -20,6 +23,14 @@ class Endpoint:
             '<Endpoint path="{self.path}" methods="{self.methods}">')
         compiled = template.format(self=self)
         return compiled
+
+    @classmethod
+    def config(cls, **kwargs):
+        return partial(cls, **kwargs)
+
+    @property
+    def name(self):
+        return self.__name
 
     @property
     def path(self):

@@ -7,10 +7,10 @@ class Chain(Iterable, Sized):
 
     # Public
 
-    def __init__(self, listener=None):
-        self.__listener = listener
+    def __init__(self, *args, **kwargs):
         self.__list = []
         self.__dict = {}
+        super().__init__(*args, **kwargs)
 
     def __getitem__(self, param):
         if isinstance(param, int):
@@ -26,16 +26,6 @@ class Chain(Iterable, Sized):
     def __len__(self):
         return len(self.__list)
 
-    def __repr__(self):
-        template = '<Chain elements="{list}">'
-        compiled = template.format(list=self.__list)
-        return compiled
-
-    def add(self, value, place=None):
-        if place is None:
-            self.__list.append(value)
-        else:
-            self.__list.insert(place, value)
-        self.__dict[value.name] = value
-        if self.__listener is not None:
-            self.__listener()
+    def add(self, key, value):
+        self.__list.append(value)
+        self.__dict[key] = value

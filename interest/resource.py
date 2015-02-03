@@ -1,11 +1,11 @@
 import asyncio
 import inspect
-from .helpers import OrderedMetaclass, http
+from .helpers import Chain, OrderedMetaclass, http
 from .endpoint import Endpoint
 from .middleware import Middleware
 
 
-class Resource(Middleware, metaclass=OrderedMetaclass):
+class Resource(Chain, Middleware, metaclass=OrderedMetaclass):
     """Resource representation (abstract).
 
     Parameters
@@ -18,22 +18,7 @@ class Resource(Middleware, metaclass=OrderedMetaclass):
 
     def __init__(self, service):
         super().__init__(service)
-        self.__bindings = None
         self.__add_endpoints()
-
-    def __getitem__(self, param):
-        if isinstance(param, int):
-            return list(iter(self.__endpoints))[param]
-        return self.__endpoints[param]
-
-    def __iter__(self):
-        return iter(self.__endpoints.values())
-
-    def __bool__(self):
-        return bool(self.__endpoints)
-
-    def __len__(self):
-        return len(self.__endpoints)
 
     def __repr__(self):
         template = (
@@ -55,10 +40,16 @@ class Resource(Middleware, metaclass=OrderedMetaclass):
         """
         return '/' + self.name
 
+    def add(self, *endpoints, **kwargs):
+        for endpoint in endpoints:
+            if not isinstance(endpoint, Endpoint):
+                endpoint = endpoint(self, **kwargs)
+            super().add(endpoint.name, endpoint)
+
     @asyncio.coroutine
     def process(self, request):
         for endpoint in self:
-            path = self.path + endpoint.path
+            path = self.path + (endpoint.path or '')
             match = self.service.match(request, path=path)
             if not match:
                 continue
@@ -78,8 +69,6 @@ class Resource(Middleware, metaclass=OrderedMetaclass):
             func = getattr(type(self), name)
             if inspect.isdatadescriptor(func):
                 continue
-            meth = getattr(self, name)
             data = getattr(func, http.MARKER, None)
             if data is not None:
-                endpoint = Endpoint(meth, resource=self, **data)
-                self.__endpoints[name] = endpoint
+                self.add(Endpoint, name=name, **data)

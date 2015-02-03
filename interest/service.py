@@ -8,7 +8,7 @@ from .converter import (FloatConverter, IntegerConverter,
                         PathConverter, StringConverter)
 
 
-class Service(Middleware, dict):
+class Service(Chain, Middleware):
     """Service representation.
 
     Service provides a high-level abstraction for end-user and incapsulates
@@ -80,7 +80,6 @@ class Service(Middleware, dict):
         self.__loop = loop
         self.__handler = handler(self)
         self.__logger = logger(self)
-        self.__middlewares = Chain(self.__on_middlewares_change)
         self.__add_providers(providers)
         self.__add_converters(converters)
         self.__patterns = {}
@@ -94,8 +93,7 @@ class Service(Middleware, dict):
 
     def __repr__(self):
         template = (
-            '<Service path="{self.path}" '
-            'middlewares="{self.middlewares}">')
+            '<Service path="{self.path}">')
         compiled = template.format(self=self)
         return compiled
 
@@ -122,6 +120,13 @@ class Service(Middleware, dict):
         """:class:`.Handler` instance (read-only).
         """
         return self.__handler
+
+    def add(self, *middlewares, **kwargs):
+        for middleware in middlewares:
+            if not isinstance(middleware, Middleware):
+                middleware = middleware(self, **kwargs)
+            super().add(middleware.name, middleware)
+        self.__on_change()
 
     def listen(self, *, host, port):
         """Listen forever on TCP/IP socket.
@@ -165,10 +170,10 @@ class Service(Middleware, dict):
             If middlewares chain doesn't return
             :class:`.http.StreamResponse`.
         """
-        if not self.middlewares:
+        if not self:
             raise RuntimeError('No middlawares added')
         try:
-            response = yield from self.middlewares[0](request)
+            response = yield from self[0](request)
         except http.Exception as exception:
             return exception
         if not isinstance(response, http.StreamResponse):
@@ -213,18 +218,9 @@ class Service(Middleware, dict):
         return match
 
     # TODO: implement
+    # TODO: rename to build?
     def url(self, *args, **kwargs):
         raise NotImplementedError()
-
-    @property
-    def middlewares(self):
-        """:class:`.Chain` of middlewares.
-
-        Order corresponds with order of adding and affects order of
-        middlewares applying. Client may add middleware instance
-        manually to that list.
-        """
-        return self.__middlewares
 
     # Private
 
@@ -266,9 +262,9 @@ class Service(Middleware, dict):
                 path, self.__converters)
         return self.__patterns[path]
 
-    def __on_middlewares_change(self):
+    def __on_change(self):
         next_middleware = None
-        for middleware in reversed(self.middlewares):
+        for middleware in reversed(self):
             if next_middleware is not None:
                 middleware.next = next_middleware
             next_middleware = middleware
