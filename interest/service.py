@@ -157,6 +157,19 @@ class Service(dict):
     def logger(self, value):
         self.__logger = value
 
+    @asyncio.coroutine
+    def process(self, request):
+        return (yield from self.processor.process(request))
+
+    @asyncio.coroutine
+    def dispatch(self, request):
+        return (yield from self.dispatcher.dispatch(request))
+
+    @asyncio.coroutine
+    def match(self, request, *, path=None, methods=None, prefix=False):
+        return self.dispatcher.match(
+            request, path=path, methods=methods, prefix=prefix)
+
     # Private
 
     def __add_middlewares(self, middlewares):
