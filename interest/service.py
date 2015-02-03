@@ -1,14 +1,14 @@
 import asyncio
 from .logger import SystemLogger
 from .handler import SystemHandler
-from .helpers import Chain, ExistentMatch, NonExistentMatch, http
+from .helpers import ExistentMatch, NonExistentMatch, http
 from .pattern import Pattern
 from .middleware import Middleware
 from .converter import (FloatConverter, IntegerConverter,
                         PathConverter, StringConverter)
 
 
-class Service(Chain, Middleware):
+class Service(Middleware):
     """Service representation.
 
     Service provides a high-level abstraction for end-user and incapsulates
@@ -47,7 +47,6 @@ class Service(Chain, Middleware):
 
     # Public
 
-    PATH = ''
     LOOP = asyncio.get_event_loop()
     LOGGER = SystemLogger
     HANDLER = SystemHandler
@@ -60,12 +59,11 @@ class Service(Chain, Middleware):
        'path': PathConverter}
 
     def __init__(self, service=None, *,
-                path=None, loop=None, logger=None, handler=None,
+                name=None, path=None, methods=None,
+                loop=None, logger=None, handler=None,
                 middlewares=None, providers=None, converters=None):
         if service is None:
             service = self
-        if path is None:
-            path = self.PATH
         if loop is None:
             loop = self.LOOP
         if logger is None:
@@ -78,8 +76,7 @@ class Service(Chain, Middleware):
             providers = self.PROVIDERS
         if converters is None:
             converters = self.CONVERTERS
-        super().__init__(service)
-        self.__path = path
+        super().__init__(service, name=name, path=path, methods=methods)
         self.__loop = loop
         self.__logger = logger(self)
         self.__handler = handler(self)
@@ -95,17 +92,14 @@ class Service(Chain, Middleware):
             return value
         raise AttributeError(name)
 
+    # TODO: improve
     def __repr__(self):
         template = (
-            '<Service path="{self.path}">')
-        compiled = template.format(self=self)
+            '<Service path="{self.path}" '
+            'middlewares={middlewares}>')
+        compiled = template.format(
+            self=self, middlewares=list(self))
         return compiled
-
-    @property
-    def path(self):
-        """HTTP path (read-only).
-        """
-        return self.__path
 
     @property
     def loop(self):
@@ -215,8 +209,7 @@ class Service(Chain, Middleware):
         return match
 
     # TODO: implement
-    # TODO: rename to build?
-    def url(self, *args, **kwargs):
+    def build(self, *args, **kwargs):
         raise NotImplementedError()
 
     # Private
