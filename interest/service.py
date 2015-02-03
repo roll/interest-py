@@ -23,8 +23,6 @@ class Service(dict):
         Path prefix for HTTP path routing.
     loop: object
         Custom asyncio's loop.
-    middlewares: list
-        :class:`.Middleware` subclasses list.
     resources: list
         :class:`.Resource` subclasses list.
     converters: list
@@ -43,7 +41,6 @@ class Service(dict):
         service = Service(
             path='/api/v1',
             loop=custom_loop,
-            middlewares=[CustomMiddleware],
             resources=[CustomResourse],
             converters=[CustomConverter],
             handler=CustomHandler,
@@ -57,12 +54,10 @@ class Service(dict):
     # Public
 
     def __init__(self, *, path='', loop=None,
-                 middlewares=None, resources=None, converters=None,
+                 resources=None, converters=None,
                  handler=Handler, logger=SystemLogger):
         if loop is None:
             loop = asyncio.get_event_loop()
-        if middlewares is None:
-            middlewares = []
         if resources is None:
             resources = []
         if converters is None:
@@ -79,7 +74,6 @@ class Service(dict):
         # Add default converters
         self.__add_default_converters()
         # Add the given components
-        self.__add_middlewares(middlewares)
         self.__add_resources(resources)
         self.__add_converters(converters)
 
@@ -299,11 +293,6 @@ class Service(dict):
             if next_middleware is not None:
                 middleware.next = next_middleware.process
             next_middleware = middleware
-
-    def __add_middlewares(self, middlewares):
-        for middleware in middlewares:
-            middleware = middleware(self)
-            self.middlewares.add(middleware)
 
     def __match_root(self, request, root):
         pattern = self.__get_pattern(root)
