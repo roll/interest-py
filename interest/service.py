@@ -52,11 +52,7 @@ class Service(Middleware):
     HANDLER = SystemHandler
     MIDDLEWARES = []
     PROVIDERS = {}
-    CONVERTERS = {
-       'str': StringConverter,
-       'int': IntegerConverter,
-       'float': FloatConverter,
-       'path': PathConverter}
+    CONVERTERS = {}
 
     def __init__(self, service=None, *,
                 name=None, path=None, methods=None,
@@ -216,8 +212,14 @@ class Service(Middleware):
 
     # Private
 
+    __CONVERTERS = {
+       'str': StringConverter,
+       'int': IntegerConverter,
+       'float': FloatConverter,
+       'path': PathConverter}
+
     def __add_middlewares(self, middlewares):
-        for middleware in self.MIDDLEWARES + middlewares:
+        for middleware in middlewares:
             name = None
             if not asyncio.iscoroutine(middleware):
                 middleware = middleware(self)
@@ -227,16 +229,14 @@ class Service(Middleware):
 
     def __add_providers(self, providers):
         self.__providers = {}
-        classes = self.PROVIDERS.copy()
-        classes.update(providers)
-        for key, cls in classes.items():
+        for key, cls in providers.items():
             self.__providers[key] = cls(self)
 
     def __add_converters(self, converters):
         self.__converters = {}
-        classes = self.CONVERTERS.copy()
-        classes.update(converters)
-        for key, cls in classes.items():
+        econverters = self.__CONVERTERS.copy()
+        econverters.update(converters)
+        for key, cls in econverters.items():
             self.__converters[key] = cls(self)
 
     def __match_root(self, request, root):
