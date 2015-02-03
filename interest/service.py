@@ -162,8 +162,8 @@ class Service(dict):
         return (yield from self.processor.process(request))
 
     @asyncio.coroutine
-    def dispatch(self, request):
-        return (yield from self.dispatcher.dispatch(request))
+    def route(self, request):
+        return (yield from self.dispatcher.route(request))
 
     @asyncio.coroutine
     def match(self, request, *, root=None, path=None, methods=None):

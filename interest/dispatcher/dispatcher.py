@@ -47,7 +47,7 @@ class Dispatcher:
 
     # TODO: not coroutine?
     @asyncio.coroutine
-    def dispatch(self, request):
+    def route(self, request):
         """Dispatch a request.
 
         Parameters
