@@ -51,6 +51,7 @@ class Service(Chain, Middleware):
     LOOP = asyncio.get_event_loop()
     LOGGER = SystemLogger
     HANDLER = SystemHandler
+    MIDDLEWARES = []
     PROVIDERS = {}
     CONVERTERS = {
        'str': StringConverter,
@@ -60,7 +61,7 @@ class Service(Chain, Middleware):
 
     def __init__(self, service=None, *,
                 path=None, loop=None, logger=None, handler=None,
-                providers=None, converters=None):
+                middlewares=None, providers=None, converters=None):
         if service is None:
             service = self
         if path is None:
@@ -71,6 +72,8 @@ class Service(Chain, Middleware):
             logger = self.LOGGER
         if handler is None:
             handler = self.HANDLER
+        if middlewares is None:
+            middlewares = self.MIDDLEWARES
         if providers is None:
             providers = self.PROVIDERS
         if converters is None:
@@ -78,8 +81,9 @@ class Service(Chain, Middleware):
         super().__init__(service)
         self.__path = path
         self.__loop = loop
-        self.__handler = handler(self)
         self.__logger = logger(self)
+        self.__handler = handler(self)
+        self.__add_middlewares(middlewares)
         self.__add_providers(providers)
         self.__add_converters(converters)
         self.__patterns = {}
@@ -225,6 +229,10 @@ class Service(Chain, Middleware):
         raise NotImplementedError()
 
     # Private
+
+    def __add_middlewares(self, middlewares):
+        for middleware in self.MIDDLEWARES + middlewares:
+            self.add(middleware)
 
     def __add_providers(self, providers):
         self.__providers = {}

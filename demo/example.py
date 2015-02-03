@@ -49,8 +49,8 @@ class Comment(Resource):
 
 
 # Create service
-service = Service(path='/api/v1')
-service.add(Session, Restful, Comment)
+service = Service(path='/api/v1',
+    middlewares=[Session, Restful, Comment])
 
 # Listen forever
 argv = dict(enumerate(sys.argv))
