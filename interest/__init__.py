@@ -1,5 +1,6 @@
 from .binding import Binding
 from .converter import Converter
+from .endpoint import Endpoint
 from .factory import FactoryMiddleware
 from .handler import Handler, Record
 from .helpers import Chain, Match, http

@@ -61,7 +61,7 @@ class Service(dict):
         self.__middlewares = Chain(
             self.__on_middlewares_change)
         # Add default converters
-        self.__add_default_converters()
+        self.__add_converters()
 
     # TODO: optimize on metaclass level to reduce calls stack?
     @asyncio.coroutine
@@ -251,7 +251,7 @@ class Service(dict):
 
     # Private
 
-    def __add_default_converters(self):
+    def __add_converters(self):
         self.converters['str'] = StringConverter(self)
         self.converters['int'] = IntegerConverter(self)
         self.converters['float'] = FloatConverter(self)
