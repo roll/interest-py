@@ -32,6 +32,11 @@ class Middleware(metaclass=ABCMeta):
     def __init__(self, service):
         self.__service = service
 
+    # TODO: optimize on metaclass level to reduce calls stack?
+    @asyncio.coroutine
+    def __call__(self, request):
+        return (yield from self.process(request))
+
     @property
     def service(self):
         """:class:`.Service` instance (read-only).

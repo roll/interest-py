@@ -225,7 +225,7 @@ class Service(dict):
         if not self.middlewares:
             raise RuntimeError('No middlawares added')
         try:
-            response = yield from self.middlewares[0].process(request)
+            response = yield from self.middlewares[0](request)
         except http.Exception as exception:
             return exception
         if not isinstance(response, http.StreamResponse):
@@ -252,13 +252,6 @@ class Service(dict):
         self.converters['float'] = FloatConverter(self)
         self.converters['path'] = PathConverter(self)
 
-    def __on_middlewares_change(self):
-        next_middleware = None
-        for middleware in reversed(self.middlewares):
-            if next_middleware is not None:
-                middleware.next = next_middleware.process
-            next_middleware = middleware
-
     def __match_root(self, request, root):
         pattern = self.__get_pattern(root)
         match = pattern.match(request.path, left=True)
@@ -281,3 +274,10 @@ class Service(dict):
         if path not in self.__patterns:
             self.__patterns[path] = Pattern.create(path, self.converters)
         return self.__patterns[path]
+
+    def __on_middlewares_change(self):
+        next_middleware = None
+        for middleware in reversed(self.middlewares):
+            if next_middleware is not None:
+                middleware.next = next_middleware
+            next_middleware = middleware
