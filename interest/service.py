@@ -66,6 +66,13 @@ class Service(dict):
     def __call__(self, request):
         return (yield from self.process(request))
 
+    def __repr__(self):
+        template = (
+            '<Service path="{self.path}" '
+            'middlewares="{self.middlewares}">')
+        compiled = template.format(self=self)
+        return compiled
+
     @property
     def path(self):
         """Path prefix for HTTP path routing (read-only).
