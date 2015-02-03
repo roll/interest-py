@@ -3,18 +3,19 @@ from abc import ABCMeta, abstractmethod
 from .middleware import Middleware
 
 
-class FactoryMiddleware(Middleware, metaclass=ABCMeta):
+class SystemMiddleware(Middleware, metaclass=ABCMeta):
     """Adapter for aiohttp.web midleware factories.
     """
 
     # Public
 
+    # TODO: rename to factory?
     @property
     @abstractmethod
-    def factory(self):
+    def system(self):
         pass  # pragma: no cover
 
     @asyncio.coroutine
     def __call__(self, request):
-        handler = yield from self.factory(None, self.next)
+        handler = yield from self.system(None, self.next)
         return (yield from handler(request))
