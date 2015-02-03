@@ -125,8 +125,7 @@ class Service(Chain, Middleware):
         for middleware in middlewares:
             name = None
             if not asyncio.iscoroutine(middleware):
-                if not isinstance(middleware, Middleware):
-                    middleware = middleware(self, **kwargs)
+                middleware = middleware(self, **kwargs)
                 name = middleware.name
             super().add(middleware, name=name)
         self.__on_change()

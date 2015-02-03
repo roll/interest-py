@@ -3,6 +3,8 @@ from abc import ABCMeta, abstractmethod
 from .helpers import ExistentMatch, NonExistentMatch
 
 
+# TODO: allow paths like "/text=<name>"?
+# TODO: use caching instead of Plain/Regex
 class Pattern(metaclass=ABCMeta):
 
     # Public
