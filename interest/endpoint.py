@@ -6,7 +6,17 @@ class Endpoint(Configurable):
 
     # Public
 
-    def __init__(self, resource, *, name, path, methods):
+    NAME = property(lambda self: type(self).__name__.lower())
+    PATH = ''
+    METHODS = None
+
+    def __init__(self, resource, *, name=None, path=None, methods=None):
+        if name is None:
+            name = self.NAME
+        if path is None:
+            path = self.PATH
+        if methods is None:
+            methods = self.METHODS
         self.__resource = resource
         self.__name = name
         self.__path = path
