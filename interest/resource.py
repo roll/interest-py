@@ -17,6 +17,7 @@ class Resource(Chain, Middleware, metaclass=OrderedMetaclass):
     def __repr__(self):
         template = (
             '<Resource path="{self.path}" '
+            'methods="{self.methods}" '
             'endpoints={endpoints}>')
         compiled = template.format(
             self=self, endpoints=list(self))
@@ -25,7 +26,7 @@ class Resource(Chain, Middleware, metaclass=OrderedMetaclass):
     @asyncio.coroutine
     def process(self, request):
         for endpoint in self:
-            path = self.path + (endpoint.path or '')
+            path = self.path + endpoint.path
             match = self.service.match(request, path=path)
             if not match:
                 continue

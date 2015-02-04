@@ -32,7 +32,7 @@ class Middleware(Configurable):
 
     NAME = name
     PATH = ''
-    METHODS = None
+    METHODS = []
 
     def __init__(self, service, *, name=None, path=None, methods=None):
         if name is None:
@@ -55,7 +55,9 @@ class Middleware(Configurable):
         return (yield from self.next(request))
 
     def __repr__(self):
-        template = '<Middleware path="{self.path}">'
+        template = (
+            '<Middleware path="{self.path}" '
+            'methods="{self.methods}">')
         compiled = template.format(self=self)
         return compiled
 

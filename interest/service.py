@@ -85,6 +85,7 @@ class Service(Chain, Middleware):
     def __repr__(self):
         template = (
             '<Service path="{self.path}" '
+            'methods="{self.methods}" '
             'middlewares={middlewares}>')
         compiled = template.format(
             self=self, middlewares=list(self))
@@ -249,7 +250,7 @@ class Service(Chain, Middleware):
 
     def __match_methods(self, request, methods):
         match = ExistentMatch()
-        if methods is not None:
+        if methods:
             methods = map(str.upper, methods)
             if request.method not in methods:
                 return NonExistentMatch()

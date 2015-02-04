@@ -8,7 +8,7 @@ class Endpoint(Configurable):
 
     NAME = name
     PATH = ''
-    METHODS = None
+    METHODS = []
 
     def __init__(self, resource, *, name=None, path=None, methods=None):
         if name is None:
@@ -29,7 +29,8 @@ class Endpoint(Configurable):
 
     def __repr__(self):
         template = (
-            '<Endpoint path="{self.path}" methods="{self.methods}">')
+            '<Endpoint path="{self.path}" '
+            'methods="{self.methods}">')
         compiled = template.format(self=self)
         return compiled
 
