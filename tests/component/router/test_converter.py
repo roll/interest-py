@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import Mock
 from importlib import import_module
-component = import_module('interest.converter')
+component = import_module('interest.router.converter')
 
 
 class ConverterTest(unittest.TestCase):
@@ -9,14 +9,18 @@ class ConverterTest(unittest.TestCase):
     # Actions
 
     def setUp(self):
+        self.router = Mock()
         self.convert = Mock()
         self.converter = component.Converter(
-            'service', pattern='pattern', convert=self.convert)
+            self.router, pattern='pattern', convert=self.convert)
 
     # Tests
 
     def test_service(self):
-        self.assertEqual(self.converter.service, 'service')
+        self.assertEqual(self.converter.service, self.router.service)
+
+    def test_router(self):
+        self.assertEqual(self.converter.router, self.router)
 
     def test_pattern(self):
         self.assertEqual(self.converter.pattern, 'pattern')

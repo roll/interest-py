@@ -20,6 +20,7 @@ class Endpoint(Configurable):
             path = self.PATH
         if methods is None:
             methods = self.METHODS
+        path = resource.path + path
         self.__resource = resource
         self.__name = name
         self.__path = path
@@ -58,11 +59,10 @@ class Endpoint(Configurable):
         return self.__methods
 
     def match(self, request):
-        path = self.resource.path + self.path
-        match = self.service.match(request, path=path)
+        match = self.service.router.match(request, path=self.path)
         if not match:
             return NonExistentMatch()
-        lmatch = self.service.match(request, methods=self.methods)
+        lmatch = self.service.router.match(request, methods=self.methods)
         if not lmatch:
             raise http.MethodNotAllowed(request.method, self.methods)
         return match

@@ -1,4 +1,4 @@
-from .helpers import Configurable
+from ..helpers import Configurable
 
 
 class Converter(Configurable):
@@ -15,14 +15,15 @@ class Converter(Configurable):
     PATTERN = None
     CONVERT = None
 
-    def __init__(self, service, *, pattern=None, convert=None):
+    def __init__(self, router, *, pattern=None, convert=None):
         if pattern is None:
             pattern = self.PATTERN
         if convert is None:
             convert = self.CONVERT
         assert pattern is not None
         assert convert is not None
-        self.__service = service
+        self.__service = router.service
+        self.__router = router
         self.__pattern = pattern
         self.__convert = convert
 
@@ -40,13 +41,19 @@ class Converter(Configurable):
         return self.__service
 
     @property
+    def router(self):
+        """:class:`.Router` instance (read-only).
+        """
+        return self.__router
+
+    @property
     def pattern(self):
-        """Converter's pattern.
+        """Converter's pattern (read-only).
         """
         return self.__pattern
 
     def convert(self, string):
-        """Convert the given string.
+        """Convert the given string (read-only).
 
         Parameters
         ----------

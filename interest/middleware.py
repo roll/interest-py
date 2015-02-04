@@ -41,6 +41,8 @@ class Middleware(Configurable):
             path = self.PATH
         if methods is None:
             methods = self.METHODS
+        if self is not service:
+            path = service.path + path
         self.__service = service
         self.__name = name
         self.__path = path
@@ -48,11 +50,8 @@ class Middleware(Configurable):
 
     @asyncio.coroutine
     def __call__(self, request):
-        root = None
-        if self is not self.service:
-            root = self.path
-        match = self.service.match(
-            request, root=root, methods=self.methods)
+        match = self.service.router.match(
+            request, root=self.path, methods=self.methods)
         if match:
             return (yield from self.process(request))
         return (yield from self.next(request))
@@ -90,6 +89,24 @@ class Middleware(Configurable):
 
     @asyncio.coroutine
     def process(self, request):
+        """Process a request (coroutine).
+
+        Parameters
+        ----------
+        request: :class:`.http.Request`
+            Request instance.
+
+        Returns
+        -------
+        :class:`.http.StreamResponse`
+            Response instance.
+
+        Raises
+        ------
+        :class:`RuntimeError`
+            If middlewares chain doesn't return
+            :class:`.http.StreamResponse`.
+        """
         return (yield from self.next(request))
 
     @asyncio.coroutine
