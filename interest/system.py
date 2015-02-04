@@ -1,21 +1,18 @@
 import asyncio
-from abc import ABCMeta, abstractmethod
 from .middleware import Middleware
 
 
-class SystemMiddleware(Middleware, metaclass=ABCMeta):
+class SystemMiddleware(Middleware):
     """Adapter for aiohttp.web midleware factories.
     """
 
     # Public
 
-    # TODO: rename to factory?
-    @property
-    @abstractmethod
-    def system(self):
-        pass  # pragma: no cover
+    def __init__(self, *args, factory, **kwargs):
+        self.__factory = factory
+        super.__init__(*args, **kwargs)
 
     @asyncio.coroutine
-    def __call__(self, request):
-        handler = yield from self.system(None, self.next)
+    def process(self, request):
+        handler = yield from self.factory(None, self.next)
         return (yield from handler(request))
