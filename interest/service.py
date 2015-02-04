@@ -158,15 +158,15 @@ class Service(Chain, Middleware):
             If middlewares chain doesn't return
             :class:`.http.StreamResponse`.
         """
-        if not self:
-            raise RuntimeError('No middlawares added')
-        try:
-            response = yield from self[0](request)
-        except http.Exception as exception:
-            return exception
-        if not isinstance(response, http.StreamResponse):
-            raise RuntimeError('Last reply is not a StreamResponse')
-        return response
+        if self:
+            try:
+                response = yield from self[0](request)
+            except http.Exception as exception:
+                return exception
+            if not isinstance(response, http.StreamResponse):
+                raise RuntimeError('Last reply is not a StreamResponse')
+            return response
+        return http.NotFound()
 
     def match(self, request, *, root=None, path=None, methods=None):
         """Check if request matchs the given parameters.

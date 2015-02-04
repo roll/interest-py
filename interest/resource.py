@@ -33,7 +33,7 @@ class Resource(Chain, Middleware, metaclass=OrderedMetaclass):
             if not check:
                 raise http.MethodNotAllowed(request.method, endpoint.methods)
             return (yield from endpoint(request, **match))
-        return (yield from self.next(request))
+        raise http.NotFound()
 
     # Private
 
