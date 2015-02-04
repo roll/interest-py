@@ -75,6 +75,8 @@ Here is a base usage example.
     
         # Public
     
+        PATH = '/comment'
+    
         @http.get('/<key:int>')
         def read(self, request, key):
             return {'key': key}
@@ -87,15 +89,13 @@ Here is a base usage example.
     
     
     # Create service
-    service = Service(
-        path='/api/v1',
-        middlewares=[Session, Restful],
-        resources=[Comment])
+    service = Service(path='/api/v1',
+        middlewares=[Session, Restful, Comment])
     
     # Listen forever
     argv = dict(enumerate(sys.argv))
     logging.basicConfig(level=logging.DEBUG)
-    service.listen(hostname=argv.get(1, '127.0.0.1'), port=argv.get(2, 9000))
+    service.listen(host=argv.get(1, '127.0.0.1'), port=argv.get(2, 9000))
     
 - run the server using python3 interpreter:
 
