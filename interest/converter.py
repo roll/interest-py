@@ -2,7 +2,6 @@ from abc import ABCMeta, abstractmethod
 from .helpers import Configurable
 
 
-# TODO: rename
 class Converter(Configurable, metaclass=ABCMeta):
     """Converter representation (abstract).
 

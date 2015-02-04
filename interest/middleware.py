@@ -46,7 +46,6 @@ class Middleware(Configurable):
         self.__path = path
         self.__methods = methods
 
-    # TODO: implement filter
     @asyncio.coroutine
     def __call__(self, request):
         return (yield from self.process(request))

@@ -6,7 +6,6 @@ class Endpoint(Configurable):
 
     # Public
 
-    # TODO: decide about None defaults
     def __init__(self, middleware, *, name, path, methods):
         self.__middleware = middleware
         self.__name = name

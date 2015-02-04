@@ -52,13 +52,14 @@ class Service(Chain, Middleware):
     LOGGER = SystemLogger
     HANDLER = SystemHandler
     MIDDLEWARES = []
-    PROVIDERS = {}
     CONVERTERS = {}
+    PROVIDERS = {}
+
 
     def __init__(self, service=None, *,
                 name=None, path=None, methods=None,
                 loop=None, logger=None, handler=None,
-                middlewares=None, providers=None, converters=None):
+                middlewares=None, converters=None, providers=None):
         if service is None:
             service = self
         if loop is None:
@@ -69,26 +70,18 @@ class Service(Chain, Middleware):
             handler = self.HANDLER
         if middlewares is None:
             middlewares = self.MIDDLEWARES
-        if providers is None:
-            providers = self.PROVIDERS
         if converters is None:
             converters = self.CONVERTERS
+        if providers is None:
+            providers = self.PROVIDERS
         super().__init__(service, name=name, path=path, methods=methods)
         self.__loop = loop
         self.__logger = logger(self)
         self.__handler = handler(self)
         self.__add_middlewares(middlewares)
-        self.__add_providers(providers)
         self.__add_converters(converters)
+        self.__add_providers(providers)
         self.__patterns = {}
-
-    # TODO: remove?
-    def __getattr__(self, name):
-        if name in self.__providers:
-            value = self.__providers[name]
-            setattr(self, name, value)
-            return value
-        raise AttributeError(name)
 
     def __repr__(self):
         template = (
@@ -205,7 +198,6 @@ class Service(Chain, Middleware):
                 return NonExistentMatch()
         return match
 
-    # TODO: implement
     def build(self, *args, **kwargs):
         raise NotImplementedError()
 
@@ -226,17 +218,20 @@ class Service(Chain, Middleware):
             self._append(middleware, name=name)
         self.__on_change()
 
-    def __add_providers(self, providers):
-        self.__providers = {}
-        for key, cls in providers.items():
-            self.__providers[key] = cls(self)
-
     def __add_converters(self, converters):
         self.__converters = {}
         econverters = self.__CONVERTERS.copy()
         econverters.update(converters)
         for key, cls in econverters.items():
             self.__converters[key] = cls(self)
+
+    def __add_providers(self, providers):
+        self.__providers = {}
+        for key, cls in providers.items():
+            provider = cls(self)
+            value = provider()
+            setattr(self, key, value)
+            self.__providers[key] = provider
 
     def __match_root(self, request, root):
         pattern = self.__get_pattern(root)
