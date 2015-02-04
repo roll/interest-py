@@ -48,8 +48,11 @@ class Middleware(Configurable):
 
     @asyncio.coroutine
     def __call__(self, request):
+        root = None
+        if self is not self.service:
+            root = self.path
         match = self.service.match(
-            request, root=self.path, methods=self.methods)
+            request, root=root, methods=self.methods)
         if match:
             return (yield from self.process(request))
         return (yield from self.next(request))

@@ -12,14 +12,16 @@ class Converter(Configurable):
 
     # Public
 
-    PATTERN = r'[1-9]+'
-    CONVERT = str
+    PATTERN = None
+    CONVERT = None
 
     def __init__(self, service, *, pattern=None, convert=None):
         if pattern is None:
             pattern = self.PATTERN
         if convert is None:
             convert = self.CONVERT
+        assert pattern is not None
+        assert convert is not None
         self.__service = service
         self.__pattern = pattern
         self.__convert = convert

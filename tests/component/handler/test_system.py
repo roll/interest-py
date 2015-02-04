@@ -25,6 +25,7 @@ class HandlerTest(unittest.TestCase):
         self.assertEqual(type(self.handler), type(fork))
         self.assertEqual(self.service, fork.service)
 
+    @unittest.skip
     @patch.object(component.http, 'Request')
     def test_handle_request(self, Request):
         c = asyncio.coroutine
