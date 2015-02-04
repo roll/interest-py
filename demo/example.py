@@ -2,7 +2,7 @@ import sys
 import json
 import asyncio
 import logging
-from interest import Service, Middleware, http
+from interest import Service, Middleware, Resource, http
 
 
 class Session(Middleware):
@@ -33,7 +33,7 @@ class Restful(Middleware):
         return response
 
 
-class Comment(Middleware):
+class Comment(Resource):
 
     # Public
 
