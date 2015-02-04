@@ -7,9 +7,10 @@ class Chain(Iterable, Sized):
 
     # Public
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         self.__list = []
         self.__dict = {}
+        super().__init__(*args, **kwargs)
 
     def __getitem__(self, param):
         if isinstance(param, int):

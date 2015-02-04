@@ -1,7 +1,7 @@
 import asyncio
 from .logger import SystemLogger
 from .handler import SystemHandler
-from .helpers import ExistentMatch, NonExistentMatch
+from .helpers import Chain, ExistentMatch, NonExistentMatch
 from .pattern import Pattern
 from .middleware import Middleware
 from .protocol import http
@@ -9,7 +9,7 @@ from .converter import (FloatConverter, IntegerConverter,
                         PathConverter, StringConverter)
 
 
-class Service(Middleware):
+class Service(Chain, Middleware):
     """Service representation.
 
     Service provides a high-level abstraction for end-user and incapsulates
@@ -82,6 +82,7 @@ class Service(Middleware):
         self.__add_converters(converters)
         self.__patterns = {}
 
+    # TODO: remove?
     def __getattr__(self, name):
         if name in self.__providers:
             value = self.__providers[name]

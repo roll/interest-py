@@ -1,9 +1,9 @@
 import asyncio
-from .helpers import Configurable, Chain
+from .helpers import Configurable
 from .protocol import http
 
 
-class Middleware(Chain, Configurable):
+class Middleware(Configurable):
     """Middleware representation (abstract).
 
     Parameters
@@ -41,7 +41,6 @@ class Middleware(Chain, Configurable):
             path = self.PATH
         if methods is None:
             methods = self.METHODS
-        super().__init__()
         self.__service = service
         self.__name = name
         self.__path = path
