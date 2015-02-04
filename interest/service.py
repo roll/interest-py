@@ -169,9 +169,9 @@ class Service(Chain, Middleware):
         request: :class:`.http.Request`
             Request instance.
         root: str
-            HTTP path root relative to the service.path.
+            HTTP path root relative to the service.
         path: str
-            HTTP path relative to the service.path.
+            HTTP path relative to the service.
         methods: list
             HTTP methods.
 
@@ -182,12 +182,12 @@ class Service(Chain, Middleware):
         """
         match = ExistentMatch()
         if root is not None:
-            root = self.path + root
+            root = self.__fullpath + root
             lmatch = self.__match_root(request, root)
             if not lmatch:
                 return NonExistentMatch()
         if path is not None:
-            path = self.path + path
+            path = self.__fullpath + path
             lmatch = self.__match_path(request, path)
             if not lmatch:
                 return NonExistentMatch()
@@ -263,3 +263,10 @@ class Service(Chain, Middleware):
             if next_middleware is not None:
                 middleware.next = next_middleware
             next_middleware = middleware
+
+    @property
+    def __fullpath(self):
+        fullpath = self.service.path
+        if self is not self.service:
+            fullpath += self.path
+        return fullpath

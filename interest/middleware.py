@@ -48,7 +48,11 @@ class Middleware(Configurable):
 
     @asyncio.coroutine
     def __call__(self, request):
-        return (yield from self.process(request))
+        match = self.service.match(
+            request, root=self.path, methods=self.methods)
+        if match:
+            return (yield from self.process(request))
+        return (yield from self.next(request))
 
     def __repr__(self):
         template = '<Middleware path="{self.path}">'
