@@ -15,6 +15,8 @@ class Logger(Configurable, metaclass=ABCMeta):
     ----------
     service: :class:`.Service`
         Service instance.
+    template: str
+        Template for access formatting.
 
     Example
     -------

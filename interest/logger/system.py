@@ -8,6 +8,15 @@ class SystemLogger(Logger):
     Instead of all base Logger no-ops SystemLogger proxyings log calls
     to python's system logger. Access data go to logger with info level.
 
+    Parameters
+    ----------
+    service: :class:`.Service`
+        Service instance.
+    template: str
+        Template for access formatting.
+    name: str
+        System logger name.
+
     Example
     -------
     Obvious improvment of this logger for production use will be
