@@ -6,12 +6,12 @@ class Endpoint(Configurable):
 
     # Public
 
-    def __init__(self, middleware, *, name, path, methods):
-        self.__middleware = middleware
+    def __init__(self, resource, *, name, path, methods):
+        self.__resource = resource
         self.__name = name
         self.__path = path
         self.__methods = methods
-        self.__coroutine = getattr(middleware, name)
+        self.__coroutine = getattr(resource, name)
 
     @asyncio.coroutine
     def __call__(self, request, **kwargs):
