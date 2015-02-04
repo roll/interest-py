@@ -24,6 +24,10 @@ class Endpoint(Configurable):
         return compiled
 
     @property
+    def resource(self):
+        return self.__resource
+
+    @property
     def name(self):
         return self.__name
 
