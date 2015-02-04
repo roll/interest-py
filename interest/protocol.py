@@ -35,7 +35,7 @@ class http(metaclass=Metaclass):
     MARKER = '_interest.http'
 
     @classmethod
-    def any(cls, param):
+    def bind(cls, param):
         return cls.__process(param)
 
     @classmethod
