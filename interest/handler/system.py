@@ -1,7 +1,7 @@
 import asyncio
 import traceback
 from aiohttp.server import ServerHttpProtocol
-from ..helpers import http
+from ..protocol import http
 from .handler import Handler
 from .record import Record
 

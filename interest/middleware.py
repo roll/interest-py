@@ -1,7 +1,8 @@
 import asyncio
 import inspect
 from .endpoint import Endpoint
-from .helpers import Configurable, Chain, OrderedMetaclass, http
+from .helpers import Configurable, Chain, OrderedMetaclass
+from .protocol import http
 
 
 class Middleware(Chain, Configurable, metaclass=OrderedMetaclass):

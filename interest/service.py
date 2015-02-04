@@ -1,9 +1,10 @@
 import asyncio
 from .logger import SystemLogger
 from .handler import SystemHandler
-from .helpers import ExistentMatch, NonExistentMatch, http
+from .helpers import ExistentMatch, NonExistentMatch
 from .pattern import Pattern
 from .middleware import Middleware
+from .protocol import http
 from .converter import (FloatConverter, IntegerConverter,
                         PathConverter, StringConverter)
 

@@ -1,9 +1,10 @@
 from .converter import Converter
 from .endpoint import Endpoint
 from .handler import Handler, Record
-from .helpers import Chain, Match, http
+from .helpers import Chain, Match
 from .logger import Logger, SystemLogger
 from .middleware import Middleware
+from .protocol import http
 from .provider import Provider
 from .service import Service
 from .system import SystemMiddleware
