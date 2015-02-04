@@ -2,7 +2,7 @@ import asyncio
 from .middleware import Middleware
 
 
-class SystemMiddleware(Middleware):
+class Adapter(Middleware):
     """Adapter for a aiohttp.web's midleware factory.
     """
 
