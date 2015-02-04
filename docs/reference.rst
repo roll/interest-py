@@ -63,9 +63,10 @@ Match
 
 .. autoclass:: interest.Match
 
-Configurable
-------------
+Config
+------
 
+.. autoclass:: interest.Config
 .. autoclass:: interest.Configurable
 
 http
