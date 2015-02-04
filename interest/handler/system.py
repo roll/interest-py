@@ -7,7 +7,7 @@ from .record import Record
 
 
 class SystemHandler(ServerHttpProtocol, Handler):
-    """Handler representation.
+    """System handler representation.
 
     Handler is used by :class:`.Service` for handling HTTP requests
     on low-level. It's derived from :class:`.http.Handler`

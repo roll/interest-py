@@ -14,31 +14,33 @@ Middleware
 ----------
 
 .. autoclass:: interest.Middleware
+.. autoclass:: interest.SystemMiddleware
 
 Resource
 --------
 
 .. autoclass:: interest.Resource
 
+Endpoint
+--------
+
+.. autoclass:: interest.Endpoint
+
 Converter
 ---------
 
 .. autoclass:: interest.Converter
 
-Binding
--------
+Provider
+--------
 
-.. autoclass:: interest.Binding
-
-Route
------
-
-.. autoclass:: interest.Route
+.. autoclass:: interest.Provider
 
 Handler
 -------
 
 .. autoclass:: interest.Handler
+.. autoclass:: interest.SystemHandler
 
 Record
 ------
@@ -60,6 +62,11 @@ Match
 -----
 
 .. autoclass:: interest.Match
+
+Configurable
+------------
+
+.. autoclass:: interest.Configurable
 
 http
 ----

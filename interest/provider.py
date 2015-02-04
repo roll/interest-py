@@ -4,6 +4,8 @@ from .helpers import Configurable
 
 
 class Provider(Configurable, metaclass=ABCMeta):
+    """Provider representation (abstract).
+    """
 
     # Public
 

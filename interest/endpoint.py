@@ -3,6 +3,8 @@ from .helpers import Configurable, name
 
 
 class Endpoint(Configurable):
+    """Endpoint representation (abstract).
+    """
 
     # Public
 

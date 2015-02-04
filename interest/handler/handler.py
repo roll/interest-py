@@ -4,6 +4,8 @@ from ..helpers import Configurable
 
 
 class Handler(Configurable, asyncio.Protocol, metaclass=ABCMeta):
+    """Handler representation (abstract).
+    """
 
     # Public
 

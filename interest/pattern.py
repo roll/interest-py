@@ -4,6 +4,8 @@ from .helpers import ExistentMatch, NonExistentMatch
 
 
 class Pattern(metaclass=ABCMeta):
+    """Pattern representation (abstract).
+    """
 
     # Public
 

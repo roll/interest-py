@@ -2,6 +2,8 @@ from functools import partial
 
 
 class Configurable:
+    """Configurable representation.
+    """
 
     # Public
 

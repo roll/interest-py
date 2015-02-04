@@ -3,7 +3,7 @@ from .middleware import Middleware
 
 
 class SystemMiddleware(Middleware):
-    """Adapter for aiohttp.web midleware factories.
+    """Adapter for a aiohttp.web's midleware factory.
     """
 
     # Public

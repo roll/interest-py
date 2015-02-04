@@ -7,6 +7,8 @@ from .protocol import http
 
 
 class Resource(Chain, Middleware, metaclass=OrderedMetaclass):
+    """Resource representation (abstract).
+    """
 
     # Public
 
