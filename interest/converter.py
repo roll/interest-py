@@ -1,9 +1,8 @@
-from abc import ABCMeta, abstractmethod
 from .helpers import Configurable
 
 
-class Converter(Configurable, metaclass=ABCMeta):
-    """Converter representation (abstract).
+class Converter(Configurable):
+    """Converter representation.
 
     Parameters
     ----------
@@ -13,8 +12,17 @@ class Converter(Configurable, metaclass=ABCMeta):
 
     # Public
 
-    def __init__(self, service):
+    PATTERN = r'[1-9]+'
+    CONVERT = str
+
+    def __init__(self, service, *, pattern=None, convert=None):
+        if pattern is None:
+            pattern = self.PATTERN
+        if convert is None:
+            convert = self.CONVERT
         self.__service = service
+        self.__pattern = pattern
+        self.__convert = convert
 
     def __repr__(self):
         template = (
@@ -30,13 +38,11 @@ class Converter(Configurable, metaclass=ABCMeta):
         return self.__service
 
     @property
-    @abstractmethod
     def pattern(self):
         """Converter's pattern.
         """
-        pass  # pragma: no cover
+        return self.__pattern
 
-    @abstractmethod
     def convert(self, string):
         """Convert the given string.
 
@@ -50,36 +56,4 @@ class Converter(Configurable, metaclass=ABCMeta):
         object
             Converted string.
         """
-        pass  # pragma: no cover
-
-
-class StringConverter(Converter):
-
-    # Public
-
-    pattern = r'[^<>/]+'
-    convert = str
-
-
-class IntegerConverter(Converter):
-
-    # Public
-
-    pattern = r'[1-9]+'
-    convert = int
-
-
-class FloatConverter(Converter):
-
-    # Public
-
-    pattern = r'[1-9.]+'
-    convert = float
-
-
-class PathConverter(Converter):
-
-    # Public
-
-    pattern = r'[^<>]+'
-    convert = str
+        return self.__convert(string)

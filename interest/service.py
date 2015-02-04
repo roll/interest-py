@@ -1,12 +1,11 @@
 import asyncio
+from .converter import Converter
 from .logger import SystemLogger
 from .handler import SystemHandler
 from .helpers import Chain, ExistentMatch, NonExistentMatch
 from .pattern import Pattern
 from .middleware import Middleware
 from .protocol import http
-from .converter import (FloatConverter, IntegerConverter,
-                        PathConverter, StringConverter)
 
 
 class Service(Chain, Middleware):
@@ -204,10 +203,14 @@ class Service(Chain, Middleware):
     # Private
 
     __CONVERTERS = {
-       'str': StringConverter,
-       'int': IntegerConverter,
-       'float': FloatConverter,
-       'path': PathConverter}
+       'str': Converter.config(
+            pattern=r'[^<>/]+', convert=str),
+       'int': Converter.config(
+            pattern=r'[1-9]+', convert=int),
+       'float': Converter.config(
+            pattern=r'[1-9.]+', convert=float),
+       'path': Converter.config(
+            pattern=r'[^<>]+', convert=str)}
 
     def __add_middlewares(self, middlewares):
         for middleware in middlewares:
