@@ -1,12 +1,12 @@
 import asyncio
-from .helpers import Configurable
+from .helpers import Configurable, name
 
 
 class Endpoint(Configurable):
 
     # Public
 
-    NAME = property(lambda self: type(self).__name__.lower())
+    NAME = name
     PATH = ''
     METHODS = None
 

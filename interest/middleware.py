@@ -1,5 +1,5 @@
 import asyncio
-from .helpers import Configurable
+from .helpers import Configurable, name
 from .protocol import http
 
 
@@ -30,7 +30,7 @@ class Middleware(Configurable):
 
     # Public
 
-    NAME = property(lambda self: type(self).__name__.lower())
+    NAME = name
     PATH = ''
     METHODS = None
 
