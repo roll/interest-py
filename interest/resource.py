@@ -1,5 +1,6 @@
 import asyncio
 import inspect
+from .endpoint import Endpoint
 from .helpers import Chain, OrderedMetaclass, STICKER
 from .middleware import Middleware
 from .protocol import http
@@ -27,14 +28,9 @@ class Resource(Chain, Middleware, metaclass=OrderedMetaclass):
     @asyncio.coroutine
     def process(self, request):
         for endpoint in self:
-            path = self.path + endpoint.path
-            match = self.service.match(request, path=path)
-            if not match:
-                continue
-            check = self.service.match(request, methods=endpoint.methods)
-            if not check:
-                raise http.MethodNotAllowed(request.method, endpoint.methods)
-            return (yield from endpoint(request, **match))
+            match = endpoint.match(request)
+            if match:
+                return (yield from endpoint(request, **match))
         raise http.NotFound()
 
     # Private
@@ -46,7 +42,8 @@ class Resource(Chain, Middleware, metaclass=OrderedMetaclass):
             func = getattr(type(self), name)
             if inspect.isdatadescriptor(func):
                 continue
-            factory = getattr(func, STICKER, None)
-            if factory is not None:
-                endpoint = factory(self, name=name)
+            params = getattr(func, STICKER, None)
+            if params is not None:
+                factory = params.pop('endpoint', Endpoint)
+                endpoint = factory(self, name=name, **params)
                 self._append(endpoint, name=endpoint.name)

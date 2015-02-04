@@ -1,7 +1,6 @@
 import asyncio
 from aiohttp import web
 from functools import partial
-from .endpoint import Endpoint
 from .helpers import STICKER
 
 
@@ -89,10 +88,8 @@ class http(metaclass=Metaclass):
         return cls.__register(param, methods=methods)
 
     @classmethod
-    def __register(cls, function, **kwargs):
+    def __register(cls, function, **params):
         if not asyncio.iscoroutine(function):
             function = asyncio.coroutine(function)
-        endpoint = kwargs.pop('endpoint', Endpoint)
-        factory = partial(endpoint, **kwargs)
-        setattr(function, STICKER, factory)
+        setattr(function, STICKER, params)
         return function

@@ -54,7 +54,6 @@ class Service(Chain, Middleware):
     CONVERTERS = {}
     PROVIDERS = {}
 
-
     def __init__(self, service=None, *,
                 name=None, path=None, methods=None,
                 loop=None, logger=None, handler=None,

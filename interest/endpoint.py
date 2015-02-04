@@ -1,5 +1,6 @@
 import asyncio
-from .helpers import Configurable, name
+from .helpers import Configurable, NonExistentMatch, name
+from .protocol import http
 
 
 class Endpoint(Configurable):
@@ -37,6 +38,10 @@ class Endpoint(Configurable):
         return compiled
 
     @property
+    def service(self):
+        return self.__resource.service
+
+    @property
     def resource(self):
         return self.__resource
 
@@ -51,3 +56,13 @@ class Endpoint(Configurable):
     @property
     def methods(self):
         return self.__methods
+
+    def match(self, request):
+        path = self.resource.path + self.path
+        match = self.service.match(request, path=path)
+        if not match:
+            return NonExistentMatch()
+        lmatch = self.service.match(request, methods=self.methods)
+        if not lmatch:
+            raise http.MethodNotAllowed(request.method, self.methods)
+        return match
