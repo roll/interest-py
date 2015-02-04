@@ -180,18 +180,17 @@ class Service(Chain, Middleware):
         :class:`.Match`
             Match instance.
         """
-        match = ExistentMatch()
-        if root is not None:
-            root = self.__fullpath + root
-            lmatch = self.__match_root(request, root)
-            if not lmatch:
-                return NonExistentMatch()
         if path is not None:
             path = self.__fullpath + path
-            lmatch = self.__match_path(request, path)
-            if not lmatch:
-                return NonExistentMatch()
-            match = lmatch
+            match = self.__match_path(request, path)
+        elif root is not None:
+            root = self.__fullpath + root
+            match = self.__match_root(request, root)
+        else:
+            root = self.__fullpath
+            match = self.__match_root(request, root)
+        if not match:
+            return NonExistentMatch()
         if methods is not None:
             lmatch = self.__match_methods(request, methods)
             if not lmatch:
