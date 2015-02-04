@@ -32,19 +32,28 @@ class Logger(Configurable, metaclass=ABCMeta):
 
     # Public
 
-    template = ('%(host)s %(time)s "%(request)s" %(status)s '
+    TEMPLATE = ('%(host)s %(time)s "%(request)s" %(status)s '
                 '%(length)s "%(referer)s" "%(agent)s"')
-    """Template for access formatting.
+    """Template for access formatting (default).
     """
 
-    def __init__(self, service):
+    def __init__(self, service, *, template=None):
+        if template is None:
+            template = self.TEMPLATE
         self.__service = service
+        self.__template = template
 
     @property
     def service(self):
         """:class:`.Service` instance (read-only).
         """
         return self.__service
+
+    @property
+    def template(self):
+        """Template for access formatting (read-only).
+        """
+        return self.__template
 
     def access(self, record):
         """Log access event (no-op).

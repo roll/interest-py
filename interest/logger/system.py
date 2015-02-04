@@ -32,37 +32,39 @@ class SystemLogger(Logger):
 
     # Public
 
-    name = 'interest'
-    """System logger name.
+    NAME = 'interest'
+    """System logger name (default).
     """
 
-    def __init__(self, service):
-        super().__init__(service)
-        self.__system = logging.getLogger(self.name)
+    def __init__(self, service, *, template=None, name=None):
+        if name is None:
+            name = self.NAME
+        super().__init__(service, template=template)
+        self.__instance = logging.getLogger(name)
 
     @property
-    def system(self):
-        """System logger instanse.
+    def instance(self):
+        """System logger instanse (read-only).
         """
-        return self.__system
+        return self.__instance
 
     def access(self, record):
         self.info(self.template % record)
 
     def debug(self, message, *args, **kwargs):
-        self.system.debug(message, *args, **kwargs)
+        self.instance.debug(message, *args, **kwargs)
 
     def info(self, message, *args, **kwargs):
-        self.system.info(message, *args, **kwargs)
+        self.instance.info(message, *args, **kwargs)
 
     def warning(self, message, *args, **kwargs):
-        self.system.warning(message, *args, **kwargs)
+        self.instance.warning(message, *args, **kwargs)
 
     def error(self, message, *args, **kwargs):
-        self.system.error(message, *args, **kwargs)
+        self.instance.error(message, *args, **kwargs)
 
     def exception(self, message, *args, **kwargs):
-        self.system.exception(message, *args, **kwargs)
+        self.instance.exception(message, *args, **kwargs)
 
     def critical(self, message, *args, **kwargs):
-        self.system.critical(message, *args, **kwargs)
+        self.instance.critical(message, *args, **kwargs)
