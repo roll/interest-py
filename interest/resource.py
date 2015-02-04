@@ -1,7 +1,6 @@
 import asyncio
 import inspect
-from .endpoint import Endpoint
-from .helpers import Chain, OrderedMetaclass
+from .helpers import Chain, OrderedMetaclass, STICKER
 from .middleware import Middleware
 from .protocol import http
 
@@ -47,7 +46,7 @@ class Resource(Chain, Middleware, metaclass=OrderedMetaclass):
             func = getattr(type(self), name)
             if inspect.isdatadescriptor(func):
                 continue
-            constraints = getattr(func, http.MARKER, None)
-            if constraints is not None:
-                endpoint = Endpoint(self, name=name, **constraints)
+            factory = getattr(func, STICKER, None)
+            if factory is not None:
+                endpoint = factory(self, name=name)
                 self._append(endpoint, name=endpoint.name)

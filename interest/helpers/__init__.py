@@ -5,3 +5,4 @@ from .match import Match, ExistentMatch, NonExistentMatch
 from .name import name
 from .order import OrderedMetaclass
 from .plugin import PluginImporter
+from .sticker import STICKER

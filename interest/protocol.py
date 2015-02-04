@@ -1,6 +1,8 @@
 import asyncio
 from aiohttp import web
 from functools import partial
+from .endpoint import Endpoint
+from .helpers import STICKER
 
 
 class Metaclass(type):
@@ -31,8 +33,6 @@ class http(metaclass=Metaclass):
     """
 
     # Public
-
-    MARKER = '_interest.http'
 
     @classmethod
     def bind(cls, param):
@@ -89,9 +89,10 @@ class http(metaclass=Metaclass):
         return cls.__register(param, methods=methods)
 
     @classmethod
-    def __register(cls, function, *, path=None, methods=None):
+    def __register(cls, function, **kwargs):
         if not asyncio.iscoroutine(function):
             function = asyncio.coroutine(function)
-        constraints = {'path': path, 'methods': methods}
-        setattr(function, cls.MARKER, constraints)
+        endpoint = kwargs.pop('endpoint', Endpoint)
+        factory = partial(endpoint, **kwargs)
+        setattr(function, STICKER, factory)
         return function
