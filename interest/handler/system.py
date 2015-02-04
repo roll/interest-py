@@ -7,43 +7,31 @@ from .record import Record
 
 
 class SystemHandler(ServerHttpProtocol, Handler):
-    """System handler representation.
+    """Handler implementation on top of aiohttp package.
 
-    Handler is used by :class:`.Service` for handling HTTP requests
-    on low-level. It's derived from :class:`.http.Handler`
-    and implements :class:`asyncio.Protocol`.
-
-    Example
-    -------
-    You can tweak some handler parameters like connection timeout
-    by subclassing handler. Also you can fully reimplent service's request
-    handling logic. Of course it's not recommended but it's possible. May
-    be you want to implement a different middleware interface and so on::
-
-        class CustomHandler(Handler):
-
-            # Basic
-
-            connection_timeout = 30
-
-            # Advanced
-
-            @asyncio.coroutine
-            def handle_request(self, message, payload):
-                request = Request(
-                    None, message, payload,
-                    self.transport, self.reader, self.writer)
-                response = ...
-                response_message = response.start(request)
-                yield from response.write_eof()
-                self.keep_alive(response_message.keep_alive())
-
-        service = Service(path='/api/v1', handler=CustomHandler)
+    Handler implementation derived from aiohttp's class
+    :class:`aiohttp.server.ServerHttpProtocol`.
 
     Parameters
     ----------
     service: :class:`.Service`
         Service instance.
+    connection_timeout: int
+        Time to keep connection opened in seconds.
+    request_timeout: int
+        Slow request timeout in seconds.
+
+    Example
+    -------
+    Add handler to a service with adjusted parameters::
+
+        service = Service(
+            path='/api/v1',
+            handler=SystemHandler.config(
+                connection_timeout=25,
+                request_timeout=5))
+
+    .. seealso:: API: :class:`.Handler`
     """
 
     # Public
@@ -69,15 +57,6 @@ class SystemHandler(ServerHttpProtocol, Handler):
 
     @asyncio.coroutine
     def handle_request(self, message, payload):
-        """Handle a request.
-
-        Parameters
-        ----------
-        message
-            Request's message.
-        payload
-            Request's payload.
-        """
         start_time = self.service.loop.time()
         request = http.Request(
             None, message, payload,
@@ -93,8 +72,6 @@ class SystemHandler(ServerHttpProtocol, Handler):
         self.keep_alive(resp_msg.keep_alive())
         stop_time = self.service.loop.time()
         self.log_access(message, None, resp_msg, stop_time - start_time)
-
-    # Internal (ServerHttpProtocol's API hooks)
 
     def log_access(self, message, environ, response, time):
         try:

@@ -11,6 +11,11 @@ class Logger(Configurable, metaclass=ABCMeta):
     concept about Logger is to be proxy layer between application/interest
     logging needs and concrete logging systems/implementations.
 
+    Parameters
+    ----------
+    service: :class:`.Service`
+        Service instance.
+
     Example
     -------
     Logger is abstract just formally. We can implenent a no-op
@@ -23,11 +28,6 @@ class Logger(Configurable, metaclass=ABCMeta):
             pass
 
         service = Service(path='/api/v1', logger=NoopLogger)
-
-    Parameters
-    ----------
-    service: :class:`.Service`
-        Service instance.
     """
 
     # Public

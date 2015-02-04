@@ -5,6 +5,16 @@ from ..helpers import Configurable
 
 class Handler(Configurable, asyncio.Protocol, metaclass=ABCMeta):
     """Handler representation (abstract).
+
+    Handler is used by :class:`.Service` for handling HTTP requests
+    on low-level. Handler has to implement :class:`asyncio.Protocol`.
+
+    Parameters
+    ----------
+    service: :class:`.Service`
+        Service instance.
+
+    .. seealso:: API: :class:`.Configurable`
     """
 
     # Public
