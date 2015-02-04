@@ -232,7 +232,8 @@ class Service(Chain, Middleware):
         self.__providers = {}
         for key, cls in providers.items():
             provider = cls(self)
-            value = provider()
+            value = self.loop.run_until_complete(
+                provider.provide())
             setattr(self, key, value)
             self.__providers[key] = provider
 

@@ -10,10 +10,6 @@ class Provider(Configurable, metaclass=ABCMeta):
     def __init__(self, service):
         self.__service = service
 
-    def __call__(self):
-        return (yield from
-            self.service.loop.run_until_complete(self.provide()))
-
     def __repr__(self):
         template = '<Provider provide="{self.provide}">'
         compiled = template.format(self=self)
