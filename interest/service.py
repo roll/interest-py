@@ -73,8 +73,6 @@ class Service(Middleware):
             providers = self.PROVIDERS
         if converters is None:
             converters = self.CONVERTERS
-        if service is not self:
-            path = service.path + (path or '')
         super().__init__(service, name=name, path=path, methods=methods)
         self.__loop = loop
         self.__logger = logger(self)
@@ -91,7 +89,6 @@ class Service(Middleware):
             return value
         raise AttributeError(name)
 
-    # TODO: improve
     def __repr__(self):
         template = (
             '<Service path="{self.path}" '
@@ -225,7 +222,7 @@ class Service(Middleware):
             if not asyncio.iscoroutine(middleware):
                 middleware = middleware(self)
                 name = middleware.name
-            self._add(middleware, name=name)
+            self._append(middleware, name=name)
         self.__on_change()
 
     def __add_providers(self, providers):

@@ -55,7 +55,6 @@ class Middleware(Chain, Configurable, metaclass=OrderedMetaclass):
     def __call__(self, request):
         return (yield from self.process(request))
 
-    # TODO: improve
     def __repr__(self):
         template = (
             '<Middleware path="{self.path}" '
@@ -119,4 +118,4 @@ class Middleware(Chain, Configurable, metaclass=OrderedMetaclass):
             constraints = getattr(func, http.MARKER, None)
             if constraints is not None:
                 endpoint = Endpoint(self, name=name, **constraints)
-                self._add(endpoint, name=endpoint.name)
+                self._append(endpoint, name=endpoint.name)

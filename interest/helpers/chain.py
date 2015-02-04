@@ -27,7 +27,7 @@ class Chain(Iterable, Sized):
 
     # Protected
 
-    def _add(self, item, name=None):
+    def _append(self, item, name=None):
         self.__list.append(item)
         if name is not None:
             self.__dict[name] = item
