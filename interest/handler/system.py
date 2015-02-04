@@ -1,11 +1,12 @@
 import asyncio
 import traceback
+from aiohttp.server import ServerHttpProtocol
 from ..helpers import http
 from .handler import Handler
 from .record import Record
 
 
-class SystemHandler(http.Handler, Handler):
+class SystemHandler(ServerHttpProtocol, Handler):
     """Handler representation.
 
     Handler is used by :class:`.Service` for handling HTTP requests
@@ -47,22 +48,23 @@ class SystemHandler(http.Handler, Handler):
 
     # Public
 
-    connection_timeout = 75
-    """Time to keep connection opened in seconds.
+    CONNECTION_TIMEOUT = 75
+    """Time to keep connection opened in seconds (default).
     """
-    request_timeout = 15
-    """Slow request timeout in seconds.
+    REQUEST_TIMEOUT = 15
+    """Slow request timeout in seconds (default).
     """
 
-    def __init__(self, service):
-        # TODO: None?
-        loop = None
-        if service is not None:
-            loop = service.loop
-        http.Handler.__init__(
-            self, loop=loop,
-            keep_alive=self.connection_timeout,
-            timeout=self.request_timeout)
+    def __init__(self, service, *,
+                 connection_timeout=None, request_timeout=None):
+        if connection_timeout is None:
+            connection_timeout = self.CONNECTION_TIMEOUT
+        if request_timeout is None:
+            request_timeout = self.REQUEST_TIMEOUT
+        ServerHttpProtocol.__init__(
+            self, loop=service.loop,
+            keep_alive=connection_timeout,
+            timeout=request_timeout)
         Handler.__init__(self, service)
 
     @asyncio.coroutine

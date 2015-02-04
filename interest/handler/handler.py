@@ -7,6 +7,12 @@ class Handler(Configurable, asyncio.Protocol, metaclass=ABCMeta):
 
     # Public
 
+    def __new__(cls, *args, **kwargs):
+        self = object.__new__(cls)
+        self.__args = args
+        self.__kwargs = kwargs
+        return self
+
     def __init__(self, service):
         self.__service = service
 
@@ -19,4 +25,4 @@ class Handler(Configurable, asyncio.Protocol, metaclass=ABCMeta):
     def fork(self):
         """Handler factory for asyncio's loop.create_server.
         """
-        return type(self)(self.service)
+        return type(self)(*self.__args, **self.__kwargs)
