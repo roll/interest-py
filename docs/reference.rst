@@ -14,7 +14,6 @@ Middleware
 ----------
 
 .. autoclass:: interest.Middleware
-.. autoclass:: interest.SystemMiddleware
 
 Resource
 --------
@@ -25,6 +24,11 @@ Endpoint
 --------
 
 .. autoclass:: interest.Endpoint
+
+Adapter
+-------
+
+.. autoclass:: interest.Adapter
 
 Converter
 ---------

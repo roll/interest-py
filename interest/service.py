@@ -1,10 +1,10 @@
 import asyncio
+from .backend import http
 from .logger import SystemLogger
 from .handler import SystemHandler
 from .helpers import Chain
 from .router import SystemRouter
 from .middleware import Middleware
-from .protocol import http
 
 
 class Service(Chain, Middleware):
@@ -72,7 +72,6 @@ class Service(Chain, Middleware):
         if providers is None:
             providers = self.PROVIDERS
         super().__init__(service, name=name, path=path, methods=methods)
-        self.__path = path
         self.__loop = loop
         self.__logger = logger(self)
         self.__handler = handler(self)

@@ -1,6 +1,6 @@
 import asyncio
+from .backend import http
 from .helpers import Configurable, NonExistentMatch, name
-from .protocol import http
 
 
 class Endpoint(Configurable):

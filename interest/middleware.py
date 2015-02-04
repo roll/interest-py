@@ -1,6 +1,6 @@
 import asyncio
+from .backend import http
 from .helpers import Configurable, name
-from .protocol import http
 
 
 class Middleware(Configurable):

@@ -1,9 +1,9 @@
 import asyncio
 import inspect
+from .backend import http
 from .endpoint import Endpoint
 from .helpers import Chain, OrderedMetaclass, STICKER
 from .middleware import Middleware
-from .protocol import http
 
 
 class Resource(Chain, Middleware, metaclass=OrderedMetaclass):
