@@ -3,8 +3,8 @@ from abc import ABCMeta, abstractmethod
 from ..helpers import ExistentMatch, NonExistentMatch
 
 
-class Matcher(metaclass=ABCMeta):
-    """Matcher representation (abstract).
+class Pattern(metaclass=ABCMeta):
+    """Pattern representation (abstract).
     """
 
     # Public
@@ -46,20 +46,20 @@ class Matcher(metaclass=ABCMeta):
         if plain:
             # Plain pattern
             pattern = path
-            return PlainMatcher(pattern, convs)
+            return PlainPattern(pattern, convs)
         else:
             # Regex pattern
             pattern = '/' + '/'.join(parts)
             if path.endswith('/') and pattern != '/':
                 pattern += '/'
-            return RegexMatcher(pattern, convs)
+            return RegexPattern(pattern, convs)
 
     @abstractmethod
     def match(self, path, left=False):
         pass  # pragma: no cover
 
 
-class PlainMatcher(Matcher):
+class PlainPattern(Pattern):
 
     # Public
 
@@ -68,12 +68,9 @@ class PlainMatcher(Matcher):
         self.__convs = convs
 
     def __repr__(self):
-        template = '<PlainMatcher "{pattern}">'
+        template = '<PlainPattern "{pattern}">'
         compiled = template.format(pattern=self.__pattern)
         return compiled
-
-    def build(self, *args, **kwargs):
-        raise NotImplementedError()
 
     def match(self, path, left=False):
         match = ExistentMatch()
@@ -86,7 +83,7 @@ class PlainMatcher(Matcher):
         return match
 
 
-class RegexMatcher(Matcher):
+class RegexPattern(Pattern):
 
     # Public
 

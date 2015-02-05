@@ -1,6 +1,6 @@
 from ..helpers import Config, ExistentMatch, NonExistentMatch
 from .converter import Converter
-from .matcher import Matcher
+from .pattern import Pattern
 
 
 class Router(Config):
@@ -18,7 +18,7 @@ class Router(Config):
             converters = self.CONVERTERS
         self.__service = service
         self.__add_converters(converters)
-        self.__matchers = {}
+        self.__patterns = {}
 
     @property
     def service(self):
@@ -50,11 +50,11 @@ class Router(Config):
         """
         match = ExistentMatch()
         if path is not None:
-            matcher = self.__get_matcher(path)
-            match = matcher.match(request.path)
+            pattern = self.__get_pattern(path)
+            match = pattern.match(request.path)
         elif root is not None:
-            matcher = self.__get_matcher(root)
-            match = matcher.match(request.path, left=True)
+            pattern = self.__get_pattern(root)
+            match = pattern.match(request.path, left=True)
         if not match:
             return NonExistentMatch()
         if methods:
@@ -82,8 +82,8 @@ class Router(Config):
         for key, cls in econverters.items():
             self.__converters[key] = cls(self.service)
 
-    def __get_matcher(self, path):
-        if path not in self.__matchers:
-            self.__matchers[path] = Matcher.create(
+    def __get_pattern(self, path):
+        if path not in self.__patterns:
+            self.__patterns[path] = Pattern.create(
                 path, self.__converters)
-        return self.__matchers[path]
+        return self.__patterns[path]

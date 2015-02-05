@@ -78,13 +78,12 @@ class Service(Middleware):
         self.__apply_providers(providers)
 
     def __repr__(self):
-        import json
         template = (
             '<Service path="{self.path}" '
             'methods="{self.methods}" '
             'middlewares={middlewares}>')
         compiled = template.format(
-            self=self, middlewares=json.dumps(list(self)))
+            self=self, middlewares=list(self))
         return compiled
 
     @property

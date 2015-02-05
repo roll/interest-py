@@ -1,15 +1,15 @@
 import unittest
 from unittest.mock import Mock
 from importlib import import_module
-component = import_module('interest.router.matcher')
+component = import_module('interest.router.pattern')
 
 
-class MatcherTest(unittest.TestCase):
+class PatternTest(unittest.TestCase):
 
     # Helpers
 
-    P = component.PlainMatcher
-    R = component.RegexMatcher
+    P = component.PlainPattern
+    R = component.RegexPattern
     N = component.NonExistentMatch()
     E = Exception
 
@@ -22,7 +22,7 @@ class MatcherTest(unittest.TestCase):
     }
 
     fixtures = [
-        # Matcher, path, left, match, type/exception
+        # Pattern, path, left, match, type/exception
         ['/<>', None, None, None, E],
         ['/test', '/test2', False, N, P],
         ['/test', '/test', False, {}, P],
@@ -37,13 +37,13 @@ class MatcherTest(unittest.TestCase):
 
     def test(self):
         for fixture in self.fixtures:
-            (matcher, path, left, match, tex) = fixture
+            (pattern, path, left, match, tex) = fixture
             if issubclass(tex, Exception):
                 self.assertRaises(tex,
-                    component.Matcher.create, matcher, self.converters)
+                    component.Pattern.create, pattern, self.converters)
                 continue
-            matcher = component.Matcher.create(matcher, self.converters)
-            self.assertIsInstance(matcher, tex, (matcher, fixture))
+            pattern = component.Pattern.create(pattern, self.converters)
+            self.assertIsInstance(pattern, tex, (pattern, fixture))
             self.assertEqual(
-                matcher.match(path, left),
-                match, (matcher, fixture))
+                pattern.match(path, left),
+                match, (pattern, fixture))
