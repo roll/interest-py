@@ -1,7 +1,6 @@
 import asyncio
 import inspect
 from .backend import http
-from .endpoint import Endpoint
 from .helpers import Chain, Config, OrderedMetaclass, STICKER, name
 
 
@@ -37,7 +36,7 @@ class Middleware(Chain, Config, metaclass=OrderedMetaclass):
     NAME = name
     PATH = ''
     METHODS = []
-    ENDPOINT = Endpoint
+    ENDPOINT = None
 
     def __init__(self, service, *,
                  name=None, path=None, methods=None, endpoint=None):
@@ -49,6 +48,9 @@ class Middleware(Chain, Config, metaclass=OrderedMetaclass):
             methods = self.METHODS
         if endpoint is None:
             endpoint = self.ENDPOINT
+        if endpoint is None:
+            from .endpoint import Endpoint
+            endpoint = Endpoint
         if self is not service:
             path = service.path + path
         super().__init__()
@@ -151,8 +153,7 @@ class Middleware(Chain, Config, metaclass=OrderedMetaclass):
                 continue
             params = getattr(func, STICKER, None)
             if params is not None:
-                factory = params.pop('endpoint', self.__endpoint)
-                endpoint = factory(self, name=name, **params)
+                endpoint = self.__endpoint(self, name=name, **params)
                 self.push(endpoint)
 
     def __on_chain_change(self):
