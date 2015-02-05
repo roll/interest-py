@@ -51,12 +51,15 @@ class Middleware(Chain, Config, metaclass=OrderedMetaclass):
         if endpoint is None:
             from .endpoint import Endpoint
             endpoint = Endpoint
+        relpath = path
+        abspath = path
         if self is not service:
-            path = service.path + path
+            abspath = service.path + path
         super().__init__()
         self.__service = service
         self.__name = name
-        self.__path = path
+        self.__relpath = relpath
+        self.__abspath = abspath
         self.__methods = methods
         self.__endpoint = endpoint
         self.__add_endpoints()
@@ -92,7 +95,7 @@ class Middleware(Chain, Config, metaclass=OrderedMetaclass):
     def path(self):
         """Middleware's path (read-only).
         """
-        return self.__path
+        return self.__abspath
 
     @property
     def methods(self):
@@ -120,10 +123,8 @@ class Middleware(Chain, Config, metaclass=OrderedMetaclass):
             If middlewares chain doesn't return
             :class:`.http.StreamResponse`.
         """
-        for endpoint in self:
-            match = endpoint.match(request)
-            if match:
-                return (yield from endpoint(request, **match))
+        if self:
+            return (yield from self[0](request))
         raise http.NotFound()
 
     @asyncio.coroutine
@@ -151,9 +152,13 @@ class Middleware(Chain, Config, metaclass=OrderedMetaclass):
             func = getattr(type(self), name)
             if inspect.isdatadescriptor(func):
                 continue
-            params = getattr(func, STICKER, None)
-            if params is not None:
-                endpoint = self.__endpoint(self, name=name, **params)
+            kwargs = getattr(func, STICKER, None)
+            if kwargs is not None:
+                path = self.__relpath
+                path += kwargs.pop('path', '')
+                respond = getattr(self, name)
+                endpoint = self.__endpoint(self.service,
+                    name=name, path=path, respond=respond, **kwargs)
                 self.push(endpoint)
 
     def __on_chain_change(self):

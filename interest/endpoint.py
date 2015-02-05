@@ -1,37 +1,38 @@
 import asyncio
 from .backend import http
-from .helpers import Config, NonExistentMatch, name
+from .middleware import Middleware
 
 
-class Endpoint(Config):
+class Endpoint(Middleware):
     """Endpoint representation.
 
-    .. seealso:: API: :class:`.Config`
+    .. seealso:: API: :class:`.Middleware`
     """
 
     # Public
 
-    NAME = name
-    PATH = ''
-    METHODS = []
+    RESPOND = None
 
-    def __init__(self, resource, *, name=None, path=None, methods=None):
-        if name is None:
-            name = self.NAME
-        if path is None:
-            path = self.PATH
-        if methods is None:
-            methods = self.METHODS
-        path = resource.path + path
-        self.__resource = resource
-        self.__name = name
-        self.__path = path
-        self.__methods = methods
-        self.__coroutine = getattr(resource, name)
+    def __init__(self, service, *,
+                 name=None, path=None, methods=None, endpoint=None,
+                 respond=None):
+        if respond is None:
+            respond = self.RESPOND
+        super().__init__(service,
+            name=name, path=path, methods=methods, endpoint=endpoint)
+        self.__respond = respond
 
     @asyncio.coroutine
-    def __call__(self, request, **kwargs):
-        return (yield from self.__coroutine(request, **kwargs))
+    def __call__(self, request):
+        match = self.service.router.match(request, path=self.path)
+        if match:
+            lmatch = self.service.router.match(request, methods=self.methods)
+            if not lmatch:
+                raise http.MethodNotAllowed(request.method, self.methods)
+            if self.respond is not None:
+                return (yield from self.respond(request, **match))
+            return (yield from self.process(request))
+        return (yield from self.next(request))
 
     def __repr__(self):
         template = (
@@ -41,30 +42,5 @@ class Endpoint(Config):
         return compiled
 
     @property
-    def service(self):
-        return self.__resource.service
-
-    @property
-    def resource(self):
-        return self.__resource
-
-    @property
-    def name(self):
-        return self.__name
-
-    @property
-    def path(self):
-        return self.__path
-
-    @property
-    def methods(self):
-        return self.__methods
-
-    def match(self, request):
-        match = self.service.router.match(request, path=self.path)
-        if not match:
-            return NonExistentMatch()
-        lmatch = self.service.router.match(request, methods=self.methods)
-        if not lmatch:
-            raise http.MethodNotAllowed(request.method, self.methods)
-        return match
+    def respond(self):
+        return self.__respond

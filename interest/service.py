@@ -1,5 +1,4 @@
 import asyncio
-from .backend import http
 from .logger import Logger
 from .handler import Handler
 from .router import Router
@@ -79,7 +78,6 @@ class Service(Middleware):
         self.__router = router(self)
         self.__add_middlewares(middlewares)
         self.__add_providers(providers)
-        self.__patterns = {}
 
     def __repr__(self):
         template = (
@@ -133,12 +131,6 @@ class Service(Middleware):
             self.loop.run_forever()
         except KeyboardInterrupt:
             pass
-
-    @asyncio.coroutine
-    def process(self, request):
-        if self:
-            return (yield from self[0](request))
-        raise http.NotFound()
 
     # Private
 
