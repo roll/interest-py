@@ -26,9 +26,6 @@ class Router(Config):
         """
         return self.__service
 
-    def build(self, *args, **kwargs):
-        raise NotImplementedError()
-
     def match(self, request, *, root=None, path=None, methods=None):
         """Check if request matchs the given parameters.
 
@@ -62,6 +59,9 @@ class Router(Config):
             if request.method not in methods:
                 return None
         return match
+
+    def url(self, *args, **kwargs):
+        raise NotImplementedError()
 
     # Private
 

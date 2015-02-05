@@ -36,11 +36,11 @@ class Pattern(metaclass=ABCMeta):
         return RegexPattern(pattern, parsers)
 
     @abstractmethod
-    def build(self, *args, **kwargs):
+    def match(self, path, left=False):
         pass  # pragma: no cover
 
     @abstractmethod
-    def match(self, path, left=False):
+    def url(self, *args, **kwargs):
         pass  # pragma: no cover
 
 
@@ -57,9 +57,6 @@ class PlainPattern(Pattern):
         compiled = template.format(pattern=self.__pattern)
         return compiled
 
-    def build(self, *args, **kwargs):
-        raise NotImplementedError()
-
     def match(self, path, left=False):
         match = Match()
         if left:
@@ -69,6 +66,9 @@ class PlainPattern(Pattern):
         if path != self.__pattern:
             return None
         return match
+
+    def url(self, *args, **kwargs):
+        raise NotImplementedError()
 
 
 class RegexPattern(Pattern):
@@ -91,9 +91,6 @@ class RegexPattern(Pattern):
         compiled = template.format(pattern=self.__pattern)
         return compiled
 
-    def build(self, *args, **kwargs):
-        raise NotImplementedError()
-
     def match(self, path, left=False):
         match = Match()
         pattern = self.__full
@@ -110,3 +107,6 @@ class RegexPattern(Pattern):
                 return None
             match[name] = value
         return match
+
+    def url(self, *args, **kwargs):
+        raise NotImplementedError()
