@@ -135,11 +135,10 @@ class Service(Middleware):
     # Private
 
     def __add_middlewares(self, middlewares):
-        for middleware in middlewares:
+        for middleware in reversed(middlewares):
             if not asyncio.iscoroutine(middleware):
                 middleware = middleware(self)
-            self.push(middleware)
-        self.__on_change()
+            self.push(middleware, index=0)
 
     def __add_providers(self, providers):
         self.__providers = {}
