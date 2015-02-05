@@ -1,5 +1,5 @@
 from ..helpers import Config, ExistentMatch, NonExistentMatch
-from .parser import Parser
+from .parser import StringParser, PathParser, IntegerParser, FloatParser
 from .pattern import Pattern
 
 
@@ -66,10 +66,10 @@ class Router(Config):
     # Private
 
     __PARSERS = {
-       'str': Parser.config(pattern=r'[^<>/]+'),
-       'path': Parser.config(pattern=r'[^<>]+'),
-       'int': Parser.config(pattern=r'[1-9]+', convert=int),
-       'float': Parser.config(pattern=r'[1-9.]+', convert=float)}
+       'str': StringParser,
+       'path': PathParser,
+       'int': IntegerParser,
+       'float': FloatParser}
 
     def __add_parsers(self, parsers):
         self.__parsers = {}

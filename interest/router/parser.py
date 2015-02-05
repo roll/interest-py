@@ -83,3 +83,33 @@ class Parser(Config):
             Restored string.
         """
         return self.__restore
+
+
+class StringParser(Parser):
+
+    # Public
+
+    PATTERN = '[^<>/]+'
+
+
+class PathParser(Parser):
+
+    # Public
+
+    PATTERN = r'[^<>]+'
+
+
+class IntegerParser(Parser):
+
+    # Public
+
+    PATTERN = r'[1-9]+'
+    CONVERT = int
+
+
+class FloatParser(Parser):
+
+    # Public
+
+    PATTERN = r'[1-9.]+'
+    CONVERT = float
