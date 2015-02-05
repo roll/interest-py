@@ -1,48 +1,60 @@
-from abc import ABCMeta
+import logging
 from ..helpers import Configurable
 
 
-class Logger(Configurable, metaclass=ABCMeta):
+class Logger(Configurable):
     """Base Logger class (abstract).
 
     Logger is used by :class:`.Service` for all logging purposes.
     Logger subclasses can use python's system logging module
-    (see :class:`.SystemLogger`) or something other. But main
-    concept about Logger is to be proxy layer between application/interest
-    logging needs and concrete logging systems/implementations.
 
     Parameters
     ----------
     service: :class:`.Service`
         Service instance.
+    system: object
+        System logger.
     template: str
         Template for access formatting.
 
     Example
     -------
-    Logger is abstract just formally. We can implenent a no-op
-    logger doing nothing::
+    For production use let's print the access log to the stdout
+    and skip the debug log at all::
 
-        class NoopLogger(Logger):
+        class ProductionLogger(Logger):
 
             # Public
 
-            pass
+            SYSTEM = logging.getLogger('myapp')
+            TEMPLATE = '%(host)s %(time)s and so on'
 
-        service = Service(path='/api/v1', logger=NoopLogger)
+            def access(self, record):
+                print(self.template % record)
+
+            def debug(self, message, *args, **kwargs):
+                pass
+
+        service = Service(path='/api/v1', logger=ProductionLogger)
     """
 
     # Public
 
+    SYSTEM = logging.getLogger('interest')
+    """System logget (default).
+    """
     TEMPLATE = ('%(host)s %(time)s "%(request)s" %(status)s '
                 '%(length)s "%(referer)s" "%(agent)s"')
     """Template for access formatting (default).
     """
 
-    def __init__(self, service, *, template=None):
+    def __init__(self, service, *, system=None, template=None):
+        if system is None:
+            system = self.SYSTEM
         if template is None:
             template = self.TEMPLATE
         self.__service = service
+        self.__system = system
         self.__template = template
 
     @property
@@ -52,59 +64,65 @@ class Logger(Configurable, metaclass=ABCMeta):
         return self.__service
 
     @property
+    def system(self):
+        """System logger (read-only).
+        """
+        return self.__system
+
+    @property
     def template(self):
         """Template for access formatting (read-only).
         """
         return self.__template
 
     def access(self, record):
-        """Log access event (no-op).
+        """Log access event.
 
         Parameters
         ----------
         record: :class:`.Record`
             Record dict to use with template.
         """
-        pass
+        self.info(self.template % record)
 
     def debug(self, message, *args, **kwargs):
-        """Log debug event (no-op).
+        """Log debug event.
 
         Compatible with logging.debug signature.
         """
-        pass
+        self.system.debug(message, *args, **kwargs)
 
     def info(self, message, *args, **kwargs):
-        """Log info event (no-op).
+        """Log info event.
 
         Compatible with logging.info signature.
         """
-        pass
+        self.system.info(message, *args, **kwargs)
 
     def warning(self, message, *args, **kwargs):
-        """Log warning event (no-op).
+        """Log warning event.
 
         Compatible with logging.warning signature.
         """
-        pass
+        self.system.warning(message, *args, **kwargs)
 
     def error(self, message, *args, **kwargs):
-        """Log error event (no-op).
+        """Log error event.
 
         Compatible with logging.error signature.
         """
-        pass
+        self.system.error(message, *args, **kwargs)
 
     def exception(self, message, *args, **kwargs):
-        """Log exception event (no-op).
+        """Log exception event.
 
         Compatible with logging.exception signature.
         """
-        pass
+        self.system.exception(message, *args, **kwargs)
 
     def critical(self, message, *args, **kwargs):
-        """Log critical event (no-op).
+        """Log critical event.
 
         Compatible with logging.critical signature.
         """
-        pass
+        self.system.critical(message, *args, **kwargs)

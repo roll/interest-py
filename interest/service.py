@@ -1,6 +1,6 @@
 import asyncio
 from .backend import http
-from .logger import SystemLogger
+from .logger import Logger
 from .handler import SystemHandler
 from .helpers import Chain
 from .router import SystemRouter
@@ -18,14 +18,14 @@ class Service(Chain, Middleware):
 
     Parameters
     ----------
-    path: str
-        Path prefix for HTTP path routing.
     loop: object
         Custom asyncio's loop.
-    handler: type
-        :class:`.Handler` subclass.
     logger: type
         :class:`.Logger` subclass.
+    handler: type
+        :class:`.Handler` subclass.
+    router: type
+        :class:`.Router` subclass.
 
     Example
     -------
@@ -47,7 +47,7 @@ class Service(Chain, Middleware):
     # Public
 
     LOOP = asyncio.get_event_loop()
-    LOGGER = SystemLogger
+    LOGGER = Logger
     HANDLER = SystemHandler
     ROUTER = SystemRouter
     MIDDLEWARES = []
