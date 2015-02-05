@@ -1,6 +1,7 @@
 import asyncio
 from .logger import Logger
 from .handler import Handler
+from .helpers import loop
 from .router import Router
 from .middleware import Middleware
 
@@ -45,7 +46,7 @@ class Service(Middleware):
 
     # Public
 
-    LOOP = asyncio.get_event_loop()
+    LOOP = loop
     LOGGER = Logger
     HANDLER = Handler
     ROUTER = Router
@@ -126,7 +127,7 @@ class Service(Middleware):
         server = self.loop.create_server(self.handler.fork, host, port)
         server = self.loop.run_until_complete(server)
         self.logger.info(
-            'Start listening at http://{host}:{port}'.
+            'Start listening host={host} port={port}'.
             format(host=host, port=port))
         try:
             self.loop.run_forever()

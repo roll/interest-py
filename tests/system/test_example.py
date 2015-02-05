@@ -1,5 +1,6 @@
 import unittest
-from tests.system.server import Server
+from pathlib import Path
+from interest import Tester
 
 
 class ExampleTest(unittest.TestCase):
@@ -8,17 +9,21 @@ class ExampleTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.server = Server('demo/example.py')
-        cls.server.listen()
+        current = Path(__file__).parent
+        basedir = current / '..' / '..'
+        factory = basedir / 'demo' / 'example.py'
+        cls.tester = Tester(str(factory),
+            environ={'PYTHONPATH': str(basedir)})
+        cls.tester.start()
 
     @classmethod
     def tearDownClass(cls):
-        cls.server.close()
+        cls.tester.stop()
 
     # Tests
 
     def test_read(self):
-        response = self.server.make_request('GET', '/api/v1/comment/7')
+        response = self.tester.request('GET', '/api/v1/comment/7')
         self.assertEqual(response.status, 200)
         self.assertEqual(
             response.headers['CONTENT-TYPE'],
@@ -26,10 +31,10 @@ class ExampleTest(unittest.TestCase):
         self.assertEqual(response.json, {'key': 7})
 
     def test_upsert(self):
-        response = self.server.make_request('PUT', '/api/v1/comment')
+        response = self.tester.request('PUT', '/api/v1/comment')
         self.assertEqual(response.status, 201)
         self.assertEqual(response.json, {'message': 'Created'})
 
     def test_not_found(self):
-        response = self.server.make_request('PUT', '/api/v1/not-found')
+        response = self.tester.request('PUT', '/api/v1/not-found')
         self.assertEqual(response.status, 404)
