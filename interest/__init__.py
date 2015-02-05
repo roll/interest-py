@@ -1,7 +1,7 @@
 from .adapter import Adapter
 from .backend import http
 from .endpoint import Endpoint
-from .handler import Handler, SystemHandler, Record
+from .handler import Handler, Record
 from .helpers import Chain, Config, Configurable, Match
 from .logger import Logger
 from .middleware import Middleware

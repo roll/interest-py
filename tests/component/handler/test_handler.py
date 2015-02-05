@@ -2,7 +2,7 @@ import asyncio
 import unittest
 from importlib import import_module
 from unittest.mock import Mock, patch
-component = import_module('interest.handler.system')
+component = import_module('interest.handler.handler')
 
 
 class HandlerTest(unittest.TestCase):
@@ -13,7 +13,7 @@ class HandlerTest(unittest.TestCase):
         self.args = ('arg1',)
         self.kwargs = {'kwarg1': 'kwarg1'}
         self.service = Mock()
-        self.handler = component.SystemHandler(self.service)
+        self.handler = component.Handler(self.service)
 
     # Tests
 

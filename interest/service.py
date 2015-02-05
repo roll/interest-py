@@ -1,7 +1,7 @@
 import asyncio
 from .backend import http
 from .logger import Logger
-from .handler import SystemHandler
+from .handler import Handler
 from .helpers import Chain
 from .router import SystemRouter
 from .middleware import Middleware
@@ -48,7 +48,7 @@ class Service(Chain, Middleware):
 
     LOOP = asyncio.get_event_loop()
     LOGGER = Logger
-    HANDLER = SystemHandler
+    HANDLER = Handler
     ROUTER = SystemRouter
     MIDDLEWARES = []
     PROVIDERS = {}
