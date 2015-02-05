@@ -2,11 +2,11 @@ import asyncio
 import traceback
 from aiohttp.server import ServerHttpProtocol
 from ..backend import http
-from ..helpers import Configurable
+from ..helpers import Config
 from .record import Record
 
 
-class Handler(Configurable, ServerHttpProtocol):
+class Handler(Config, ServerHttpProtocol):
     """Handler on top of aiohttp package.
 
     Handler is used by :class:`.Service` for handling HTTP requests
@@ -32,7 +32,7 @@ class Handler(Configurable, ServerHttpProtocol):
                 connection_timeout=25,
                 request_timeout=5))
 
-    .. seealso:: API: :class:`.Configurable`
+    .. seealso:: API: :class:`.Config`
     """
 
     # Public

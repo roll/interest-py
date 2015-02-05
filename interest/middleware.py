@@ -1,9 +1,9 @@
 import asyncio
 from .backend import http
-from .helpers import Configurable, name
+from .helpers import Config, name
 
 
-class Middleware(Configurable):
+class Middleware(Config):
     """Middleware representation (abstract).
 
     Parameters
@@ -26,6 +26,8 @@ class Middleware(Configurable):
 
         service = Service(path='/api/v1')
         service.add_middleware(MinimalMiddleware)
+
+    .. seealso:: API: :class:`.Config`
     """
 
     # Public

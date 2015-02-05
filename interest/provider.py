@@ -1,8 +1,8 @@
 import asyncio
-from .helpers import Configurable
+from .helpers import Config
 
 
-class Provider(Configurable):
+class Provider(Config):
     """Provider representation (abstract).
     """
 

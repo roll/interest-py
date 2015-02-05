@@ -1,15 +1,15 @@
-class Configurable:
-    """Configurable representation.
+class Config:
+    """Config interface.
     """
 
     # Public
 
     @classmethod
     def config(cls, **defaults):
-        return Config(cls, **defaults)
+        return ConfigEdition(cls, **defaults)
 
 
-class Config(Configurable):
+class ConfigEdition(Config):
     """Config representation.
     """
 
@@ -17,10 +17,10 @@ class Config(Configurable):
 
     def __init__(self, factory, **defaults):
         self.__factory = factory
-        self.__defaults = defaults
+        self.__add_defaults(defaults)
 
     def __call__(self, *args, **kwargs):
-        kwargs = self.__merge(self.__defaults, kwargs)
+        kwargs = self.__merge_dicts(self.__defaults, kwargs)
         return self.__factory(*args, **kwargs)
 
     def __repr__(self):
@@ -33,12 +33,17 @@ class Config(Configurable):
         return compiled
 
     def config(self, **defaults):
-        defaults = self.__merge(self.__defaults, defaults)
+        defaults = self.__merge_dicts(self.__defaults, defaults)
         return Config(self.__factory, **defaults)
 
     # Private
 
-    def __merge(self, dict1, dict2):
+    def __add_defaults(self, defaults):
+        self.__defaults = defaults
+        for key, value in defaults.items():
+            setattr(self, key.upper(), value)
+
+    def __merge_dicts(self, dict1, dict2):
         merged = dict1.copy()
         merged.update(dict2)
         return merged

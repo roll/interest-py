@@ -1,7 +1,7 @@
-from ..helpers import Configurable
+from ..helpers import Config
 
 
-class Converter(Configurable):
+class Converter(Config):
     """Converter representation.
 
     Parameters

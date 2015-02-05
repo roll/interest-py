@@ -1,8 +1,8 @@
 import logging
-from ..helpers import Configurable
+from ..helpers import Config
 
 
-class Logger(Configurable):
+class Logger(Config):
     """Base Logger class (abstract).
 
     Logger is used by :class:`.Service` for all logging purposes.
@@ -36,6 +36,8 @@ class Logger(Configurable):
                 pass
 
         service = Service(path='/api/v1', logger=ProductionLogger)
+
+    .. seealso:: API: :class:`.Config`
     """
 
     # Public

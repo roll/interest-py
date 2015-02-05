@@ -1,10 +1,12 @@
 import asyncio
 from .backend import http
-from .helpers import Configurable, NonExistentMatch, name
+from .helpers import Config, NonExistentMatch, name
 
 
-class Endpoint(Configurable):
+class Endpoint(Config):
     """Endpoint representation.
+
+    .. seealso:: API: :class:`.Config`
     """
 
     # Public

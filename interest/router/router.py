@@ -1,10 +1,12 @@
-from ..helpers import Configurable, ExistentMatch, NonExistentMatch
+from ..helpers import Config, ExistentMatch, NonExistentMatch
 from .converter import Converter
 from .pattern import Pattern
 
 
-class Router(Configurable):
+class Router(Config):
     """Router implementation.
+
+    .. seealso:: API: :class:`.Config`
     """
 
     # Public
