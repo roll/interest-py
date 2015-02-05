@@ -23,7 +23,6 @@ class PatternTest(unittest.TestCase):
 
     fixtures = [
         # Pattern, path, left, match, type/exception
-        ['/<>', None, None, None, E],
         ['/test', '/test2', False, N, P],
         ['/test', '/test', False, {}, P],
         ['/<key>', '/value', False, {'key': 'value'}, R],

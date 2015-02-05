@@ -9,50 +9,31 @@ class Pattern(metaclass=ABCMeta):
 
     # Public
 
-    PLAIN_PATTERN = re.compile('^[^<>/]+$')
-    REGEX_PATTERN = re.compile(r'^\<(?P<name>\w+)(?::(?P<meta>\w+))?\>$')
-    REGEX_TEMPLATE = '(?P<{name}_{meta}>{parser.pattern})'
+    PARSER_PATTERN = re.compile(r'\<(?P<name>\w+)(?::(?P<meta>\w+))?\>')
+    PARSER_TEMPLATE = '(?P<{name}_{meta}>{parser.pattern})'
 
     @classmethod
     def create(cls, path, parsers):
-        parts = []
-        plain = True
-        for part in path.split('/'):
-            if not part:
-                continue
-            # Check regex pattern
-            match = cls.REGEX_PATTERN.match(part)
-            if match:
-                name = match.group('name')
-                meta = match.group('meta')
-                if meta is None:
-                    meta = 'str'
-                try:
-                    parser = parsers[meta]
-                except KeyError:
-                    raise ValueError(
-                        'Unsupported parser {meta}'.format(meta=meta))
-                part = cls.REGEX_TEMPLATE.format(
-                    name=name, meta=meta, parser=parser)
-                parts.append(part)
-                plain = False
-                continue
-            # Check plain pattern
-            match = cls.PLAIN_PATTERN.match(part)
-            if match:
-                parts.append(re.escape(part))
-                continue
-            raise ValueError('Invalid path "{path}"'.format(path=path))
-        if plain:
-            # Plain pattern
-            pattern = path
-            return PlainPattern(pattern, parsers)
-        else:
-            # Regex pattern
-            pattern = '/' + '/'.join(parts)
-            if path.endswith('/') and pattern != '/':
-                pattern += '/'
-            return RegexPattern(pattern, parsers)
+        matches = list(cls.PARSER_PATTERN.finditer(path))
+        if not matches:
+            return PlainPattern(path, parsers)
+        lastend = 0
+        pattern = ''
+        for match in matches:
+            name = match.group('name')
+            meta = match.group('meta')
+            if meta is None:
+                meta = 'str'
+            if meta not in parsers:
+                raise ValueError(
+                    'Unsupported parser {meta}'.format(meta=meta))
+            parser = parsers[meta]
+            pattern += re.escape(path[lastend:match.start()])
+            pattern += cls.PARSER_TEMPLATE.format(
+                name=name, meta=meta, parser=parser)
+            lastend = match.end()
+        pattern += re.escape(path[lastend:])
+        return RegexPattern(pattern, parsers)
 
     @abstractmethod
     def build(self, *args, **kwargs):

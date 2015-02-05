@@ -89,14 +89,14 @@ class StringParser(Parser):
 
     # Public
 
-    PATTERN = '[^<>/]+'
+    PATTERN = '[^/]+'
 
 
 class PathParser(Parser):
 
     # Public
 
-    PATTERN = r'[^<>]+'
+    PATTERN = r'[^]+'
 
 
 class IntegerParser(Parser):
