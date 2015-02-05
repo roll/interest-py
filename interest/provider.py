@@ -1,3 +1,4 @@
+import asyncio
 from .helpers import Config
 
 
@@ -15,6 +16,10 @@ class Provider(Config):
         assert provide is not None
         self.__service = service
         self.__provide = provide
+
+    @asyncio.coroutine
+    def __call__(self, service):
+        return (yield from self.provide(service))
 
     def __repr__(self):
         template = '<Provider provide="{self.provide}">'

@@ -50,7 +50,7 @@ class Service(Middleware):
     HANDLER = Handler
     ROUTER = Router
     MIDDLEWARES = []
-    PROVIDERS = {}
+    PROVIDERS = []
 
     def __init__(self, service=None, *,
                 name=None, path=None, methods=None, endpoint=None,
@@ -77,7 +77,7 @@ class Service(Middleware):
         self.__handler = handler(self)
         self.__router = router(self)
         self.__add_middlewares(middlewares)
-        self.__add_providers(providers)
+        self.__apply_providers(providers)
 
     def __repr__(self):
         template = (
@@ -140,18 +140,9 @@ class Service(Middleware):
                 middleware = middleware(self)
             self.push(middleware, index=0)
 
-    def __add_providers(self, providers):
-        self.__providers = {}
-        for key, cls in providers.items():
-            provider = cls(self)
-            value = self.loop.run_until_complete(
-                provider.provide())
-            setattr(self, key, value)
-            self.__providers[key] = provider
-
-    def __on_change(self):
-        next_middleware = None
-        for middleware in reversed(self):
-            if next_middleware is not None:
-                middleware.next = next_middleware
-            next_middleware = middleware
+    def __apply_providers(self, providers):
+        for provider in providers:
+            if not asyncio.iscoroutine(provider):
+                provider = provider(self)
+            self.loop.run_until_complete(
+                provider(self))
