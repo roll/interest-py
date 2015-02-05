@@ -80,7 +80,7 @@ class Router(Config):
         econverters = self.__CONVERTERS.copy()
         econverters.update(converters)
         for key, cls in econverters.items():
-            self.__converters[key] = cls(self)
+            self.__converters[key] = cls(self.service)
 
     def __get_pattern(self, path):
         if path not in self.__patterns:

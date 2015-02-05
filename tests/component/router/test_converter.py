@@ -9,18 +9,14 @@ class ConverterTest(unittest.TestCase):
     # Actions
 
     def setUp(self):
-        self.router = Mock()
         self.convert = Mock()
         self.converter = component.Converter(
-            self.router, pattern='pattern', convert=self.convert)
+            'service', pattern='pattern', convert=self.convert)
 
     # Tests
 
     def test_service(self):
-        self.assertEqual(self.converter.service, self.router.service)
-
-    def test_router(self):
-        self.assertEqual(self.converter.router, self.router)
+        self.assertEqual(self.converter.service, 'service')
 
     def test_pattern(self):
         self.assertEqual(self.converter.pattern, 'pattern')
