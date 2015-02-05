@@ -1,7 +1,7 @@
 from .chain import Chain
 from .config import Config
 from .loop import loop
-from .match import Match, ExistentMatch, NonExistentMatch
+from .match import Match
 from .name import name
 from .order import OrderedMetaclass
 from .plugin import PluginImporter

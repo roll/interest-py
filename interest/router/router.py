@@ -1,4 +1,4 @@
-from ..helpers import Config, ExistentMatch, NonExistentMatch
+from ..helpers import Config, Match
 from .parser import StringParser, PathParser, IntegerParser, FloatParser
 from .pattern import Pattern
 
@@ -48,7 +48,7 @@ class Router(Config):
         :class:`.Match`
             Match instance.
         """
-        match = ExistentMatch()
+        match = Match()
         if path is not None:
             pattern = self.__get_pattern(path)
             match = pattern.match(request.path)
@@ -56,11 +56,11 @@ class Router(Config):
             pattern = self.__get_pattern(root)
             match = pattern.match(request.path, left=True)
         if not match:
-            return NonExistentMatch()
+            return None
         if methods:
             methods = map(str.upper, methods)
             if request.method not in methods:
-                return NonExistentMatch()
+                return None
         return match
 
     # Private

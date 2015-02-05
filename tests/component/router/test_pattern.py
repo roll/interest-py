@@ -10,8 +10,8 @@ class PatternTest(unittest.TestCase):
 
     P = component.PlainPattern
     R = component.RegexPattern
-    N = component.NonExistentMatch()
     E = Exception
+    N = None
 
     converters = {
         # Meta, instance
