@@ -154,11 +154,14 @@ class Middleware(Chain, Config, metaclass=OrderedMetaclass):
                 continue
             kwargs = getattr(func, STICKER, None)
             if kwargs is not None:
+                factory = kwargs.pop(
+                    'endpoint', self.__endpoint)
                 path = self.__relpath
                 path += kwargs.pop('path', '')
                 respond = getattr(self, name)
-                endpoint = self.__endpoint(self.service,
-                    name=name, path=path, respond=respond, **kwargs)
+                endpoint = factory(self.service,
+                    name=name, path=path,
+                    respond=respond, **kwargs)
                 self.push(endpoint)
 
     def __on_chain_change(self):
