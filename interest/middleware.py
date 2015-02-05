@@ -36,16 +36,20 @@ class Middleware(Chain, Config, metaclass=OrderedMetaclass):
     NAME = name
     PATH = ''
     METHODS = []
+    MIDDLEWARES = []
     ENDPOINT = None
 
     def __init__(self, service, *,
-                 name=None, path=None, methods=None, endpoint=None):
+                 name=None, path=None, methods=None,
+                 middlewares=None, endpoint=None):
         if name is None:
             name = self.NAME
         if path is None:
             path = self.PATH
         if methods is None:
             methods = self.METHODS
+        if middlewares is None:
+            middlewares = self.MIDDLEWARES
         if endpoint is None:
             endpoint = self.ENDPOINT
         if endpoint is None:
@@ -62,6 +66,7 @@ class Middleware(Chain, Config, metaclass=OrderedMetaclass):
         self.__abspath = abspath
         self.__methods = methods
         self.__endpoint = endpoint
+        self.__add_middlewares(middlewares)
         self.__add_endpoints()
 
     @asyncio.coroutine
@@ -75,8 +80,10 @@ class Middleware(Chain, Config, metaclass=OrderedMetaclass):
     def __repr__(self):
         template = (
             '<Middleware path="{self.path}" '
-            'methods="{self.methods}">')
-        compiled = template.format(self=self)
+            'methods="{self.methods}" '
+            'middlewares={middlewares}>')
+        compiled = template.format(
+            self=self, middlewares=list(self))
         return compiled
 
     @property
@@ -144,6 +151,12 @@ class Middleware(Chain, Config, metaclass=OrderedMetaclass):
         self.__on_chain_change()
 
     # Private
+
+    def __add_middlewares(self, middlewares):
+        for middleware in middlewares:
+            if not asyncio.iscoroutine(middleware):
+                middleware = middleware(self.service)
+            self.push(middleware)
 
     def __add_endpoints(self):
         for name in self.__order__:

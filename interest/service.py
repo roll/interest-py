@@ -50,13 +50,12 @@ class Service(Middleware):
     LOGGER = Logger
     HANDLER = Handler
     ROUTER = Router
-    MIDDLEWARES = []
     PROVIDERS = []
 
     def __init__(self, service=None, *,
-                name=None, path=None, methods=None, endpoint=None,
+                name=None, path=None, methods=None,
                 loop=None, logger=None, handler=None, router=None,
-                middlewares=None, providers=None):
+                providers=None, middlewares=None , endpoint=None):
         if service is None:
             service = self
         if loop is None:
@@ -67,18 +66,15 @@ class Service(Middleware):
             handler = self.HANDLER
         if router is None:
             router = self.ROUTER
-        if middlewares is None:
-            middlewares = self.MIDDLEWARES
         if providers is None:
             providers = self.PROVIDERS
         super().__init__(service,
-            name=name, path=path,
-            methods=methods, endpoint=endpoint)
+            name=name, path=path, methods=methods,
+            middlewares=middlewares, endpoint=endpoint)
         self.__loop = loop
         self.__logger = logger(self)
         self.__handler = handler(self)
         self.__router = router(self)
-        self.__add_middlewares(middlewares)
         self.__apply_providers(providers)
 
     def __repr__(self):
@@ -135,12 +131,6 @@ class Service(Middleware):
             pass
 
     # Private
-
-    def __add_middlewares(self, middlewares):
-        for middleware in reversed(middlewares):
-            if not asyncio.iscoroutine(middleware):
-                middleware = middleware(self)
-            self.push(middleware, index=0)
 
     def __apply_providers(self, providers):
         for provider in providers:
