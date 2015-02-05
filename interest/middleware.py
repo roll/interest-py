@@ -37,14 +37,18 @@ class Middleware(Chain, Config, metaclass=OrderedMetaclass):
     NAME = name
     PATH = ''
     METHODS = []
+    ENDPOINT = Endpoint
 
-    def __init__(self, service, *, name=None, path=None, methods=None):
+    def __init__(self, service, *,
+                 name=None, path=None, methods=None, endpoint=None):
         if name is None:
             name = self.NAME
         if path is None:
             path = self.PATH
         if methods is None:
             methods = self.METHODS
+        if endpoint is None:
+            endpoint = self.ENDPOINT
         if self is not service:
             path = service.path + path
         super().__init__()
@@ -52,6 +56,7 @@ class Middleware(Chain, Config, metaclass=OrderedMetaclass):
         self.__name = name
         self.__path = path
         self.__methods = methods
+        self.__endpoint = endpoint
         self.__add_endpoints()
 
     @asyncio.coroutine
@@ -136,6 +141,6 @@ class Middleware(Chain, Config, metaclass=OrderedMetaclass):
                 continue
             params = getattr(func, STICKER, None)
             if params is not None:
-                factory = params.pop('endpoint', Endpoint)
+                factory = params.pop('endpoint', self.__endpoint)
                 endpoint = factory(self, name=name, **params)
                 self.push(endpoint)

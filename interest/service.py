@@ -54,7 +54,7 @@ class Service(Middleware):
     PROVIDERS = {}
 
     def __init__(self, service=None, *,
-                name=None, path=None, methods=None,
+                name=None, path=None, methods=None, endpoint=None,
                 loop=None, logger=None, handler=None, router=None,
                 middlewares=None, providers=None):
         if service is None:
@@ -71,7 +71,8 @@ class Service(Middleware):
             middlewares = self.MIDDLEWARES
         if providers is None:
             providers = self.PROVIDERS
-        super().__init__(service, name=name, path=path, methods=methods)
+        super().__init__(service,
+            name=name, path=path, methods=methods, endpoint=endpoint)
         self.__loop = loop
         self.__logger = logger(self)
         self.__handler = handler(self)
