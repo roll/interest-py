@@ -13,12 +13,12 @@ class Pattern(metaclass=ABCMeta):
     PARSER_TEMPLATE = '(?P<{name}_{meta}>{parser.pattern})'
 
     @classmethod
-    def create(cls, path, parsers):
-        matches = list(cls.PARSER_PATTERN.finditer(path))
+    def create(cls, pattern, parsers):
+        matches = list(cls.PARSER_PATTERN.finditer(pattern))
         if not matches:
-            return PlainPattern(path, parsers)
+            return StringPattern(pattern, parsers)
         lastend = 0
-        pattern = ''
+        storage = ''
         for match in matches:
             name = match.group('name')
             meta = match.group('meta')
@@ -28,23 +28,23 @@ class Pattern(metaclass=ABCMeta):
                 raise ValueError(
                     'Unsupported parser {meta}'.format(meta=meta))
             parser = parsers[meta]
-            pattern += re.escape(path[lastend:match.start()])
-            pattern += cls.PARSER_TEMPLATE.format(
+            storage += re.escape(pattern[lastend:match.start()])
+            storage += cls.PARSER_TEMPLATE.format(
                 name=name, meta=meta, parser=parser)
             lastend = match.end()
-        pattern += re.escape(path[lastend:])
-        return RegexPattern(pattern, parsers)
+        storage += re.escape(pattern[lastend:])
+        return RegexPattern(storage, parsers)
 
     @abstractmethod
-    def match(self, path, left=False):
+    def match(self, string, left=False):
         pass  # pragma: no cover
 
     @abstractmethod
-    def url(self, *args, **kwargs):
+    def format(self, **match):
         pass  # pragma: no cover
 
 
-class PlainPattern(Pattern):
+class StringPattern(Pattern):
 
     # Public
 
@@ -53,22 +53,22 @@ class PlainPattern(Pattern):
         self.__parsers = parsers
 
     def __repr__(self):
-        template = '<PlainPattern "{pattern}">'
+        template = '<StringPattern "{pattern}">'
         compiled = template.format(pattern=self.__pattern)
         return compiled
 
-    def match(self, path, left=False):
+    def match(self, string, left=False):
         match = Match()
         if left:
-            if not path.startswith(self.__pattern):
+            if not string.startswith(self.__pattern):
                 return None
             return match
-        if path != self.__pattern:
+        if string != self.__pattern:
             return None
         return match
 
-    def url(self, *args, **kwargs):
-        raise NotImplementedError()
+    def format(self, **match):
+        return self.__pattern
 
 
 class RegexPattern(Pattern):
@@ -91,12 +91,12 @@ class RegexPattern(Pattern):
         compiled = template.format(pattern=self.__pattern)
         return compiled
 
-    def match(self, path, left=False):
+    def match(self, string, left=False):
         match = Match()
         pattern = self.__full
         if left:
             pattern = self.__left
-        result = pattern.match(path)
+        result = pattern.match(string)
         if not result:
             return None
         for name, string in result.groupdict().items():
@@ -108,5 +108,5 @@ class RegexPattern(Pattern):
             match[name] = value
         return match
 
-    def url(self, *args, **kwargs):
+    def format(self, **match):
         raise NotImplementedError()

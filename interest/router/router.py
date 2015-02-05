@@ -1,3 +1,4 @@
+from urllib.parse import urlencode
 from ..helpers import Config, Match
 from .parser import StringParser, PathParser, IntegerParser, FloatParser
 from .pattern import Pattern
@@ -60,7 +61,10 @@ class Router(Config):
                 return None
         return match
 
-    def url(self, *args, **kwargs):
+    def url(self, pointer, *, query=None, **match):
+        url = ''
+        if query is not None:
+            url += '?' + urlencode(query)
         raise NotImplementedError()
 
     # Private
