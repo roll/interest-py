@@ -17,6 +17,15 @@ class Chain(Iterable, Sized):
             return self.__list[param]
         return self.__dict[param]
 
+    def __setitem__(self, param, item):
+        if isinstance(param, int):
+            self.__list.pop(param)
+            index = param
+        else:
+            prev = self.__dict.pop(param)
+            index = self.__list.index(prev)
+        self.push(item, index=index)
+
     def __iter__(self):
         return self.__list.__iter__()
 
@@ -26,21 +35,21 @@ class Chain(Iterable, Sized):
     def __len__(self):
         return len(self.__list)
 
-    def push(self, item, place=None):
+    def push(self, item, *, index=None):
         """Push item to the chain.
         """
-        if place is None:
+        if index is None:
             self.__list.append(item)
         else:
-            self.__list.insert(place, item)
+            self.__list.insert(index, item)
         name = getattr(item, 'name', None)
         if name is not None:
             self.__dict[name] = item
 
-    def pull(self, place=None):
+    def pull(self, *, index=None):
         """Pull item from the chain.
         """
-        item = self.__list.pop(place)
+        item = self.__list.pop(index)
         name = getattr(item, 'name', None)
         if name is not None:
             del self.__dict[name]
