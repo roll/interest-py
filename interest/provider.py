@@ -1,4 +1,3 @@
-import asyncio
 from .helpers import Config
 
 
@@ -28,6 +27,6 @@ class Provider(Config):
         """
         return self.__service
 
-    @asyncio.coroutine
+    @property
     def provide(self):
-        return (yield from self.__provide())
+        return self.__provide
