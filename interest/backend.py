@@ -62,60 +62,54 @@ class http:
     VersionNotSupported = web.HTTPVersionNotSupported
 
     @classmethod
-    def bind(cls, param):
-        return cls.__register(param)
-
-    @classmethod
-    def get(cls, param):
-        """Bind a get responder.
-        """
-        return cls.__register(param, methods=['GET'])
-
-    @classmethod
-    def post(cls, param):
-        """Bind a post responder.
-        """
-        return cls.__register(param, methods=['POST'])
-
-    @classmethod
-    def put(cls, param):
-        """Bind a put responder.
-        """
-        return cls.__register(param, methods=['PUT'])
-
-    @classmethod
-    def delete(cls, param):
-        """Bind a delete responder.
-        """
-        return cls.__register(param, methods=['DELETE'])
-
-    @classmethod
-    def patch(cls, param):
-        """Bind a patch responder.
-        """
-        return cls.__register(param, methods=['PATCH'])
-
-    @classmethod
-    def head(cls, param):
-        """Bind a head responder.
-        """
-        return cls.__register(param, methods=['HEAD'])
-
-    @classmethod
-    def options(cls, param):
-        """Bind a options responder.
-        """
-        return cls.__register(param, methods=['OPTIONS'])
-
-    # Private
-
-    @classmethod
-    def __register(cls, param, *, methods=None):
+    def bind(cls, param, **kwargs):
         def stick(function, **params):
             if not asyncio.iscoroutine(function):
                 function = asyncio.coroutine(function)
             setattr(function, STICKER, params)
             return function
         if isinstance(param, str):
-            return partial(stick, path=param, methods=methods)
-        return stick(param, methods=methods)
+            return partial(stick, path=param, **kwargs)
+        return stick(param, **kwargs)
+
+    @classmethod
+    def get(cls, param, **kwargs):
+        """Bind a get responder.
+        """
+        return cls.bind(param, methods=['GET'], **kwargs)
+
+    @classmethod
+    def post(cls, param, **kwargs):
+        """Bind a post responder.
+        """
+        return cls.bind(param, methods=['POST'], **kwargs)
+
+    @classmethod
+    def put(cls, param, **kwargs):
+        """Bind a put responder.
+        """
+        return cls.bind(param, methods=['PUT'], **kwargs)
+
+    @classmethod
+    def delete(cls, param, **kwargs):
+        """Bind a delete responder.
+        """
+        return cls.bind(param, methods=['DELETE'], **kwargs)
+
+    @classmethod
+    def patch(cls, param, **kwargs):
+        """Bind a patch responder.
+        """
+        return cls.bind(param, methods=['PATCH'], **kwargs)
+
+    @classmethod
+    def head(cls, param, **kwargs):
+        """Bind a head responder.
+        """
+        return cls.bind(param, methods=['HEAD'], **kwargs)
+
+    @classmethod
+    def options(cls, param, **kwargs):
+        """Bind a options responder.
+        """
+        return cls.bind(param, methods=['OPTIONS'], **kwargs)
