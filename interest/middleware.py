@@ -130,6 +130,16 @@ class Middleware(Chain, Config, metaclass=OrderedMetaclass):
         """
         raise http.NotFound()
 
+    # Internal (Chain's hooks)
+
+    def push(self, item, *, index=None):
+        super().push(item, index=index)
+        self.__on_chain_change()
+
+    def pull(self, *, index=None):
+        super().pull(index=index)
+        self.__on_chain_change()
+
     # Private
 
     def __add_endpoints(self):
@@ -144,3 +154,11 @@ class Middleware(Chain, Config, metaclass=OrderedMetaclass):
                 factory = params.pop('endpoint', self.__endpoint)
                 endpoint = factory(self, name=name, **params)
                 self.push(endpoint)
+
+    def __on_chain_change(self):
+        next_middleware = None
+        for middleware in reversed(self):
+            if next_middleware is not None:
+                if hasattr(middleware, 'next'):
+                    middleware.next = next_middleware
+            next_middleware = middleware
