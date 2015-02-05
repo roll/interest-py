@@ -1,8 +1,8 @@
 from ..helpers import Config
 
 
-class Converter(Config):
-    """Converter representation.
+class Parser(Config):
+    """Parser representation.
 
     Parameters
     ----------
@@ -13,23 +13,30 @@ class Converter(Config):
     # Public
 
     PATTERN = None
-    CONVERT = None
+    CONVERT = str
+    RESTORE = str
 
-    def __init__(self, service, *, pattern=None, convert=None):
+    def __init__(self, service, *,
+                 pattern=None, convert=None, restore=None):
         if pattern is None:
             pattern = self.PATTERN
         if convert is None:
             convert = self.CONVERT
-        assert pattern is not None
-        assert convert is not None
+        if restore is None:
+            restore = self.RESTORE
+        assert isinstance(pattern, str)
+        assert callable(convert)
+        assert callable(restore)
         self.__service = service
         self.__pattern = pattern
         self.__convert = convert
+        self.__restore = restore
 
     def __repr__(self):
         template = (
-            '<Converter pattern="{self.pattern}" '
-            'convert="{self.convert}">')
+            '<Parser pattern="{self.pattern}" '
+            'convert="{self.convert}" '
+            'restore="{self.restore}">')
         compiled = template.format(self=self)
         return compiled
 
@@ -41,13 +48,13 @@ class Converter(Config):
 
     @property
     def pattern(self):
-        """Converter's pattern (read-only).
+        """Parser's pattern (read-only).
         """
         return self.__pattern
 
     @property
     def convert(self):
-        """Convert the given string (read-only).
+        """Convert a given string to a value.
 
         Parameters
         ----------
@@ -60,3 +67,19 @@ class Converter(Config):
             Converted string.
         """
         return self.__convert
+
+    @property
+    def restore(self):
+        """Restore a given value to a string.
+
+        Parameters
+        ----------
+        value: object
+            Value to restore.
+
+        Returns
+        -------
+        str
+            Restored string.
+        """
+        return self.__restore

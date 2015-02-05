@@ -11,10 +11,10 @@ class Pattern(metaclass=ABCMeta):
 
     PLAIN_PATTERN = re.compile('^[^<>/]+$')
     REGEX_PATTERN = re.compile(r'^\<(?P<name>\w+)(?::(?P<meta>\w+))?\>$')
-    REGEX_TEMPLATE = '(?P<{name}_{meta}>{conv.pattern})'
+    REGEX_TEMPLATE = '(?P<{name}_{meta}>{parser.pattern})'
 
     @classmethod
-    def create(cls, path, convs):
+    def create(cls, path, parsers):
         parts = []
         plain = True
         for part in path.split('/'):
@@ -28,12 +28,12 @@ class Pattern(metaclass=ABCMeta):
                 if meta is None:
                     meta = 'str'
                 try:
-                    conv = convs[meta]
+                    parser = parsers[meta]
                 except KeyError:
                     raise ValueError(
-                        'Unsupported converter {meta}'.format(meta=meta))
+                        'Unsupported parser {meta}'.format(meta=meta))
                 part = cls.REGEX_TEMPLATE.format(
-                    name=name, meta=meta, conv=conv)
+                    name=name, meta=meta, parser=parser)
                 parts.append(part)
                 plain = False
                 continue
@@ -46,13 +46,17 @@ class Pattern(metaclass=ABCMeta):
         if plain:
             # Plain pattern
             pattern = path
-            return PlainPattern(pattern, convs)
+            return PlainPattern(pattern, parsers)
         else:
             # Regex pattern
             pattern = '/' + '/'.join(parts)
             if path.endswith('/') and pattern != '/':
                 pattern += '/'
-            return RegexPattern(pattern, convs)
+            return RegexPattern(pattern, parsers)
+
+    @abstractmethod
+    def build(self, *args, **kwargs):
+        pass  # pragma: no cover
 
     @abstractmethod
     def match(self, path, left=False):
@@ -63,14 +67,17 @@ class PlainPattern(Pattern):
 
     # Public
 
-    def __init__(self, pattern, convs):
+    def __init__(self, pattern, parsers):
         self.__pattern = pattern
-        self.__convs = convs
+        self.__parsers = parsers
 
     def __repr__(self):
         template = '<PlainPattern "{pattern}">'
         compiled = template.format(pattern=self.__pattern)
         return compiled
+
+    def build(self, *args, **kwargs):
+        raise NotImplementedError()
 
     def match(self, path, left=False):
         match = ExistentMatch()
@@ -87,9 +94,9 @@ class RegexPattern(Pattern):
 
     # Public
 
-    def __init__(self, pattern, convs):
+    def __init__(self, pattern, parsers):
         self.__pattern = pattern
-        self.__convs = convs
+        self.__parsers = parsers
         try:
             self.__left = re.compile('^' + pattern)
             self.__full = re.compile('^' + pattern + '$')
@@ -103,6 +110,9 @@ class RegexPattern(Pattern):
         compiled = template.format(pattern=self.__pattern)
         return compiled
 
+    def build(self, *args, **kwargs):
+        raise NotImplementedError()
+
     def match(self, path, left=False):
         match = ExistentMatch()
         pattern = self.__full
@@ -114,7 +124,7 @@ class RegexPattern(Pattern):
         for name, value in result.groupdict().items():
             name, meta = name.rsplit('_', 1)
             try:
-                value = self.__convs[meta].convert(value)
+                value = self.__parsers[meta].convert(value)
             except Exception:
                 return NonExistentMatch()
             match[name] = value

@@ -1,5 +1,5 @@
 from ..helpers import Config, ExistentMatch, NonExistentMatch
-from .converter import Converter
+from .parser import Parser
 from .pattern import Pattern
 
 
@@ -11,13 +11,13 @@ class Router(Config):
 
     # Public
 
-    CONVERTERS = {}
+    PARSERS = {}
 
-    def __init__(self, service, *, converters=None):
-        if converters is None:
-            converters = self.CONVERTERS
+    def __init__(self, service, *, parsers=None):
+        if parsers is None:
+            parsers = self.PARSERS
         self.__service = service
-        self.__add_converters(converters)
+        self.__add_parsers(parsers)
         self.__patterns = {}
 
     @property
@@ -65,25 +65,21 @@ class Router(Config):
 
     # Private
 
-    __CONVERTERS = {
-       'str': Converter.config(
-            pattern=r'[^<>/]+', convert=str),
-       'int': Converter.config(
-            pattern=r'[1-9]+', convert=int),
-       'float': Converter.config(
-            pattern=r'[1-9.]+', convert=float),
-       'path': Converter.config(
-            pattern=r'[^<>]+', convert=str)}
+    __PARSERS = {
+       'str': Parser.config(pattern=r'[^<>/]+'),
+       'path': Parser.config(pattern=r'[^<>]+'),
+       'int': Parser.config(pattern=r'[1-9]+', convert=int),
+       'float': Parser.config(pattern=r'[1-9.]+', convert=float)}
 
-    def __add_converters(self, converters):
-        self.__converters = {}
-        econverters = self.__CONVERTERS.copy()
-        econverters.update(converters)
-        for key, cls in econverters.items():
-            self.__converters[key] = cls(self.service)
+    def __add_parsers(self, parsers):
+        self.__parsers = {}
+        eparsers = self.__PARSERS.copy()
+        eparsers.update(parsers)
+        for key, cls in eparsers.items():
+            self.__parsers[key] = cls(self)
 
     def __get_pattern(self, path):
         if path not in self.__patterns:
             self.__patterns[path] = Pattern.create(
-                path, self.__converters)
+                path, self.__parsers)
         return self.__patterns[path]
