@@ -6,7 +6,6 @@ from .helpers import Chain, Config, Match
 from .logger import Logger
 from .middleware import Middleware
 from .provider import Provider
-from .resource import Resource
 from .router import Router, Converter
 from .service import Service
 version = '0.3.0'  # REPLACE: version = '{{ version }}'

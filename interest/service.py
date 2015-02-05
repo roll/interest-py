@@ -2,12 +2,11 @@ import asyncio
 from .backend import http
 from .logger import Logger
 from .handler import Handler
-from .helpers import Chain
 from .router import Router
 from .middleware import Middleware
 
 
-class Service(Chain, Middleware):
+class Service(Middleware):
     """Service representation.
 
     Service provides a high-level abstraction for end-user and incapsulates
