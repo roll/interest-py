@@ -9,16 +9,23 @@ class Pattern(metaclass=ABCMeta):
 
     # Public
 
-    PARSER_PATTERN = re.compile(r'\<(?P<name>\w+)(?::(?P<meta>\w+))?\>')
-    PARSER_TEMPLATE = '(?P<{name}_{meta}>{parser.pattern})'
+    @abstractmethod
+    def match(self, string, left=False):
+        pass  # pragma: no cover
+
+    @abstractmethod
+    def format(self, **match):
+        pass  # pragma: no cover
 
     @classmethod
     def create(cls, pattern, parsers):
-        matches = list(cls.PARSER_PATTERN.finditer(pattern))
+        matches = list(cls.__PARSER_PATTERN.finditer(pattern))
         if not matches:
-            return StringPattern(pattern, parsers)
+            return StringPattern(pattern)
         lastend = 0
-        storage = ''
+        cpattern = ''
+        cparsers = {}
+        template = ''
         for match in matches:
             name = match.group('name')
             meta = match.group('meta')
@@ -28,29 +35,42 @@ class Pattern(metaclass=ABCMeta):
                 raise ValueError(
                     'Unsupported parser {meta}'.format(meta=meta))
             parser = parsers[meta]
-            storage += re.escape(pattern[lastend:match.start()])
-            storage += cls.PARSER_TEMPLATE.format(
-                name=name, meta=meta, parser=parser)
+            before = pattern[lastend:match.start()]
+            cpattern += cls.__pattern_escape(before)
+            cpattern += cls.__PARSER_TEMPLATE.format(
+                name=name, parser=parser)
+            cparsers[name] = parser
+            template += cls.__template_escape(before)
+            template += '{' + name + '}'
             lastend = match.end()
-        storage += re.escape(pattern[lastend:])
-        return RegexPattern(storage, parsers)
+        after = pattern[lastend:]
+        cpattern += re.escape(after)
+        template += after
+        return RegexPattern(cpattern, cparsers, template)
 
-    @abstractmethod
-    def match(self, string, left=False):
-        pass  # pragma: no cover
+    # Private
 
-    @abstractmethod
-    def format(self, **match):
-        pass  # pragma: no cover
+    __PARSER_PATTERN = re.compile(r'\<(?P<name>\w+)(?::(?P<meta>\w+))?\>')
+    __PARSER_TEMPLATE = '(?P<{name}>{parser.pattern})'
+
+    @classmethod
+    def __pattern_escape(cls, pattern):
+        pattern = re.escape(pattern)
+        return pattern
+
+    @classmethod
+    def __template_escape(cls, template):
+        template = template.replace('{', '{{')
+        template = template.replace('}', '}}')
+        return template
 
 
 class StringPattern(Pattern):
 
     # Public
 
-    def __init__(self, pattern, parsers):
+    def __init__(self, pattern):
         self.__pattern = pattern
-        self.__parsers = parsers
 
     def __repr__(self):
         template = '<StringPattern "{pattern}">'
@@ -75,9 +95,10 @@ class RegexPattern(Pattern):
 
     # Public
 
-    def __init__(self, pattern, parsers):
+    def __init__(self, pattern, parsers, template):
         self.__pattern = pattern
         self.__parsers = parsers
+        self.__template = template
         try:
             self.__left = re.compile('^' + pattern)
             self.__full = re.compile('^' + pattern + '$')
@@ -100,13 +121,14 @@ class RegexPattern(Pattern):
         if not result:
             return None
         for name, string in result.groupdict().items():
-            name, meta = name.rsplit('_', 1)
             try:
-                value = self.__parsers[meta].convert(string)
+                value = self.__parsers[name].convert(string)
             except Exception:
                 return None
             match[name] = value
         return match
 
     def format(self, **match):
-        raise NotImplementedError()
+        for name, value in match.items():
+            match[name] = self.__parsers[name].restore(value)
+        return self.__template.format_map(match)
