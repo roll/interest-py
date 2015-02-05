@@ -43,8 +43,8 @@ class Router(Config):
 
         Returns
         -------
-        :class:`.Match`
-            Match instance.
+        :class:`.Match`/None
+            Match instance (True) or None (False).
         """
         match = Match()
         if path is not None:
@@ -62,10 +62,30 @@ class Router(Config):
         return match
 
     def url(self, pointer, *, query=None, **match):
-        url = ''
+        """Construct an url for the given parameters.
+
+        Parameters
+        ----------
+        pointer: str:
+            Pointer.
+        query: dict
+            Query string data.
+        match: dict
+            Path parameters.
+
+        Returns
+        -------
+        str
+            Constructed url.
+        """
+        middleware = self.service
+        for name in pointer.split('.'):
+            middleware = middleware[name]
+        pattern = self.__get_pattern(middleware.path)
+        url = pattern.format(**match)
         if query is not None:
             url += '?' + urlencode(query)
-        raise NotImplementedError()
+        return url
 
     # Private
 
