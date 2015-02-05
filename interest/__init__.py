@@ -8,4 +8,5 @@ from .middleware import Middleware
 from .provider import Provider
 from .router import Router, Converter
 from .service import Service
+from .tester import Tester
 version = '0.3.0'  # REPLACE: version = '{{ version }}'

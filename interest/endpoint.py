@@ -19,7 +19,8 @@ class Endpoint(Middleware):
         if respond is None:
             respond = self.RESPOND
         super().__init__(service,
-            name=name, path=path, methods=methods, endpoint=endpoint)
+            name=name, path=path,
+            methods=methods, endpoint=endpoint)
         self.__respond = respond
 
     @asyncio.coroutine

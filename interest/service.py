@@ -71,7 +71,8 @@ class Service(Middleware):
         if providers is None:
             providers = self.PROVIDERS
         super().__init__(service,
-            name=name, path=path, methods=methods, endpoint=endpoint)
+            name=name, path=path,
+            methods=methods, endpoint=endpoint)
         self.__loop = loop
         self.__logger = logger(self)
         self.__handler = handler(self)
