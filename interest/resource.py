@@ -46,4 +46,4 @@ class Resource(Chain, Middleware, metaclass=OrderedMetaclass):
             if params is not None:
                 factory = params.pop('endpoint', Endpoint)
                 endpoint = factory(self, name=name, **params)
-                self._append(endpoint, name=endpoint.name)
+                self.push(endpoint)

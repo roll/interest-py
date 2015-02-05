@@ -26,9 +26,21 @@ class Chain(Iterable, Sized):
     def __len__(self):
         return len(self.__list)
 
-    # Protected
-
-    def _append(self, item, name=None):
-        self.__list.append(item)
+    def push(self, item, place=None):
+        """Push item to the chain.
+        """
+        if place is None:
+            self.__list.append(item)
+        else:
+            self.__list.insert(place, item)
+        name = getattr(item, 'name', None)
         if name is not None:
             self.__dict[name] = item
+
+    def pull(self, place=None):
+        """Pull item from the chain.
+        """
+        item = self.__list.pop(place)
+        name = getattr(item, 'name', None)
+        if name is not None:
+            del self.__dict[name]

@@ -41,7 +41,8 @@ class Service(Chain, Middleware):
         service['data'] = 'data'
         service.listen('127.0.0.1', 9000)
 
-    .. seealso:: API: :attr:`dict`
+    .. seealso:: API: :class:`.Chain`
+    .. seealso:: API: :class:`.Middleware`
     """
 
     # Public
@@ -143,11 +144,9 @@ class Service(Chain, Middleware):
 
     def __add_middlewares(self, middlewares):
         for middleware in middlewares:
-            name = None
             if not asyncio.iscoroutine(middleware):
                 middleware = middleware(self)
-                name = middleware.name
-            self._append(middleware, name=name)
+            self.push(middleware)
         self.__on_change()
 
     def __add_providers(self, providers):
