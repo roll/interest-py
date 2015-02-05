@@ -63,10 +63,12 @@ class http:
 
     @classmethod
     def bind(cls, param, **kwargs):
-        def stick(function, **params):
+        def stick(function, **binding):
             if not asyncio.iscoroutine(function):
                 function = asyncio.coroutine(function)
-            setattr(function, STICKER, params)
+            bindings = getattr(function, STICKER, [])
+            bindings.append(binding)
+            setattr(function, STICKER, bindings)
             return function
         if isinstance(param, str):
             return partial(stick, path=param, **kwargs)

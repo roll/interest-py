@@ -165,16 +165,16 @@ class Middleware(Chain, Config, metaclass=OrderedMetaclass):
             func = getattr(type(self), name)
             if inspect.isdatadescriptor(func):
                 continue
-            kwargs = getattr(func, STICKER, None)
-            if kwargs is not None:
-                factory = kwargs.pop(
+            bindings = getattr(func, STICKER, [])
+            for binding in reversed(bindings):
+                factory = binding.pop(
                     'endpoint', self.__endpoint)
                 path = self.__relpath
-                path += kwargs.pop('path', '')
+                path += binding.pop('path', '')
                 respond = getattr(self, name)
                 endpoint = factory(self.service,
                     name=name, path=path,
-                    respond=respond, **kwargs)
+                    respond=respond, **binding)
                 self.push(endpoint)
 
     def __on_chain_change(self):

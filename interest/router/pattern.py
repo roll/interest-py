@@ -102,10 +102,10 @@ class RegexPattern(Pattern):
         result = pattern.match(path)
         if not result:
             return None
-        for name, value in result.groupdict().items():
+        for name, string in result.groupdict().items():
             name, meta = name.rsplit('_', 1)
             try:
-                value = self.__parsers[meta].convert(value)
+                value = self.__parsers[meta].convert(string)
             except Exception:
                 return None
             match[name] = value
