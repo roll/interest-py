@@ -66,15 +66,13 @@ Here is a base usage example.
     
         @asyncio.coroutine
         def process(self, request):
-            try:
-                request.user = False
-                response = yield from self.next(request)
-            except http.Unauthorized:
-                self.service.log('info',
-                    'It seems like no one can pass '
-                    'the Auth "%s" middleware. Why?',
-                    self.service['comment']['auth'])
-                raise
+            assert self.main == self.service.main
+            assert self.over == self.service
+            assert self.prev == self.service['restful']
+            assert self.next == self.service['comment']
+            assert self.next == self.service['comment']['read'].over
+            request.user = False
+            response = yield from self.next(request)
             return response
     
     
@@ -104,13 +102,16 @@ Here is a base usage example.
     
         @http.get('/key=<key:int>')
         def read(self, request, key):
-            return {'next': self.service.url('comment.read', key=key + 1)}
+            url = '/api/v1/comment/key=' + str(key)
+            assert url == self.service.url('comment.read', key=key)
+            assert url == self.service.url('read', base=self, key=key)
+            return {'key': key}
     
-        @http.put  # Endpoint's behind the faith
+        @http.put
         @http.post  # Endpoint's behind the Auth
         def upsert(self, request):
-            raise http.Created(
-                headers={'this': self.service.url('upsert', base=self)})
+            self.service.log('info', 'Adding custom header!')
+            raise http.Created(headers={'endpoint': 'upsert'})
     
     
     # Create restful service
@@ -121,7 +122,7 @@ Here is a base usage example.
     # Create main service
     service = Service(
         logger=Logger.config(
-            template='%(request)s | %(status)s | %(<this:res>)s'),
+            template='%(request)s | %(status)s | %(<endpoint:res>)s'),
         handler=Handler.config(
             connection_timeout=25, request_timeout=5))
     
@@ -146,7 +147,7 @@ Here is a base usage example.
   .. code-block:: bash
 
     $ curl -X GET http://127.0.0.1:9000/api/v1/comment/key=1; echo
-    {"next": "/api/v1/comment/key=2"}
+    {"key": 1}
     $ curl -X PUT http://127.0.0.1:9000/api/v1/comment; echo
     {"message": "Created"}
     $ curl -X POST http://127.0.0.1:9000/api/v1/comment; echo
