@@ -30,9 +30,12 @@ Interest is a REST framework on top of aiohttp/asyncio.
 Minimal service
 ---------------
 
+Base example of the interest:
+
 .. code-block:: python
 
-  import sys
+    # service.py
+    import sys
     from interest import Service, http
     
     
@@ -55,9 +58,12 @@ Minimal service
 Adding middlewares
 ------------------
 
+Now we're adding some middlewares:
+
 .. code-block:: python
 
-  import sys
+    # middlewares.py
+    import sys
     import asyncio
     from interest import Service, Middleware, http
     
@@ -88,8 +94,7 @@ Adding middlewares
     
     
     # Create server
-    service = Service(
-        middlewares=[Processor, Resource])
+    service = Service(middlewares=[Processor, Resource])
     
     # Listen forever
     argv = dict(enumerate(sys.argv))
@@ -98,11 +103,12 @@ Adding middlewares
 Diving into features
 --------------------
 
-Create server.py in current working directory:
+More features and running the server from the command line:
 
 .. code-block:: python
 
-  import sys
+    # features.py
+    import sys
     import json
     import asyncio
     import logging
@@ -204,20 +210,20 @@ Run the server using python3 interpreter:
 
 .. code-block:: bash
 
-  $ python3 server.py
-  INFO:interest:Start listening host="127.0.0.1" port="9000"
-  ... <see log here> ... 
+    $ python3 server.py
+    INFO:interest:Start listening host="127.0.0.1" port="9000"
+    ... <see log here> ... 
     
 Open a new terminal window and make some requests:
 
 .. code-block:: bash
 
-  $ curl -X GET http://127.0.0.1:9000/api/v1/comment/key=1; echo
-  {"key": 1}
-  $ curl -X PUT http://127.0.0.1:9000/api/v1/comment; echo
-  {"message": "Created"}
-  $ curl -X POST http://127.0.0.1:9000/api/v1/comment; echo
-  {"message": "Unauthorized"}
+    $ curl -X GET http://127.0.0.1:9000/api/v1/comment/key=1; echo
+    {"key": 1}
+    $ curl -X PUT http://127.0.0.1:9000/api/v1/comment; echo
+    {"message": "Created"}
+    $ curl -X POST http://127.0.0.1:9000/api/v1/comment; echo
+    {"message": "Unauthorized"}
 
 
 .. Block: requirements

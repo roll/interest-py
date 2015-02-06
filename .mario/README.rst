@@ -7,43 +7,47 @@
 Minimal service
 ---------------
 
+Base example of the interest:
+
 .. code-block:: python
 
-  {{ examples['service']|indent }}
+    {{ examples['service']|indent }}
   
 Adding middlewares
 ------------------
 
+Now we're adding some middlewares:
+
 .. code-block:: python
 
-  {{ examples['middlewares']|indent }}
+    {{ examples['middlewares']|indent }}
 
 Diving into features
 --------------------
 
-Create server.py in current working directory:
+More features and running the server from the command line:
 
 .. code-block:: python
 
-  {{ examples['features']|indent }}
+    {{ examples['features']|indent }}
     
 Run the server using python3 interpreter:
 
 .. code-block:: bash
 
-  $ python3 server.py
-  INFO:interest:Start listening host="127.0.0.1" port="9000"
-  ... <see log here> ... 
+    $ python3 features.py
+    INFO:interest:Start listening host="127.0.0.1" port="9000"
+    ... <see log here> ... 
     
 Open a new terminal window and make some requests:
 
 .. code-block:: bash
 
-  $ curl -X GET http://127.0.0.1:9000/api/v1/comment/key=1; echo
-  {"key": 1}
-  $ curl -X PUT http://127.0.0.1:9000/api/v1/comment; echo
-  {"message": "Created"}
-  $ curl -X POST http://127.0.0.1:9000/api/v1/comment; echo
-  {"message": "Unauthorized"}
+    $ curl -X GET http://127.0.0.1:9000/api/v1/comment/key=1; echo
+    {"key": 1}
+    $ curl -X PUT http://127.0.0.1:9000/api/v1/comment; echo
+    {"message": "Created"}
+    $ curl -X POST http://127.0.0.1:9000/api/v1/comment; echo
+    {"message": "Unauthorized"}
 
 {% endblock %}

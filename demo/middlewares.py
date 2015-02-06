@@ -1,3 +1,4 @@
+# middlewares.py
 import sys
 import asyncio
 from interest import Service, Middleware, http
@@ -29,8 +30,7 @@ class Resource(Middleware):
 
 
 # Create server
-service = Service(
-    middlewares=[Processor, Resource])
+service = Service(middlewares=[Processor, Resource])
 
 # Listen forever
 argv = dict(enumerate(sys.argv))
