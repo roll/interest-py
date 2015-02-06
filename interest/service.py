@@ -98,6 +98,10 @@ class Service(Middleware):
         """
         return self.__router
 
+    @property
+    def fork(self):
+        return self.__handler.fork
+
     def listen(self, *, host, port):
         """Listen forever on TCP/IP socket.
 
@@ -118,13 +122,16 @@ class Service(Middleware):
         except KeyboardInterrupt:
             pass
 
+    def match(self, request, *, root=None, path=None, methods=None):
+        return self.__router.match(
+            request, root=root, path=path, methods=methods)
+
+    def url(self, pointer, *, query=None, **match):
+        return self.__router.url(pointer, query=query, **match)
+
     def log(self, level, *args, **kwargs):
         target = getattr(self.__logger, level)
         target(*args, **kwargs)
-
-    @property
-    def fork(self):
-        return self.__handler.fork
 
     # Private
 
