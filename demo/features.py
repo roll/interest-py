@@ -1,9 +1,10 @@
-# features.py
+# server.py
 import sys
 import json
 import asyncio
 import logging
-from interest import Service, Middleware, Logger, Handler, http
+from interest import (Service, Middleware, http,
+                      Logger, Handler, Router, Parser)
 
 
 class Restful(Middleware):
@@ -63,7 +64,7 @@ class Comment(Middleware):
     PREFIX = '/comment'
     MIDDLEWARES = [Auth]
 
-    @http.get('/key=<key:int>')
+    @http.get('/key=<key:myint>')
     def read(self, request, key):
         url = '/api/v1/comment/key=' + str(key)
         assert url == self.service.url('comment.read', key=key)
@@ -80,7 +81,10 @@ class Comment(Middleware):
 # Create restful service
 restful = Service(
     prefix='/api/v1',
-    middlewares=[Restful, Session, Comment])
+    middlewares=[Restful, Session, Comment],
+    router=Router.config(
+        parsers={'myint': Parser.config(
+            pattern=r'[1-9]+', convert=int)}))
 
 # Create main service
 service = Service(

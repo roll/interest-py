@@ -34,7 +34,7 @@ Base example of the interest:
 
 .. code-block:: python
 
-    # service.py
+    # server.py
     import sys
     from interest import Service, http
     
@@ -43,7 +43,7 @@ Base example of the interest:
     
         # Public
     
-        @http.get('/<key:path>')
+        @http.get('/')
         def hello(self, request, key):
             return http.Response(text='Hello World!')
     
@@ -62,7 +62,7 @@ Now we're adding some middlewares:
 
 .. code-block:: python
 
-    # middlewares.py
+    # server.py
     import sys
     import asyncio
     from interest import Service, Middleware, http
@@ -88,9 +88,10 @@ Now we're adding some middlewares:
     
         # Public
     
-        @http.get('/<key:path>')
-        def hello(self, request, key):
-            return http.Response(text='Hello World!')
+        @http.get('/<times:int>')
+        def hello(self, request, times):
+            return http.Response(
+                text='Hello World ' + str(times) + ' times!')
     
     
     # Create server
@@ -107,12 +108,13 @@ More features and running the server from the command line:
 
 .. code-block:: python
 
-    # features.py
+    # server.py
     import sys
     import json
     import asyncio
     import logging
-    from interest import Service, Middleware, Logger, Handler, http
+    from interest import (Service, Middleware, http,
+                          Logger, Handler, Router, Parser)
     
     
     class Restful(Middleware):
@@ -172,7 +174,7 @@ More features and running the server from the command line:
         PREFIX = '/comment'
         MIDDLEWARES = [Auth]
     
-        @http.get('/key=<key:int>')
+        @http.get('/key=<key:myint>')
         def read(self, request, key):
             url = '/api/v1/comment/key=' + str(key)
             assert url == self.service.url('comment.read', key=key)
@@ -189,7 +191,10 @@ More features and running the server from the command line:
     # Create restful service
     restful = Service(
         prefix='/api/v1',
-        middlewares=[Restful, Session, Comment])
+        middlewares=[Restful, Session, Comment],
+        router=Router.config(
+            parsers={'myint': Parser.config(
+                pattern=r'[1-9]+', convert=int)}))
     
     # Create main service
     service = Service(

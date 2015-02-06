@@ -35,7 +35,7 @@ Run the server using python3 interpreter:
 
 .. code-block:: bash
 
-    $ python3 features.py
+    $ python3 server.py
     INFO:interest:Start listening host="127.0.0.1" port="9000"
     ... <see log here> ... 
     

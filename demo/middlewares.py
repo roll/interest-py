@@ -1,4 +1,4 @@
-# middlewares.py
+# server.py
 import sys
 import asyncio
 from interest import Service, Middleware, http
@@ -24,9 +24,10 @@ class Resource(Middleware):
 
     # Public
 
-    @http.get('/<key:path>')
-    def hello(self, request, key):
-        return http.Response(text='Hello World!')
+    @http.get('/<times:int>')
+    def hello(self, request, times):
+        return http.Response(
+            text='Hello World ' + str(times) + ' times!')
 
 
 # Create server

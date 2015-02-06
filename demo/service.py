@@ -1,4 +1,4 @@
-# service.py
+# server.py
 import sys
 from interest import Service, http
 
@@ -7,7 +7,7 @@ class Service(Service):
 
     # Public
 
-    @http.get('/<key:path>')
+    @http.get('/')
     def hello(self, request, key):
         return http.Response(text='Hello World!')
 
