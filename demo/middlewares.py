@@ -24,10 +24,10 @@ class Resource(Middleware):
 
     # Public
 
+    @http.get('/')
     @http.get('/<times:int>')
-    def hello(self, request, times):
-        return http.Response(
-            text='Hello World ' + str(times) + ' times!')
+    def hello(self, request, times=1):
+        return http.Response(text='Hello World {} times!'.format(times))
 
 
 # Create server

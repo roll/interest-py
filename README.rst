@@ -54,6 +54,15 @@ Base example of the interest:
     # Listen forever
     argv = dict(enumerate(sys.argv))
     service.listen(host=argv.get(1, '127.0.0.1'), port=argv.get(2, 9000))
+    
+.. code-block:: bash
+
+    $ python3 server.py
+    INFO:interest:Start listening host="127.0.0.1" port="9000"
+    ... <see log here> ... 
+    $ [NEW TERMINAL]
+    $ curl -X GET http://127.0.0.1:9000/; echo
+    Hello World!
   
 Adding middlewares
 ------------------
@@ -88,10 +97,10 @@ Now we're adding some middlewares:
     
         # Public
     
+        @http.get('/')
         @http.get('/<times:int>')
-        def hello(self, request, times):
-            return http.Response(
-                text='Hello World ' + str(times) + ' times!')
+        def hello(self, request, times=1):
+            return http.Response(text='Hello World {} times!'.format(times))
     
     
     # Create server
@@ -100,11 +109,24 @@ Now we're adding some middlewares:
     # Listen forever
     argv = dict(enumerate(sys.argv))
     service.listen(host=argv.get(1, '127.0.0.1'), port=argv.get(2, 9000))
+    
+.. code-block:: bash
+
+    $ python3 server.py
+    INFO:interest:Start listening host="127.0.0.1" port="9000"
+    ... <see log here> ... 
+    $ [NEW TERMINAL]
+    $ curl -X GET http://127.0.0.1:9000/; echo
+    Hello World 1 times!
+    $ curl -X GET http://127.0.0.1:9000/5; echo
+    Hello World 5 times!
+    $ curl -X GET http://127.0.0.1:9000/ten; echo 
+    404: Not Found
 
 Diving into features
 --------------------
 
-More features and running the server from the command line:
+Now we're creating restful API:
 
 .. code-block:: python
 
@@ -211,18 +233,12 @@ More features and running the server from the command line:
     logging.basicConfig(level=logging.DEBUG)
     service.listen(host=argv.get(1, '127.0.0.1'), port=argv.get(2, 9000))
     
-Run the server using python3 interpreter:
-
 .. code-block:: bash
 
     $ python3 server.py
     INFO:interest:Start listening host="127.0.0.1" port="9000"
     ... <see log here> ... 
-    
-Open a new terminal window and make some requests:
-
-.. code-block:: bash
-
+    $ [NEW TERMINAL]
     $ curl -X GET http://127.0.0.1:9000/api/v1/comment/key=1; echo
     {"key": 1}
     $ curl -X PUT http://127.0.0.1:9000/api/v1/comment; echo
