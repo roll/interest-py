@@ -40,18 +40,7 @@ Here is a base usage example.
     import json
     import asyncio
     import logging
-    from interest import Service, Middleware, Resource, http
-    
-    
-    class Session(Middleware):
-    
-        # Public
-    
-        @asyncio.coroutine
-        def process(self, request):
-            request.user = True
-            response = yield from self.next(request)
-            return response
+    from interest import Service, Middleware, Logger, Handler, http
     
     
     class Restful(Middleware):
@@ -71,26 +60,70 @@ Here is a base usage example.
             return response
     
     
-    class Comment(Resource):
+    class Session(Middleware):
     
         # Public
     
-        PATH = '/comment'
+        @asyncio.coroutine
+        def process(self, request):
+            try:
+                request.user = False
+                response = yield from self.next(request)
+            except http.Unauthorized:
+                self.service.log('info',
+                    'It seems like no one can pass '
+                    'the Auth "%s" middleware. Why?',
+                    self.service['comment']['auth'])
+                raise
+            return response
     
-        @http.get('/<key:int>')
+    
+    class Auth(Middleware):
+    
+        # Public
+    
+        METHODS = ['POST']
+    
+        @asyncio.coroutine
+        def process(self, request):
+            if not request.user:
+                raise http.Unauthorized()
+            response = yield from self.next(request)
+            return response
+    
+    
+    class Comment(Middleware):
+    
+        # Public
+    
+        PREFIX = '/comment'
+        MIDDLEWARES = [Auth]
+    
+        @http.get('/key=<key:int>')
         def read(self, request, key):
-            return {'key': key}
+            return {'key': key,
+                    'url': self.service.url('comment.read', key=key)}
     
-        @http.put
+        @http.put  # Endpoint's behind the faith
+        @http.post  # Endpoint's behind the Auth
         def upsert(self, request):
-            if request.user:
-                raise http.Created()
-            raise http.Unauthorized()
+            raise http.Created()
     
     
-    # Create service
-    service = Service(path='/api/v1',
-        middlewares=[Session, Restful, Comment])
+    # Create restful service
+    restful = Service(
+        prefix='/api/v1',
+        middlewares=[Restful, Session, Comment])
+    
+    # Create main service
+    service = Service(
+        logger=Logger.config(
+            template='%(request)s | %(status)s | %(<content-type:res>)s'),
+        handler=Handler.config(
+            connection_timeout=25, request_timeout=5))
+    
+    # Add restful to main
+    service.push(restful)
     
     # Listen forever
     argv = dict(enumerate(sys.argv))
@@ -102,17 +135,19 @@ Here is a base usage example.
   .. code-block:: bash
 
     $ python3 server.py
-    INFO:interest:Start listening at http://127.0.0.1:9000
+    INFO:interest:Start listening host="127.0.0.1" port="9000"
     ... <see log here> ... 
     
-- open a new terminal window and make a request:
+- open a new terminal window and make some requests:
 
   .. code-block:: bash
 
-    $ curl -X GET http://127.0.0.1:9000/api/v1/comment/1; echo
-    {"key": 1}
+    $ curl -X GET http://127.0.0.1:9000/api/v1/comment/key=1; echo
+    {"key": 1, "url": "/api/v1/comment/key=7"}
     $ curl -X PUT http://127.0.0.1:9000/api/v1/comment; echo
     {"message": "Created"}
+    $ curl -X POST http://127.0.0.1:9000/api/v1/comment; echo
+    {"message": "Unauthorized"}
 
 
 .. Block: requirements

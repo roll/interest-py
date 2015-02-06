@@ -40,7 +40,6 @@ class Service(Middleware):
         service['data'] = 'data'
         service.listen('127.0.0.1', 9000)
 
-    .. seealso:: API: :class:`.Chain`
     .. seealso:: API: :class:`.Middleware`
     """
 

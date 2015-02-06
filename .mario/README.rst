@@ -20,16 +20,18 @@ Here is a base usage example.
   .. code-block:: bash
 
     $ python3 server.py
-    INFO:interest:Start listening at http://127.0.0.1:9000
+    INFO:interest:Start listening host="127.0.0.1" port="9000"
     ... <see log here> ... 
     
-- open a new terminal window and make a request:
+- open a new terminal window and make some requests:
 
   .. code-block:: bash
 
-    $ curl -X GET http://127.0.0.1:9000/api/v1/comment/1; echo
-    {"key": 1}
+    $ curl -X GET http://127.0.0.1:9000/api/v1/comment/key=1; echo
+    {"key": 1, "url": "/api/v1/comment/key=7"}
     $ curl -X PUT http://127.0.0.1:9000/api/v1/comment; echo
     {"message": "Created"}
+    $ curl -X POST http://127.0.0.1:9000/api/v1/comment; echo
+    {"message": "Unauthorized"}
 
 {% endblock %}
