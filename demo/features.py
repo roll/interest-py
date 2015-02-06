@@ -1,5 +1,4 @@
 # server.py
-import sys
 import json
 import asyncio
 import logging
@@ -96,7 +95,6 @@ service = Service(
 # Add restful to main
 service.push(restful)
 
-# Listen forever
-argv = dict(enumerate(sys.argv))
+# Listen forever with logging
 logging.basicConfig(level=logging.DEBUG)
-service.listen(host=argv.get(1, '127.0.0.1'), port=argv.get(2, 9000))
+service.listen(host='127.0.0.1', port=9000, override=True, forever=True)

@@ -35,8 +35,6 @@ Base example of the interest:
 .. code-block:: python
 
     # server.py
-    import sys
-    import logging
     from interest import Service, http
     
     
@@ -49,23 +47,17 @@ Base example of the interest:
             return http.Response(text='Hello World!')
     
     
-    # Create server
-    service = Service()
-    
     # Listen forever
-    argv = dict(enumerate(sys.argv))
-    logging.basicConfig(level=logging.DEBUG)
-    service.listen(host=argv.get(1, '127.0.0.1'), port=argv.get(2, 9000))
+    service = Service()
+    service.listen(host='127.0.0.1', port=9000, override=True, forever=True)
+    
+Run the server in the terminal and use another to interact:
     
 .. code-block:: bash
 
-    $ python3 server.py
-    INFO:interest:Start listening host="127.0.0.1" port="9000"
-    ... <see log here> ... 
-    
-.. code-block:: bash
-
-    $ curl -X GET http://127.0.0.1:9000/; echo
+    [S]$ python3 server.py
+    ...
+    [C]$ curl -X GET http://127.0.0.1:9000/; echo
     Hello World!
   
 Adding middlewares
@@ -76,9 +68,7 @@ Now we're adding some middlewares:
 .. code-block:: python
 
     # server.py
-    import sys
     import asyncio
-    import logging
     from interest import Service, Middleware, http
     
     
@@ -108,27 +98,21 @@ Now we're adding some middlewares:
             return http.Response(text='Hello World {} times!'.format(times))
     
     
-    # Create server
-    service = Service(middlewares=[Processor, Resource])
-    
     # Listen forever
-    argv = dict(enumerate(sys.argv))
-    logging.basicConfig(level=logging.DEBUG)
-    service.listen(host=argv.get(1, '127.0.0.1'), port=argv.get(2, 9000))
+    service = Service(middlewares=[Processor, Resource])
+    service.listen(host='127.0.0.1', port=9000, override=True, forever=True)
+    
+Run the server in the terminal and use another to interact:
     
 .. code-block:: bash
 
-    $ python3 server.py
-    INFO:interest:Start listening host="127.0.0.1" port="9000"
-    ... <see log here> ... 
-    
-.. code-block:: bash
-
-    $ curl -X GET http://127.0.0.1:9000/; echo
+    [S]$ python3 server.py
+    ...
+    [C]$ curl -X GET http://127.0.0.1:9000/; echo
     Hello World 1 times!
-    $ curl -X GET http://127.0.0.1:9000/5; echo
+    [C]$ curl -X GET http://127.0.0.1:9000/5; echo
     Hello World 5 times!
-    $ curl -X GET http://127.0.0.1:9000/ten; echo 
+    [C]$ curl -X GET http://127.0.0.1:9000/ten; echo 
     404: Not Found
 
 Diving into features
@@ -139,7 +123,6 @@ Now we're creating restful API exploring interest features:
 .. code-block:: python
 
     # server.py
-    import sys
     import json
     import asyncio
     import logging
@@ -236,24 +219,22 @@ Now we're creating restful API exploring interest features:
     # Add restful to main
     service.push(restful)
     
-    # Listen forever
-    argv = dict(enumerate(sys.argv))
+    # Listen forever with logging
     logging.basicConfig(level=logging.DEBUG)
-    service.listen(host=argv.get(1, '127.0.0.1'), port=argv.get(2, 9000))
+    service.listen(host='127.0.0.1', port=9000, override=True, forever=True)
+    
+Run the server in the terminal and use another to interact:  
     
 .. code-block:: bash
 
-    $ python3 server.py
+    [S]$ python3 server.py
     INFO:interest:Start listening host="127.0.0.1" port="9000"
     ... <see log here> ... 
-    
-.. code-block:: bash
-
-    $ curl -X GET http://127.0.0.1:9000/api/v1/comment/key=1; echo
+    [C]$ curl -X GET http://127.0.0.1:9000/api/v1/comment/key=1; echo
     {"key": 1}
-    $ curl -X PUT http://127.0.0.1:9000/api/v1/comment; echo
+    [C]$ curl -X PUT http://127.0.0.1:9000/api/v1/comment; echo
     {"message": "Created"}
-    $ curl -X POST http://127.0.0.1:9000/api/v1/comment; echo
+    [C]$ curl -X POST http://127.0.0.1:9000/api/v1/comment; echo
     {"message": "Unauthorized"}
 
 

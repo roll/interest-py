@@ -1,3 +1,4 @@
+import sys
 import asyncio
 from .logger import Logger
 from .handler import Handler
@@ -91,8 +92,8 @@ class Service(Middleware):
         """
         return self.__loop
 
-    def listen(self, *, host, port, async=False, **kwargs):
-        """Listen forever on TCP/IP socket.
+    def listen(self, *, host, port, override=False, forever=False, **kwargs):
+        """Listen on TCP/IP socket.
 
         Parameters
         ----------
@@ -101,18 +102,22 @@ class Service(Middleware):
         port:
             Port like 80.
         """
+        if override:
+            argv = dict(enumerate(sys.argv))
+            host = argv.get(1, host)
+            port = int(argv.get(2, port))
         server = self.loop.create_server(
             self.__handler.fork, host, port, **kwargs)
         server = self.loop.run_until_complete(server)
-        if async:
-            return server
         self.log('info',
             'Start listening host="{host}" port="{port}"'.
             format(host=host, port=port))
-        try:
-            self.loop.run_forever()
-        except KeyboardInterrupt:
-            pass
+        if forever:
+            try:
+                self.loop.run_forever()
+            except KeyboardInterrupt:
+                pass
+        return server
 
     def match(self, request, *, root=None, path=None, methods=None):
         return self.__router.match(

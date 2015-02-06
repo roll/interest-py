@@ -13,15 +13,13 @@ Base example of the interest:
 
     {{ examples['service']|indent }}
     
-.. code-block:: bash
-
-    $ python3 server.py
-    INFO:interest:Start listening host="127.0.0.1" port="9000"
-    ... <see log here> ... 
+Run the server in the terminal and use another to interact:
     
 .. code-block:: bash
 
-    $ curl -X GET http://127.0.0.1:9000/; echo
+    [S]$ python3 server.py
+    ...
+    [C]$ curl -X GET http://127.0.0.1:9000/; echo
     Hello World!
   
 Adding middlewares
@@ -33,19 +31,17 @@ Now we're adding some middlewares:
 
     {{ examples['middlewares']|indent }}
     
-.. code-block:: bash
-
-    $ python3 server.py
-    INFO:interest:Start listening host="127.0.0.1" port="9000"
-    ... <see log here> ... 
+Run the server in the terminal and use another to interact:
     
 .. code-block:: bash
 
-    $ curl -X GET http://127.0.0.1:9000/; echo
+    [S]$ python3 server.py
+    ...
+    [C]$ curl -X GET http://127.0.0.1:9000/; echo
     Hello World 1 times!
-    $ curl -X GET http://127.0.0.1:9000/5; echo
+    [C]$ curl -X GET http://127.0.0.1:9000/5; echo
     Hello World 5 times!
-    $ curl -X GET http://127.0.0.1:9000/ten; echo 
+    [C]$ curl -X GET http://127.0.0.1:9000/ten; echo 
     404: Not Found
 
 Diving into features
@@ -57,19 +53,18 @@ Now we're creating restful API exploring interest features:
 
     {{ examples['features']|indent }}
     
-.. code-block:: bash
-
-    $ python3 server.py
-    INFO:interest:Start listening host="127.0.0.1" port="9000"
-    ... <see log here> ... 
+Run the server in the terminal and use another to interact:  
     
 .. code-block:: bash
 
-    $ curl -X GET http://127.0.0.1:9000/api/v1/comment/key=1; echo
+    [S]$ python3 server.py
+    INFO:interest:Start listening host="127.0.0.1" port="9000"
+    ... <see log here> ... 
+    [C]$ curl -X GET http://127.0.0.1:9000/api/v1/comment/key=1; echo
     {"key": 1}
-    $ curl -X PUT http://127.0.0.1:9000/api/v1/comment; echo
+    [C]$ curl -X PUT http://127.0.0.1:9000/api/v1/comment; echo
     {"message": "Created"}
-    $ curl -X POST http://127.0.0.1:9000/api/v1/comment; echo
+    [C]$ curl -X POST http://127.0.0.1:9000/api/v1/comment; echo
     {"message": "Unauthorized"}
 
 {% endblock %}
