@@ -53,3 +53,4 @@ class Chain(Iterable, Sized):
         name = getattr(item, 'name', None)
         if name is not None:
             del self.__dict[name]
+        return item

@@ -79,8 +79,8 @@ class Middleware(Chain, Config, metaclass=OrderedMetaclass):
 
     def __repr__(self):
         template = (
-            '<Middleware path="{self.path}" '
-            'methods="{self.methods}" '
+            '<Middleware name="{self.name}" '
+            'path="{self.path}" methods="{self.methods}" '
             'middlewares={middlewares}>')
         compiled = template.format(
             self=self, middlewares=list(self))
@@ -88,7 +88,7 @@ class Middleware(Chain, Config, metaclass=OrderedMetaclass):
 
     @property
     def service(self):
-        """:class:`.Service` instance (read-only).
+        """:class:`.Service` instance (read/write).
         """
         return self.__service
 
@@ -162,11 +162,11 @@ class Middleware(Chain, Config, metaclass=OrderedMetaclass):
 
     def push(self, item, *, index=None):
         super().push(item, index=index)
-        self.__on_chain_change()
+        self.__update_topology()
 
     def pull(self, *, index=None):
         super().pull(index=index)
-        self.__on_chain_change()
+        self.__update_topology()
 
     # Private
 
@@ -195,10 +195,16 @@ class Middleware(Chain, Config, metaclass=OrderedMetaclass):
                     respond=respond, **binding)
                 self.push(endpoint)
 
-    def __on_chain_change(self):
-        next_middleware = None
-        for middleware in reversed(self):
-            if next_middleware is not None:
-                if hasattr(middleware, 'next'):
-                    middleware.next = next_middleware
-            next_middleware = middleware
+    def __update_topology(self):
+        if not isinstance(self.over, Middleware):
+            self.main = self
+            self.over = self
+        for index, middleware in enumerate(self):
+            if isinstance(middleware, Middleware):
+                middleware.main = self.main
+                middleware.over = self
+                if index - 1 > -1:
+                    middleware.prev = self[index - 1]
+                if index + 1 < len(self):
+                    middleware.next = self[index + 1]
+                middleware.__update_topology()

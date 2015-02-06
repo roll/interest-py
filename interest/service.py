@@ -57,8 +57,6 @@ class Service(Middleware):
                 middlewares=None, endpoint=None,
                 loop=None, logger=None, handler=None, router=None,
                 providers=None):
-        if service is None:
-            service = self
         if loop is None:
             loop = self.LOOP
         if logger is None:
@@ -69,6 +67,7 @@ class Service(Middleware):
             router = self.ROUTER
         if providers is None:
             providers = self.PROVIDERS
+        service = self
         super().__init__(service,
             name=name, path=path, methods=methods,
             middlewares=middlewares, endpoint=endpoint)
@@ -80,8 +79,8 @@ class Service(Middleware):
 
     def __repr__(self):
         template = (
-            '<Service path="{self.path}" '
-            'methods="{self.methods}" '
+            '<Service name="{self.name}" '
+            'path="{self.path}" methods="{self.methods}" '
             'middlewares={middlewares}>')
         compiled = template.format(
             self=self, middlewares=list(self))

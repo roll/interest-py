@@ -37,8 +37,8 @@ class Endpoint(Middleware):
 
     def __repr__(self):
         template = (
-            '<Endpoint path="{self.path}" '
-            'methods="{self.methods}">')
+            '<Endpoint name="{self.name}" '
+            'path="{self.path}" methods="{self.methods}">')
         compiled = template.format(self=self)
         return compiled
 
