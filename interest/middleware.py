@@ -135,6 +135,24 @@ class Middleware(Chain, Config, metaclass=OrderedMetaclass):
         raise http.NotFound()
 
     @asyncio.coroutine
+    def main(self, request):
+        """Call the main middleware (coroutine).
+        """
+        raise http.NotFound()
+
+    @asyncio.coroutine
+    def over(self, request):
+        """Call the over middleware (coroutine).
+        """
+        raise http.NotFound()
+
+    @asyncio.coroutine
+    def prev(self, request):
+        """Call the previous middleware (coroutine).
+        """
+        raise http.NotFound()
+
+    @asyncio.coroutine
     def next(self, request):
         """Call the next middleware (coroutine).
         """
