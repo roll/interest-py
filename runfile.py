@@ -1,5 +1,6 @@
 import os
 import mario
+from pathlib import Path
 mario.activate(basedir=os.path.dirname(__file__))
 from mario.origin import ProjectModule  # @UnresolvedImport
 
@@ -26,6 +27,11 @@ class ProjectModule(ProjectModule):
     version = '0.3.0'
 
     @property
-    def example(self):
-        with open('demo/example.py') as file:
-            return file.read()
+    def examples(self):
+        examples = {}
+        directory = Path('demo')
+        for path in directory.iterdir():
+            if path.is_file():
+                with path.open() as file:
+                    examples[path.stem] = file.read()
+        return examples

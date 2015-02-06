@@ -27,16 +27,82 @@ Interest is a REST framework on top of aiohttp/asyncio.
      :alt: pypi
 
 
-Example
--------
+Minimal service
+---------------
 
-Here is a base usage example.
+.. code-block:: python
 
-- create server.py in current working directory:
+  import sys
+    from interest import Service, http
+    
+    
+    class Service(Service):
+    
+        # Public
+    
+        @http.get('/<key:path>')
+        def hello(self, request, key):
+            return http.Response(text='Hello World!')
+    
+    
+    # Create server
+    service = Service()
+    
+    # Listen forever
+    argv = dict(enumerate(sys.argv))
+    service.listen(host=argv.get(1, '127.0.0.1'), port=argv.get(2, 9000))
+  
+Adding middlewares
+------------------
 
-  .. code-block:: python
+.. code-block:: python
 
-    import sys
+  import sys
+    import asyncio
+    from interest import Service, Middleware, http
+    
+    
+    class Processor(Middleware):
+    
+        # Public
+    
+        @asyncio.coroutine
+        def process(self, request):
+            try:
+                # Process request here
+                response = (yield from self.next(request))
+                # Process response here
+            except http.Exception as exception:
+                # Process exception here
+                response = exception
+            return response
+    
+    
+    class Resource(Middleware):
+    
+        # Public
+    
+        @http.get('/<key:path>')
+        def hello(self, request, key):
+            return http.Response(text='Hello World!')
+    
+    
+    # Create server
+    service = Service(
+        middlewares=[Processor, Resource])
+    
+    # Listen forever
+    argv = dict(enumerate(sys.argv))
+    service.listen(host=argv.get(1, '127.0.0.1'), port=argv.get(2, 9000))
+
+Diving into features
+--------------------
+
+Create server.py in current working directory:
+
+.. code-block:: python
+
+  import sys
     import json
     import asyncio
     import logging
@@ -134,24 +200,24 @@ Here is a base usage example.
     logging.basicConfig(level=logging.DEBUG)
     service.listen(host=argv.get(1, '127.0.0.1'), port=argv.get(2, 9000))
     
-- run the server using python3 interpreter:
+Run the server using python3 interpreter:
 
-  .. code-block:: bash
+.. code-block:: bash
 
-    $ python3 server.py
-    INFO:interest:Start listening host="127.0.0.1" port="9000"
-    ... <see log here> ... 
+  $ python3 server.py
+  INFO:interest:Start listening host="127.0.0.1" port="9000"
+  ... <see log here> ... 
     
-- open a new terminal window and make some requests:
+Open a new terminal window and make some requests:
 
-  .. code-block:: bash
+.. code-block:: bash
 
-    $ curl -X GET http://127.0.0.1:9000/api/v1/comment/key=1; echo
-    {"key": 1}
-    $ curl -X PUT http://127.0.0.1:9000/api/v1/comment; echo
-    {"message": "Created"}
-    $ curl -X POST http://127.0.0.1:9000/api/v1/comment; echo
-    {"message": "Unauthorized"}
+  $ curl -X GET http://127.0.0.1:9000/api/v1/comment/key=1; echo
+  {"key": 1}
+  $ curl -X PUT http://127.0.0.1:9000/api/v1/comment; echo
+  {"message": "Created"}
+  $ curl -X POST http://127.0.0.1:9000/api/v1/comment; echo
+  {"message": "Unauthorized"}
 
 
 .. Block: requirements

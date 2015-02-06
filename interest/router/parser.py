@@ -96,7 +96,7 @@ class PathParser(Parser):
 
     # Public
 
-    PATTERN = r'[^]+'
+    PATTERN = r'.*'
 
 
 class IntegerParser(Parser):
