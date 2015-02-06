@@ -93,12 +93,6 @@ class Service(Middleware):
         return self.__loop
 
     @property
-    def router(self):
-        """:class:`.Router` instance (read-only).
-        """
-        return self.__router
-
-    @property
     def fork(self):
         return self.__handler.fork
 

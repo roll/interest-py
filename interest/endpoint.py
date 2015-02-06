@@ -25,9 +25,9 @@ class Endpoint(Middleware):
 
     @asyncio.coroutine
     def __call__(self, request):
-        match = self.service.router.match(request, path=self.path)
+        match = self.service.match(request, path=self.path)
         if match:
-            lmatch = self.service.router.match(request, methods=self.methods)
+            lmatch = self.service.match(request, methods=self.methods)
             if not lmatch:
                 raise http.MethodNotAllowed(request.method, self.methods)
             if self.respond is not None:

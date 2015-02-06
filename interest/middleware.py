@@ -71,7 +71,7 @@ class Middleware(Chain, Config, metaclass=OrderedMetaclass):
 
     @asyncio.coroutine
     def __call__(self, request):
-        match = self.service.router.match(
+        match = self.service.match(
             request, root=self.path, methods=self.methods)
         if match:
             return (yield from self.process(request))
