@@ -12,7 +12,7 @@ class ProjectModule(ProjectModule):
     author = 'roll'
     author_email = 'roll@respect31.com'
     copyright = '2015, Respect31'
-    description = 'Interest is a REST framework on top of aiohttp/asyncio.'
+    description = 'Interest is a web framework on top of aiohttp/asyncio.'
     development_requires = [
         'runfile', 'mario', 'sphinx', 'sphinx-settings', 'sphinx-rtd-theme']
     github_user = 'interest-hub'

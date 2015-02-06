@@ -6,7 +6,7 @@
 
 Interest
 =====================
-Interest is a REST framework on top of aiohttp/asyncio.
+Interest is a web framework on top of aiohttp/asyncio.
 
 .. Block: badges
 
@@ -36,6 +36,7 @@ Base example of the interest:
 
     # server.py
     import sys
+    import logging
     from interest import Service, http
     
     
@@ -53,6 +54,7 @@ Base example of the interest:
     
     # Listen forever
     argv = dict(enumerate(sys.argv))
+    logging.basicConfig(level=logging.DEBUG)
     service.listen(host=argv.get(1, '127.0.0.1'), port=argv.get(2, 9000))
     
 .. code-block:: bash
@@ -60,7 +62,9 @@ Base example of the interest:
     $ python3 server.py
     INFO:interest:Start listening host="127.0.0.1" port="9000"
     ... <see log here> ... 
-    $ [NEW TERMINAL]
+    
+.. code-block:: bash
+
     $ curl -X GET http://127.0.0.1:9000/; echo
     Hello World!
   
@@ -74,6 +78,7 @@ Now we're adding some middlewares:
     # server.py
     import sys
     import asyncio
+    import logging
     from interest import Service, Middleware, http
     
     
@@ -108,6 +113,7 @@ Now we're adding some middlewares:
     
     # Listen forever
     argv = dict(enumerate(sys.argv))
+    logging.basicConfig(level=logging.DEBUG)
     service.listen(host=argv.get(1, '127.0.0.1'), port=argv.get(2, 9000))
     
 .. code-block:: bash
@@ -115,7 +121,9 @@ Now we're adding some middlewares:
     $ python3 server.py
     INFO:interest:Start listening host="127.0.0.1" port="9000"
     ... <see log here> ... 
-    $ [NEW TERMINAL]
+    
+.. code-block:: bash
+
     $ curl -X GET http://127.0.0.1:9000/; echo
     Hello World 1 times!
     $ curl -X GET http://127.0.0.1:9000/5; echo
@@ -238,7 +246,9 @@ Now we're creating restful API exploring interest features:
     $ python3 server.py
     INFO:interest:Start listening host="127.0.0.1" port="9000"
     ... <see log here> ... 
-    $ [NEW TERMINAL]
+    
+.. code-block:: bash
+
     $ curl -X GET http://127.0.0.1:9000/api/v1/comment/key=1; echo
     {"key": 1}
     $ curl -X PUT http://127.0.0.1:9000/api/v1/comment; echo

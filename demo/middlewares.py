@@ -1,6 +1,7 @@
 # server.py
 import sys
 import asyncio
+import logging
 from interest import Service, Middleware, http
 
 
@@ -35,4 +36,5 @@ service = Service(middlewares=[Processor, Resource])
 
 # Listen forever
 argv = dict(enumerate(sys.argv))
+logging.basicConfig(level=logging.DEBUG)
 service.listen(host=argv.get(1, '127.0.0.1'), port=argv.get(2, 9000))

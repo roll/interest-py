@@ -18,7 +18,9 @@ Base example of the interest:
     $ python3 server.py
     INFO:interest:Start listening host="127.0.0.1" port="9000"
     ... <see log here> ... 
-    $ [NEW TERMINAL]
+    
+.. code-block:: bash
+
     $ curl -X GET http://127.0.0.1:9000/; echo
     Hello World!
   
@@ -36,7 +38,9 @@ Now we're adding some middlewares:
     $ python3 server.py
     INFO:interest:Start listening host="127.0.0.1" port="9000"
     ... <see log here> ... 
-    $ [NEW TERMINAL]
+    
+.. code-block:: bash
+
     $ curl -X GET http://127.0.0.1:9000/; echo
     Hello World 1 times!
     $ curl -X GET http://127.0.0.1:9000/5; echo
@@ -58,7 +62,9 @@ Now we're creating restful API exploring interest features:
     $ python3 server.py
     INFO:interest:Start listening host="127.0.0.1" port="9000"
     ... <see log here> ... 
-    $ [NEW TERMINAL]
+    
+.. code-block:: bash
+
     $ curl -X GET http://127.0.0.1:9000/api/v1/comment/key=1; echo
     {"key": 1}
     $ curl -X PUT http://127.0.0.1:9000/api/v1/comment; echo
