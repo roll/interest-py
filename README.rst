@@ -67,7 +67,9 @@ Here is a base usage example.
         @asyncio.coroutine
         def process(self, request):
             try:
-                request.user = False
+                request.user = True
+                if self.service.match(request, methods=['POST']):
+                    request.user = False
                 response = yield from self.next(request)
             except http.Unauthorized:
                 self.service.log('info',
@@ -101,13 +103,18 @@ Here is a base usage example.
     
         @http.get('/key=<key:int>')
         def read(self, request, key):
-            return {'key': key,
-                    'url': self.service.url('comment.read', key=key)}
+            return {'next': self.service.url('comment.read', key=key + 1)}
     
         @http.put  # Endpoint's behind the faith
         @http.post  # Endpoint's behind the Auth
         def upsert(self, request):
-            raise http.Created()
+            assert self.service.match(
+                request,
+                root='/api/v1',
+                path='/api/v1/comment',
+                methods=['PUT', 'POST'])
+            raise http.Created(
+                headers={'this': self.service.url('upsert', base=self)})
     
     
     # Create restful service
@@ -118,7 +125,7 @@ Here is a base usage example.
     # Create main service
     service = Service(
         logger=Logger.config(
-            template='%(request)s | %(status)s | %(<content-type:res>)s'),
+            template='%(request)s | %(status)s | %(<this:res>)s'),
         handler=Handler.config(
             connection_timeout=25, request_timeout=5))
     
@@ -143,7 +150,7 @@ Here is a base usage example.
   .. code-block:: bash
 
     $ curl -X GET http://127.0.0.1:9000/api/v1/comment/key=1; echo
-    {"key": 1, "url": "/api/v1/comment/key=7"}
+    {"next": "/api/v1/comment/key=2"}
     $ curl -X PUT http://127.0.0.1:9000/api/v1/comment; echo
     {"message": "Created"}
     $ curl -X POST http://127.0.0.1:9000/api/v1/comment; echo

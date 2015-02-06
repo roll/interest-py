@@ -61,13 +61,15 @@ class Router(Config):
                 return None
         return match
 
-    def url(self, pointer, *, query=None, **match):
+    def url(self, name, *, base=None, query=None, **match):
         """Construct an url for the given parameters.
 
         Parameters
         ----------
-        pointer: str:
-            Pointer.
+        name: str
+            Name.
+        base: str
+            Base.
         query: dict
             Query string data.
         match: dict
@@ -78,10 +80,11 @@ class Router(Config):
         str
             Constructed url.
         """
-        middleware = self.service
-        for name in pointer.split('.'):
-            middleware = middleware[name]
-        pattern = self.__get_pattern(middleware.path)
+        if base is None:
+            base = self.service
+        for name in name.split('.'):
+            base = base[name]
+        pattern = self.__get_pattern(base.path)
         url = pattern.format(**match)
         if query is not None:
             url += '?' + urlencode(query)

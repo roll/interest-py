@@ -118,8 +118,8 @@ class Service(Middleware):
         return self.__router.match(
             request, root=root, path=path, methods=methods)
 
-    def url(self, pointer, *, query=None, **match):
-        return self.__router.url(pointer, query=query, **match)
+    def url(self, name, *, base=None, query=None, **match):
+        return self.__router.url(name, base=base, query=query, **match)
 
     def log(self, level, *args, **kwargs):
         target = getattr(self.__logger, level)

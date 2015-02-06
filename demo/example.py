@@ -29,7 +29,9 @@ class Session(Middleware):
     @asyncio.coroutine
     def process(self, request):
         try:
-            request.user = False
+            request.user = True
+            if self.service.match(request, methods=['POST']):
+                request.user = False
             response = yield from self.next(request)
         except http.Unauthorized:
             self.service.log('info',
@@ -63,13 +65,18 @@ class Comment(Middleware):
 
     @http.get('/key=<key:int>')
     def read(self, request, key):
-        return {'key': key,
-                'url': self.service.url('comment.read', key=key)}
+        return {'next': self.service.url('comment.read', key=key + 1)}
 
     @http.put  # Endpoint's behind the faith
     @http.post  # Endpoint's behind the Auth
     def upsert(self, request):
-        raise http.Created()
+        assert self.service.match(
+            request,
+            root='/api/v1',
+            path='/api/v1/comment',
+            methods=['PUT', 'POST'])
+        raise http.Created(
+            headers={'this': self.service.url('upsert', base=self)})
 
 
 # Create restful service
@@ -80,7 +87,7 @@ restful = Service(
 # Create main service
 service = Service(
     logger=Logger.config(
-        template='%(request)s | %(status)s | %(<content-type:res>)s'),
+        template='%(request)s | %(status)s | %(<this:res>)s'),
     handler=Handler.config(
         connection_timeout=25, request_timeout=5))
 

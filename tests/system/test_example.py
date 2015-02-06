@@ -23,14 +23,12 @@ class ExampleTest(unittest.TestCase):
     # Tests
 
     def test_read(self):
-        response = self.tester.request('GET', '/api/v1/comment/key=7')
+        response = self.tester.request('GET', '/api/v1/comment/key=1')
         self.assertEqual(response.status, 200)
         self.assertEqual(
             response.headers['CONTENT-TYPE'],
             'application/json; charset=utf-8')
-        self.assertEqual(
-            response.json,
-            {'key': 7, 'url': '/api/v1/comment/key=7'})
+        self.assertEqual(response.json, {'next': '/api/v1/comment/key=2'})
 
     def test_upsert_put(self):
         response = self.tester.request('PUT', '/api/v1/comment')
