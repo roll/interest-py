@@ -92,11 +92,7 @@ class Service(Middleware):
         """
         return self.__loop
 
-    @property
-    def fork(self):
-        return self.__handler.fork
-
-    def listen(self, *, host, port):
+    def listen(self, *, host, port, async=False, **kwargs):
         """Listen forever on TCP/IP socket.
 
         Parameters
@@ -106,8 +102,11 @@ class Service(Middleware):
         port:
             Port like 80.
         """
-        server = self.loop.create_server(self.fork, host, port)
+        server = self.loop.create_server(
+            self.__handler.fork, host, port, **kwargs)
         server = self.loop.run_until_complete(server)
+        if async:
+            return server
         self.log('info',
             'Start listening host="{host}" port="{port}"'.
             format(host=host, port=port))
