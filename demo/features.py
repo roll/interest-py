@@ -70,7 +70,7 @@ class Comment(Middleware):
         assert url == self.service.url('read', base=self, key=key)
         return {'key': key}
 
-    @http.put
+    @http.put  # Endpoint's behind the faith
     @http.post  # Endpoint's behind the Auth
     def upsert(self, request):
         self.service.log('info', 'Adding custom header!')

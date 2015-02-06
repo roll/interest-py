@@ -17,9 +17,9 @@ Run the server in the terminal and use another to interact:
     
 .. code-block:: bash
 
-    [S]$ python3 server.py
+    $ python3 server.py
     ...
-    [C]$ curl -X GET http://127.0.0.1:9000/; echo
+    $ curl -X GET http://127.0.0.1:9000/; echo
     Hello World!
   
 Adding middlewares
@@ -35,13 +35,13 @@ Run the server in the terminal and use another to interact:
     
 .. code-block:: bash
 
-    [S]$ python3 server.py
+    $ python3 server.py
     ...
-    [C]$ curl -X GET http://127.0.0.1:9000/; echo
+    $ curl -X GET http://127.0.0.1:9000/; echo
     Hello World 1 times!
-    [C]$ curl -X GET http://127.0.0.1:9000/5; echo
+    $ curl -X GET http://127.0.0.1:9000/5; echo
     Hello World 5 times!
-    [C]$ curl -X GET http://127.0.0.1:9000/ten; echo 
+    $ curl -X GET http://127.0.0.1:9000/ten; echo 
     404: Not Found
 
 Diving into features
@@ -57,14 +57,14 @@ Run the server in the terminal and use another to interact:
     
 .. code-block:: bash
 
-    [S]$ python3 server.py
+    $ python3 server.py
     INFO:interest:Start listening host="127.0.0.1" port="9000"
     ... <see log here> ... 
-    [C]$ curl -X GET http://127.0.0.1:9000/api/v1/comment/key=1; echo
+    $ curl -X GET http://127.0.0.1:9000/api/v1/comment/key=1; echo
     {"key": 1}
-    [C]$ curl -X PUT http://127.0.0.1:9000/api/v1/comment; echo
+    $ curl -X PUT http://127.0.0.1:9000/api/v1/comment; echo
     {"message": "Created"}
-    [C]$ curl -X POST http://127.0.0.1:9000/api/v1/comment; echo
+    $ curl -X POST http://127.0.0.1:9000/api/v1/comment; echo
     {"message": "Unauthorized"}
 
 {% endblock %}
