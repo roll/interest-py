@@ -130,6 +130,10 @@ class Service(Middleware):
         except KeyboardInterrupt:
             pass
 
+    def log(self, level, *args, **kwargs):
+        target = getattr(self.__logger, level)
+        target(*args, **kwargs)
+
     # Private
 
     def __apply_providers(self, providers):
