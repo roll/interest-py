@@ -55,8 +55,8 @@ class HandlerTest(unittest.TestCase):
             request='message', response='response',
             transport=self.handler.transport, duration='time')
         # Check service.logger call
-        self.service.logger.access.assert_called_with(
-            Record.return_value)
+        self.service.log.assert_called_with(
+            'access', Record.return_value)
 
     @patch.object(component, 'traceback')
     @patch.object(component, 'Record')
@@ -64,17 +64,17 @@ class HandlerTest(unittest.TestCase):
         Record.side_effect = RuntimeError()
         self.handler.log_access('message', 'environ', 'response', 'time')
         # Check service.logger call
-        self.service.logger.error.assert_called_with(
-            traceback.format_exc.return_value)
+        self.service.log.assert_called_with(
+            'error', traceback.format_exc.return_value)
 
     def test_log_debug(self):
         self.handler.log_debug('message', *self.args, **self.kwargs)
         # Check service.logger call
-        self.service.logger.debug.assert_called_with(
-            'message', *self.args, **self.kwargs)
+        self.service.log.assert_called_with(
+            'debug', 'message', *self.args, **self.kwargs)
 
     def test_log_exception(self):
         self.handler.log_exception('message', *self.args, **self.kwargs)
         # Check service.logger call
-        self.service.logger.exception.assert_called_with(
-            'message', *self.args, **self.kwargs)
+        self.service.log.assert_called_with(
+            'exception', 'message', *self.args, **self.kwargs)

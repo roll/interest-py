@@ -98,12 +98,12 @@ class Handler(Config, ServerHttpProtocol):
             record = Record(
                 request=message, response=response,
                 transport=self.transport, duration=time)
-            self.service.logger.access(record)
+            self.service.log('access', record)
         except:
-            self.service.logger.error(traceback.format_exc())
+            self.service.log('error', traceback.format_exc())
 
     def log_debug(self, message, *args, **kwargs):
-        self.service.logger.debug(message, *args, **kwargs)
+        self.service.log('debug', message, *args, **kwargs)
 
     def log_exception(self, message, *args, **kwargs):
-        self.service.logger.exception(message, *args, **kwargs)
+        self.service.log('exception', message, *args, **kwargs)
