@@ -114,7 +114,7 @@ class Service(Middleware):
         port:
             Port like 80.
         """
-        server = self.loop.create_server(self.handler.fork, host, port)
+        server = self.loop.create_server(self.fork, host, port)
         server = self.loop.run_until_complete(server)
         self.log('info',
             'Start listening host={host} port={port}'.
@@ -127,6 +127,10 @@ class Service(Middleware):
     def log(self, level, *args, **kwargs):
         target = getattr(self.__logger, level)
         target(*args, **kwargs)
+
+    @property
+    def fork(self):
+        return self.__handler.fork
 
     # Private
 
