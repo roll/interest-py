@@ -28,7 +28,7 @@ Here is a base usage example.
   .. code-block:: bash
 
     $ curl -X GET http://127.0.0.1:9000/api/v1/comment/key=1; echo
-    {"next": "/api/v1/comment/key=2"}
+    {"key": 1}
     $ curl -X PUT http://127.0.0.1:9000/api/v1/comment; echo
     {"message": "Created"}
     $ curl -X POST http://127.0.0.1:9000/api/v1/comment; echo
