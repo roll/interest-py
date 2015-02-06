@@ -126,7 +126,7 @@ Now we're adding some middlewares:
 Diving into features
 --------------------
 
-Now we're creating restful API:
+Now we're creating restful API exploring interest features:
 
 .. code-block:: python
 
@@ -135,8 +135,8 @@ Now we're creating restful API:
     import json
     import asyncio
     import logging
-    from interest import (Service, Middleware, http,
-                          Logger, Handler, Router, Parser)
+    from interest import Service, Middleware, http
+    from interest import Logger, Handler, Router, Parser
     
     
     class Restful(Middleware):

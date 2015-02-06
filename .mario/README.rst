@@ -47,7 +47,7 @@ Now we're adding some middlewares:
 Diving into features
 --------------------
 
-Now we're creating restful API:
+Now we're creating restful API exploring interest features:
 
 .. code-block:: python
 

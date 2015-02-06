@@ -3,8 +3,8 @@ import sys
 import json
 import asyncio
 import logging
-from interest import (Service, Middleware, http,
-                      Logger, Handler, Router, Parser)
+from interest import Service, Middleware, http
+from interest import Logger, Handler, Router, Parser
 
 
 class Restful(Middleware):
