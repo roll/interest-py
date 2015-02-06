@@ -28,7 +28,7 @@ class Session(Middleware):
 
     @asyncio.coroutine
     def process(self, request):
-        assert self.main == self.service.main
+        assert self.main == self.service.over
         assert self.over == self.service
         assert self.prev == self.service['restful']
         assert self.next == self.service['comment']
