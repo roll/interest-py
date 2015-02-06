@@ -54,8 +54,9 @@ class Service(Middleware):
 
     def __init__(self, service=None, *,
                 name=None, path=None, methods=None,
+                middlewares=None, endpoint=None,
                 loop=None, logger=None, handler=None, router=None,
-                providers=None, middlewares=None , endpoint=None):
+                providers=None):
         if service is None:
             service = self
         if loop is None:
