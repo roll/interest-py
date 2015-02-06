@@ -25,7 +25,7 @@ class Middleware(Chain, Config, metaclass=OrderedMetaclass):
             def __call__(self, request):
                 return Response(text='Hello World!')
 
-        service = Service(path='/api/v1')
+        service = Service(prefix='/api/v1')
         service.add_middleware(MinimalMiddleware)
 
     .. seealso:: API: :class:`.Config`
@@ -34,18 +34,18 @@ class Middleware(Chain, Config, metaclass=OrderedMetaclass):
     # Public
 
     NAME = name
-    PATH = ''
+    PREFIX = ''
     METHODS = []
     MIDDLEWARES = []
     ENDPOINT = None
 
     def __init__(self, service, *,
-                 name=None, path=None, methods=None,
+                 name=None, prefix=None, methods=None,
                  middlewares=None, endpoint=None):
         if name is None:
             name = self.NAME
-        if path is None:
-            path = self.PATH
+        if prefix is None:
+            prefix = self.PREFIX
         if methods is None:
             methods = self.METHODS
         if middlewares is None:
@@ -55,15 +55,12 @@ class Middleware(Chain, Config, metaclass=OrderedMetaclass):
         if endpoint is None:
             from .endpoint import Endpoint
             endpoint = Endpoint
-        relpath = path
-        abspath = path
-        if self is not service:
-            abspath = service.path + path
+        self.main = self
+        self.over = self
         super().__init__()
         self.__service = service
         self.__name = name
-        self.__relpath = relpath
-        self.__abspath = abspath
+        self.__prefix = prefix
         self.__methods = methods
         self.__endpoint = endpoint
         self.__add_middlewares(middlewares)
@@ -88,7 +85,7 @@ class Middleware(Chain, Config, metaclass=OrderedMetaclass):
 
     @property
     def service(self):
-        """:class:`.Service` instance (read/write).
+        """:class:`.Service` instance (read-only).
         """
         return self.__service
 
@@ -102,7 +99,10 @@ class Middleware(Chain, Config, metaclass=OrderedMetaclass):
     def path(self):
         """Middleware's path (read-only).
         """
-        return self.__abspath
+        path = self.__prefix
+        if self is not self.over:
+            path = self.over.path + path
+        return path
 
     @property
     def methods(self):
@@ -187,18 +187,12 @@ class Middleware(Chain, Config, metaclass=OrderedMetaclass):
             for binding in reversed(bindings):
                 factory = binding.pop(
                     'endpoint', self.__endpoint)
-                path = self.__relpath
-                path += binding.pop('path', '')
                 respond = getattr(self, name)
                 endpoint = factory(self.service,
-                    name=name, path=path,
-                    respond=respond, **binding)
+                    name=name, respond=respond, **binding)
                 self.push(endpoint)
 
     def __update_topology(self):
-        if not isinstance(self.over, Middleware):
-            self.main = self
-            self.over = self
         for index, middleware in enumerate(self):
             if isinstance(middleware, Middleware):
                 middleware.main = self.main

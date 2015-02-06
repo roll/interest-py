@@ -71,7 +71,7 @@ class http:
             setattr(function, STICKER, bindings)
             return function
         if isinstance(param, str):
-            return partial(stick, path=param, **kwargs)
+            return partial(stick, prefix=param, **kwargs)
         return stick(param, **kwargs)
 
     @classmethod

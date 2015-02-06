@@ -35,7 +35,7 @@ class Logger(Config):
             def debug(self, message, *args, **kwargs):
                 pass
 
-        service = Service(path='/api/v1', logger=ProductionLogger)
+        service = Service(prefix='/api/v1', logger=ProductionLogger)
 
     .. seealso:: API: :class:`.Config`
     """

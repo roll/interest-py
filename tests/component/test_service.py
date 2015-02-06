@@ -10,14 +10,12 @@ class ServiceTest(unittest.TestCase):
     # Actions
 
     def setUp(self):
-        self.path = 'path'
         self.loop = Mock()
         self.logger = Mock()
         self.handler = Mock()
         self.Logger = Mock(return_value=self.logger)
         self.Handler = Mock(return_value=self.handler)
         self.service = component.Service(
-            path=self.path,
             loop=self.loop,
             logger=self.Logger,
             handler=self.Handler)
@@ -41,13 +39,6 @@ class ServiceTest(unittest.TestCase):
     def test_listen_keyboard_interrupt(self):
         self.loop.run_forever.side_effect = KeyboardInterrupt()
         self.service.listen(host='host', port='port')
-
-    def test_path(self):
-        self.assertEqual(self.service.path, self.path)
-
-    def test_path_default(self):
-        self.service = component.Service()
-        self.assertEqual(self.service.path, '')
 
     def test_loop(self):
         self.assertEqual(self.service.loop, self.loop)

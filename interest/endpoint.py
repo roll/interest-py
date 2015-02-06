@@ -14,12 +14,12 @@ class Endpoint(Middleware):
     RESPOND = None
 
     def __init__(self, service, *,
-                 name=None, path=None, methods=None, endpoint=None,
+                 name=None, prefix=None, methods=None, endpoint=None,
                  respond=None):
         if respond is None:
             respond = self.RESPOND
         super().__init__(service,
-            name=name, path=path,
+            name=name, prefix=prefix,
             methods=methods, endpoint=endpoint)
         self.__respond = respond
 

@@ -33,7 +33,7 @@ class Service(Middleware):
     to decide which components you do want to customize and which you don't::
 
         service = Service(
-            path='/api/v1',
+            prefix='/api/v1',
             loop=custom_loop,
             handler=CustomHandler,
             logger=CustomLogger)
@@ -53,7 +53,7 @@ class Service(Middleware):
     PROVIDERS = []
 
     def __init__(self, service=None, *,
-                name=None, path=None, methods=None,
+                name=None, prefix=None, methods=None,
                 middlewares=None, endpoint=None,
                 loop=None, logger=None, handler=None, router=None,
                 providers=None):
@@ -69,7 +69,7 @@ class Service(Middleware):
             providers = self.PROVIDERS
         service = self
         super().__init__(service,
-            name=name, path=path, methods=methods,
+            name=name, prefix=prefix, methods=methods,
             middlewares=middlewares, endpoint=endpoint)
         self.__loop = loop
         self.__logger = logger(self)

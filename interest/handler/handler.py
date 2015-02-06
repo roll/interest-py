@@ -27,7 +27,7 @@ class Handler(Config, ServerHttpProtocol):
     Add handler to a service with adjusted parameters::
 
         service = Service(
-            path='/api/v1',
+            prefix='/api/v1',
             handler=Handler.config(
                 connection_timeout=25,
                 request_timeout=5))

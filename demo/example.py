@@ -37,7 +37,7 @@ class Comment(Middleware):
 
     # Public
 
-    PATH = '/comment'
+    PREFIX = '/comment'
 
     @http.get('/<key:int>')
     def read(self, request, key):
@@ -51,7 +51,7 @@ class Comment(Middleware):
 
 
 # Create service
-service = Service(path='/api/v1',
+service = Service(prefix='/api/v1',
     middlewares=[Session, Restful, Comment])
 
 # Listen forever
