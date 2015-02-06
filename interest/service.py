@@ -93,12 +93,6 @@ class Service(Middleware):
         return self.__loop
 
     @property
-    def handler(self):
-        """:class:`.Handler` instance (read-only).
-        """
-        return self.__handler
-
-    @property
     def router(self):
         """:class:`.Router` instance (read-only).
         """
@@ -117,7 +111,7 @@ class Service(Middleware):
         server = self.loop.create_server(self.fork, host, port)
         server = self.loop.run_until_complete(server)
         self.log('info',
-            'Start listening host={host} port={port}'.
+            'Start listening host="{host}" port="{port}"'.
             format(host=host, port=port))
         try:
             self.loop.run_forever()

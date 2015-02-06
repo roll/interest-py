@@ -55,6 +55,3 @@ class ServiceTest(unittest.TestCase):
     def test_loop_default(self):
         self.service = component.Service()
         self.assertEqual(self.service.loop, asyncio.get_event_loop())
-
-    def test_handler(self):
-        self.assertEqual(self.service.handler, self.handler)
