@@ -59,7 +59,7 @@ Run the server in the terminal and use another to interact:
 Adding middlewares
 ------------------
 
-Let's add some middlewares to the out service:
+Let's add some middlewares to the our service:
 
 .. code-block:: python
 
