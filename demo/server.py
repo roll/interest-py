@@ -7,7 +7,7 @@ class Service(Service):
     # Public
 
     @http.get('/')
-    def hello(self, request, key):
+    def hello(self, request):
         return http.Response(text='Hello World!')
 
 

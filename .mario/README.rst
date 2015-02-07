@@ -7,13 +7,45 @@
 Features
 --------
 
+There are main interest features:
+
+- event-driven on top of aiohttp/asyncio
+
+    Asyncio is fast and beautifull. It's now is a part of Python standard 
+    library. Meanwhile aiohttp is probably going to be standard HTTP 
+    binding for asyncio. Interest is compatible with 
+    aiohttp's Request/Response/middleware. 
+
+- consistent, modular and flexible flow model, class-based
+
+    In interest everything processing request is a middleware. It's more 
+    like express.js/koa.js than aiohttp.web. As opposed to js libraries 
+    here we can write on beloved Python language instead of beloved 
+    Javascript language. Of course there is no callback hell thanks 
+    to asyncio. Furthermore Interest is fully class-based. For example 
+    endpoint is a middleware method. There are much more interesting 
+    things about flow model, see examples and documentation.   
+
+- configurable and pluggable
+
+    Interest is designed to be fully configurable in declarative manner
+    without subclassing main components. Interest supports providers 
+    and plugins. Virtual plugin repository based on github is a the 
+    work in progress.
+
+Package is authored and maintained by {{ maintainer }} <{{ maintainer_email }}>.
+
 Getting ready
 -------------
+
+To get started we need Python 3.4+. Installation is simple:
+
+- pip3 install {{ pypi_name }}
 
 Minimal server
 --------------
 
-Base example of the interest:
+Finally showing you the code:
 
 .. code-block:: python
 
@@ -74,3 +106,7 @@ Run the server in the terminal and use another to interact:
     {"message": "Unauthorized"}
 
 {% endblock %}
+
+{% block requirements %}{% endblock %}
+{% block installation %}{% endblock %}
+{% block contribution %}{% endblock %}
