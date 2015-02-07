@@ -1,16 +1,28 @@
 class Config:
-    """Config interface.
+    """Config is a interface to fork classes.
     """
 
     # Public
 
     @classmethod
     def config(cls, **defaults):
+        """Return config with updated defaults.
+
+        Parameters
+        ----------
+        defaults: dict
+            Defaults values.
+
+        Returns
+        -------
+        :class:`.Config`
+            Config with updated defaults.
+        """
         return ConfigEdition(cls, **defaults)
 
 
 class ConfigEdition(Config):
-    """Config representation.
+    """Config edition representation.
     """
 
     # Public

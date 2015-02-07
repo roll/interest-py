@@ -8,15 +8,44 @@ from .service import Service
 
 
 class Tester:
+    """Tester is a teststand to test interest servers.
+
+    Parameters
+    ----------
+    loop: object
+        Custom asyncio's loop.
+    python: type
+        Python interpreter for subprocess.
+    environ: dic
+        Environ update for subprocess.
+    scheme: str
+        Scheme for requests.
+    host: str
+        Host to listen on.
+    port: int
+        Port to listen on.
+    """
 
     # Public
 
     LOOP = loop
+    """Default loop parameter.
+    """
     PYTHON = python
+    """Default python parameter.
+    """
     ENVIRON = {}
+    """Default environ parameter.
+    """
     SCHEME = 'http'
+    """Default scheme parameter.
+    """
     HOST = '127.0.0.1'
+    """Default host parameter.
+    """
     PORT = port
+    """Default port parameter.
+    """
 
     def __init__(self, factory, *,
                  loop=None, python=None, environ=None,
@@ -26,7 +55,7 @@ class Tester:
         if python is None:
             python = self.PYTHON
         if environ is None:
-            environ = self.ENVIRON
+            environ = self.ENVIRON.copy()
         if scheme is None:
             scheme = self.SCHEME
         if host is None:

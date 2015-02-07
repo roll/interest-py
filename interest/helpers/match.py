@@ -1,5 +1,8 @@
 class Match(dict):
-    """Match representation.
+    """Match is a dictionary which always resolves to True in boolean context.
+
+    .. seealso:: Implements:
+        :class:`dict`
     """
 
     # Public

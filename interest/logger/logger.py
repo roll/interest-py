@@ -3,22 +3,25 @@ from ..helpers import Config
 
 
 class Logger(Config):
-    """Base Logger class (abstract).
+    """Logger is a component responsible for the logging.
 
-    Logger is used by :class:`.Service` for all logging purposes.
-    Logger subclasses can use python's system logging module
+    Logger provides standard log methods named after level and access
+    method to log access' :class:`Record` instances.
+
+    .. seealso:: Implements:
+        :class:`.Config`
 
     Parameters
     ----------
     service: :class:`.Service`
         Service instance.
     system: object
-        System logger.
+        System logger instance.
     template: str
         Template for access formatting.
 
-    Example
-    -------
+    Examples
+    --------
     For production use let's print the access log to the stdout
     and skip the debug log at all::
 
@@ -35,19 +38,17 @@ class Logger(Config):
             def debug(self, message, *args, **kwargs):
                 pass
 
-        service = Service(prefix='/api/v1', logger=ProductionLogger)
-
-    .. seealso:: API: :class:`.Config`
+        logger = ProductionLogger()
     """
 
     # Public
 
     SYSTEM = logging.getLogger('interest')
-    """System logget (default).
+    """Default system parameter.
     """
     TEMPLATE = ('%(host)s %(time)s "%(request)s" %(status)s '
                 '%(length)s "%(referer)s" "%(agent)s"')
-    """Template for access formatting (default).
+    """Default template parameter.
     """
 
     def __init__(self, service, *, system=None, template=None):

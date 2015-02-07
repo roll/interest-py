@@ -20,8 +20,8 @@ class Endpoint(Middleware):
     respond: coroutine
         Coroutine to respond to a request.
 
-    Example
-    -------
+    Examples
+    --------
     Let see how to get access to an endpoint::
 
         class Middleware(Middleware):

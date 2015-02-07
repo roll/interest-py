@@ -5,7 +5,7 @@ from .helpers import STICKER
 
 
 class http:
-    """HTTP proxy library for aiohttp.
+    """HTTP library/proxy backed by aiohttp.web.
 
     .. seealso:: http://aiohttp.readthedocs.org/en/
     """

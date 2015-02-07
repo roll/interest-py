@@ -1,8 +1,9 @@
 Extended Guide
 ==============
 
-Here we will see interest's terminology and high-level package design.
-If you're interested in concrete term use left menu to pick it.   
+Welcome to the interest's extended guide. We will try to cover all 
+framework aspects. If you're interested in concrete topic use left 
+menu to pick it.   
 
 *under development*
 

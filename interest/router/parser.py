@@ -2,12 +2,12 @@ from ..helpers import Config
 
 
 class Parser(Config):
-    """Parser is a component responsable for the parsing.
+    """Parser is a component responsible for the parsing.
 
     Router uses a parsers dictionary to handle user placeholders in paths.
     Placeholder is a path insertion in following form "<name:parser>".
 
-    .. seealso:: API:
+    .. seealso:: Implements:
         :class:`.Config`
 
     Parameters
@@ -21,8 +21,8 @@ class Parser(Config):
     restore: callable
         Callable to restore a string from a value.
 
-    Example
-    -------
+    Examples
+    --------
     Let's create a binary parser::
 
         class BinaryParser(Parser):

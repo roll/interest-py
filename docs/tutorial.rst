@@ -4,7 +4,7 @@ Getting Started
 .. note::
 
   It's a full-featured tutorial. 
-  For a very starter example see :doc:`Introduction <introduction>`.
+  For a starter examples see :doc:`Introduction <introduction>`.
   
 Let's say we want a REST service. It sounds pretty reasonable for the
 interest tutorial. We want standard functionality some CRUD, few formats

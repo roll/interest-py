@@ -2,7 +2,7 @@ from collections.abc import Iterable, Sized
 
 
 class Chain(Iterable, Sized):
-    """Chain representation.
+    """Chain is a enhanced sequence.
     """
 
     # Public

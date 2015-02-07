@@ -3,7 +3,17 @@ from .middleware import Middleware
 
 
 class Adapter(Middleware):
-    """Adapter for a aiohttp.web's midleware factory.
+    """Adapter is a middleware to use aiohttp.web's middleware factories.
+
+    .. seealso:: Implements:
+        :class:`.Middleware`
+        :class:`.Chain`,
+        :class:`.Config`
+
+    Parameters
+    ----------
+    factory: coroutine
+        aiohttp.web's middleware factoriy.
     """
 
     # Public

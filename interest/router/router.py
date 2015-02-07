@@ -5,7 +5,7 @@ from .pattern import Pattern
 
 
 class Router(Config):
-    """Router is a component responsable for the routing.
+    """Router is a component responsible for the routing.
 
     Router's only two fings to do are to check if request/constraints
     pair have :class:`.Match` or not and to costruct url back from
@@ -13,7 +13,7 @@ class Router(Config):
     :class:`.Parser` dict to handle placeholders in paths.
     Builtin parsers are liste below.
 
-    .. seealso:: API:
+    .. seealso:: Implements:
         :class:`.Config`
 
     Parameters
@@ -30,8 +30,8 @@ class Router(Config):
     - int
     - float
 
-    Example
-    -------
+    Examples
+    --------
     Let's see how match and url work::
 
         router = Router()
@@ -48,7 +48,7 @@ class Router(Config):
 
     def __init__(self, service, *, parsers=None):
         if parsers is None:
-            parsers = self.PARSERS
+            parsers = self.PARSERS.copy()
         self.__service = service
         self.__add_parsers(parsers)
         self.__patterns = {}

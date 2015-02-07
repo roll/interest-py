@@ -5,7 +5,7 @@ from .helpers import Chain, Config, OrderedMetaclass, STICKER, name
 
 
 class Middleware(Chain, Config, metaclass=OrderedMetaclass):
-    """Middleware is a coroutine extension to process requests.
+    """Middleware is a extended coroutine to process requests.
 
     Middleware is a key concept of the interest. For example
     :class:`.Service` and :class:`.Endpoint` are the Middlewares.
@@ -13,7 +13,6 @@ class Middleware(Chain, Config, metaclass=OrderedMetaclass):
     calling :meth:`.Middleware.__call__` method.
     But user application may use all provided API because of
     knowledge of the application topology.
-
 
     .. seealso:: Implements:
         :class:`.Chain`,
@@ -34,8 +33,8 @@ class Middleware(Chain, Config, metaclass=OrderedMetaclass):
     endpoint: :class:`.Endpoint` subclass.
         Default endpoint class for bindings.
 
-    Example
-    -------
+    Examples
+    --------
     Processing middleware::
 
         class Middleware(Middleware):
@@ -83,9 +82,9 @@ class Middleware(Chain, Config, metaclass=OrderedMetaclass):
         if prefix is None:
             prefix = self.PREFIX
         if methods is None:
-            methods = self.METHODS
+            methods = self.METHODS.copy()
         if middlewares is None:
-            middlewares = self.MIDDLEWARES
+            middlewares = self.MIDDLEWARES.copy()
         if endpoint is None:
             endpoint = self.ENDPOINT
         if endpoint is None:

@@ -2,12 +2,15 @@ from aiohttp.helpers import atoms
 
 
 class Record(dict):
-    """Record representation.
+    """Record is a safe dictionary with data about request handling.
 
     Record object represents interaction between :class:`.Handler`
     and client as dict ready to use with text templates. Dict is safe.
     If key is missing client gets '-' symbol. All values are strings.
     See available items below.
+
+    .. seealso:: Implements:
+        :class:`dict`
 
     Parameters
     ----------
@@ -54,8 +57,6 @@ class Record(dict):
     -----
     Safe dict idea with random access to request/respones headers
     is borrowed from Gunicorn/aiohttp libraries.
-
-    .. seealso:: API: :attr:`dict`
     """
 
     # Public

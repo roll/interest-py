@@ -34,8 +34,8 @@ class Service(Middleware):
     providers: list
         List of :class:`.Provider` subclasses.
 
-    Example
-    -------
+    Examples
+    --------
     Minimal service can be initiated without subclassing and parameters
     passed. But for example we will add some custom components::
 
@@ -83,7 +83,7 @@ class Service(Middleware):
         if handler is None:
             handler = self.HANDLER
         if providers is None:
-            providers = self.PROVIDERS
+            providers = self.PROVIDERS.copy()
         service = self
         super().__init__(service,
             name=name, prefix=prefix, methods=methods,

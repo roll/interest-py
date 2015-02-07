@@ -7,11 +7,14 @@ from .record import Record
 
 
 class Handler(Config, ServerHttpProtocol):
-    """Handler on top of aiohttp package.
+    """Handler is a component responsible for the request handling.
 
-    Handler is used by :class:`.Service` for handling HTTP requests
-    on low-level. Handler is :class:`asyncio.Protocol` implementation
-    derived from aiohttp's :class:`aiohttp.server.ServerHttpProtocol`.
+    Handler handles requests on low-level. Handler is
+    :class:`asyncio.Protocol` implementation derived from
+    the aiohttp's :class:`aiohttp.server.ServerHttpProtocol`.
+
+    .. seealso:: Implements:
+        :class:`.Config`
 
     Parameters
     ----------
@@ -24,15 +27,16 @@ class Handler(Config, ServerHttpProtocol):
 
     Example
     -------
-    Add handler to a service with adjusted parameters::
+    Let's create a handler and then an asyncio server::
 
-        service = Service(
-            prefix='/api/v1',
-            handler=Handler.config(
-                connection_timeout=25,
-                request_timeout=5))
+        # Create handler
+        handler = Handler(
+            '<service>', connection_timeout=25, request_timeout=5)
 
-    .. seealso:: API: :class:`.Config`
+        # Create server
+        loop = asyncio.get_event_loop()
+        server = loop.create_server(handler.fork)
+        server = self.loop.run_until_complete(server)
     """
 
     # Public

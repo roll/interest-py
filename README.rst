@@ -27,8 +27,8 @@ Interest is a web framework on top of aiohttp/asyncio.
      :alt: pypi
 
 
-Main features
--------------
+Features
+--------
 
 Getting ready
 -------------

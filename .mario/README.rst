@@ -4,8 +4,8 @@
 {% block badges %}
 {{ super() }}
 
-Main features
--------------
+Features
+--------
 
 Getting ready
 -------------
