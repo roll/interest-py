@@ -19,6 +19,8 @@ class Endpoint(Middleware):
     ----------
     respond: coroutine
         Coroutine to respond to a request.
+    extra: dict
+        Extra arguments.
 
     Examples
     --------
@@ -44,7 +46,7 @@ class Endpoint(Middleware):
 
     def __init__(self, service, *,
                  name=None, prefix=None, methods=None, endpoint=None,
-                 respond=None):
+                 respond=None, **extra):
         if respond is None:
             respond = self.RESPOND
         super().__init__(service,
@@ -53,6 +55,7 @@ class Endpoint(Middleware):
         # Override attributes
         if respond is not None:
             self.respond = respond
+        self.__extra = extra
 
     @asyncio.coroutine
     def __call__(self, request):
@@ -72,6 +75,12 @@ class Endpoint(Middleware):
             'path="{self.path}" methods="{self.methods}">')
         compiled = template.format(self=self)
         return compiled
+
+    @property
+    def extra(self):
+        """Dict if extra arguments passed to the endpoint.
+        """
+        return self.__extra
 
     @asyncio.coroutine
     def respond(self, request, **kwargs):
