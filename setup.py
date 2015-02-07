@@ -15,8 +15,8 @@ if data_files:
 from glob import iglob
 long_description = 'Interest is a event-driven web framework on top of aiohttp/asyncio.'
 for filepath in iglob('README.*'):
-    with open(filepath) as file:
-        long_description = file.read(encoding='UTF-8')
+    with open(filepath, encoding='UTF-8') as file:
+        long_description = file.read()
     break     
 
 # Block: packages
