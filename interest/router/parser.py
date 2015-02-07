@@ -2,19 +2,51 @@ from ..helpers import Config
 
 
 class Parser(Config):
-    """Parser representation.
+    """Parser is a component responsable for the parsing.
+
+    Router uses a parsers dictionary to handle user placeholders in paths.
+    Placeholder is a path insertion in following form "<name:parser>".
+
+    .. seealso:: API:
+        :class:`.Config`
 
     Parameters
     ----------
     service: :class:`Service`
         Service instance.
+    pattern: str
+        Regex pattern to match.
+    convert: callable
+        Callable to convert a string to a value.
+    restore: callable
+        Callable to restore a string from a value.
+
+    Example
+    -------
+    Let's create a binary parser::
+
+        class BinaryParser(Parser):
+
+            # Public
+
+            PATTERN = r'[01]+'
+            CONVERT = int
+
+        router = Router(parsers={'bin': BinaryParser})
+        router.match('<request>', '/some/path/<name:bin>')
     """
 
     # Public
 
     PATTERN = None
+    """Default pattern parameter.
+    """
     CONVERT = str
+    """Default convert parameter.
+    """
     RESTORE = str
+    """Default restore parameter.
+    """
 
     def __init__(self, service, *,
                  pattern=None, convert=None, restore=None):

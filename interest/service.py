@@ -10,8 +10,8 @@ from .middleware import Middleware
 class Service(Middleware):
     """Service is a middleware capable to listen on TCP/IP socket.
 
-    Service also provides methods :meth:`.match`, :meth:`.url`
-    and :meth:`.log` to use in  request processing. This list can be
+    Service also provides methods :meth:`.Service.match`, :meth:`.Service.url`
+    and :meth:`.Service.log` to use in  request processing. This list can be
     updated via :class:`.Provider` system. Concrete service functionality
     is based on :class:`.Router`, :class:`.Logger`
     and :class:`.Handler` classes.
@@ -137,18 +137,27 @@ class Service(Middleware):
         return server
 
     def match(self, request, *, root=None, path=None, methods=None):
-        """Check if request matchs the given parameters.
+        """Return match or None for the request/constraints pair.
+
+        .. seealso:: Proxy:
+            :meth:`.Router.match`
         """
         return self.__router.match(
             request, root=root, path=path, methods=methods)
 
     def url(self, name, *, base=None, query=None, **match):
         """Construct an url for the given parameters.
+
+        .. seealso:: Proxy:
+            :meth:`.Router.url`
         """
         return self.__router.url(name, base=base, query=query, **match)
 
     def log(self, level, *args, **kwargs):
         """Log something.
+
+        .. seealso:: Proxy:
+            :class:`.Logger`.level
         """
         target = getattr(self.__logger, level)
         target(*args, **kwargs)

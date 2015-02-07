@@ -9,7 +9,9 @@ class Router(Config):
 
     Router's only two fings to do are to check if request/constraints
     pair have :class:`.Match` or not and to costruct url back from
-    the middleware name and the given parameters.
+    the middleware name and the given parameters. Router uses
+    :class:`.Parser` dict to handle placeholders in paths.
+    Builtin parsers are liste below.
 
     .. seealso:: API:
         :class:`.Config`
@@ -20,6 +22,21 @@ class Router(Config):
         Service instance.
     parsers: dict
         Dictionary of the :class:`.Parser` sublasses.
+
+    Builtin parsers
+    ---------------
+    - str
+    - path
+    - int
+    - float
+
+    Example
+    -------
+    Let's see how match and url work::
+
+        router = Router()
+        match = router.match('<request>', '/some/path/<name:int>')
+        url = router.url('name', **match)
     """
 
     # Public
@@ -43,7 +60,7 @@ class Router(Config):
         return self.__service
 
     def match(self, request, *, root=None, path=None, methods=None):
-        """Check if request matchs the given parameters.
+        """Return match or None for the request/constraints pair.
 
         Parameters
         ----------
@@ -82,9 +99,9 @@ class Router(Config):
         Parameters
         ----------
         name: str
-            Name.
-        base: str
-            Base.
+            Nested middleware's name separated by dots.
+        base: :class:`.Middleware`
+            Base middleware to start searching from.
         query: dict
             Query string data.
         match: dict
