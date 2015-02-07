@@ -16,7 +16,7 @@ from glob import iglob
 long_description = 'Interest is a event-driven web framework on top of aiohttp/asyncio.'
 for filepath in iglob('README.*'):
     with open(filepath) as file:
-        long_description = file.read()
+        long_description = file.read(encoding='UTF-8')
     break     
 
 # Block: packages
