@@ -163,23 +163,6 @@ Now we're creating restful API exploring interest features:
             return response
     
     
-    class Auth(Middleware):
-    
-        # Public
-    
-        METHODS = ['POST']
-    
-        @asyncio.coroutine
-        def process(self, request):
-            assert self.service.match(request, root='/api/v1')
-            assert self.service.match(request, path=request.path)
-            assert self.service.match(request, methods=['POST'])
-            if not request.user:
-                raise http.Unauthorized()
-            response = yield from self.next(request)
-            return response
-    
-    
     class Endpoint(Endpoint):
     
         # Public
@@ -198,6 +181,23 @@ Now we're creating restful API exploring interest features:
                 if header not in request.headers:
                     return (yield from self.next(request))
             return (yield from super().__call__(request))
+    
+    
+    class Auth(Middleware):
+    
+        # Public
+    
+        METHODS = ['POST']
+    
+        @asyncio.coroutine
+        def process(self, request):
+            assert self.service.match(request, root='/api/v1')
+            assert self.service.match(request, path=request.path)
+            assert self.service.match(request, methods=['POST'])
+            if not request.user:
+                raise http.Unauthorized()
+            response = yield from self.next(request)
+            return response
     
     
     class Comment(Middleware):
