@@ -127,7 +127,7 @@ Now we're creating restful API exploring interest features:
     import asyncio
     import logging
     from interest import Service, Middleware, http
-    from interest import Logger, Handler, Router, Parser
+    from interest import Logger, Handler, Router, Parser, Provider, Endpoint
     
     
     class Restful(Middleware):
@@ -180,11 +180,32 @@ Now we're creating restful API exploring interest features:
             return response
     
     
+    class Endpoint(Endpoint):
+    
+        # Public
+    
+        HEADERS = []
+    
+        def __init__(self, *args, headers=None, **kwargs):
+            if headers is None:
+                headers = self.HEADERS
+            super().__init__(*args, **kwargs)
+            self.headers = headers
+    
+        @asyncio.coroutine
+        def __call__(self, request):
+            for header in self.headers:
+                if header not in request.headers:
+                    return (yield from self.next(request))
+            return (yield from super().__call__(request))
+    
+    
     class Comment(Middleware):
     
         # Public
     
         PREFIX = '/comment'
+        ENDPOINT = Endpoint
         MIDDLEWARES = [Auth]
     
         @http.get('/key=<key:myint>')
@@ -200,11 +221,26 @@ Now we're creating restful API exploring interest features:
             self.service.log('info', 'Adding custom header!')
             raise http.Created(headers={'endpoint': 'upsert'})
     
+        @http.delete(headers=['ACCEPT'])
+        def delete(self, request):
+            assert self.service.db == '<connection>'
+            raise http.Forbidden()
+    
+    
+    class Database(Provider):
+    
+        # Public
+    
+        @asyncio.coroutine
+        def provide(self, service):
+            self.service.db = '<connection>'
+    
     
     # Create restful service
     restful = Service(
         prefix='/api/v1',
         middlewares=[Restful, Session, Comment],
+        providers=[Database],
         router=Router.config(
             parsers={'myint': Parser.config(
                 pattern=r'[1-9]+', convert=int)}))

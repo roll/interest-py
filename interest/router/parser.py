@@ -24,9 +24,6 @@ class Parser(Config):
             convert = self.CONVERT
         if restore is None:
             restore = self.RESTORE
-        assert isinstance(pattern, str)
-        assert callable(convert)
-        assert callable(restore)
         self.__service = service
         self.__pattern = pattern
         self.__convert = convert

@@ -13,7 +13,6 @@ class Provider(Config):
     def __init__(self, service, *, provide=None):
         if provide is None:
             provide = self.PROVIDE
-        assert provide is not None
         self.__service = service
         self.__provide = provide
 

@@ -62,7 +62,7 @@ class http:
     VersionNotSupported = web.HTTPVersionNotSupported
 
     @classmethod
-    def bind(cls, param, **kwargs):
+    def bind(cls, param=None, **kwargs):
         def stick(function, **binding):
             if not asyncio.iscoroutine(function):
                 function = asyncio.coroutine(function)
@@ -75,43 +75,43 @@ class http:
         return stick(param, **kwargs)
 
     @classmethod
-    def get(cls, param, **kwargs):
+    def get(cls, param=None, **kwargs):
         """Bind a get responder.
         """
         return cls.bind(param, methods=['GET'], **kwargs)
 
     @classmethod
-    def post(cls, param, **kwargs):
+    def post(cls, param=None, **kwargs):
         """Bind a post responder.
         """
         return cls.bind(param, methods=['POST'], **kwargs)
 
     @classmethod
-    def put(cls, param, **kwargs):
+    def put(cls, param=None, **kwargs):
         """Bind a put responder.
         """
         return cls.bind(param, methods=['PUT'], **kwargs)
 
     @classmethod
-    def delete(cls, param, **kwargs):
+    def delete(cls, param=None, **kwargs):
         """Bind a delete responder.
         """
         return cls.bind(param, methods=['DELETE'], **kwargs)
 
     @classmethod
-    def patch(cls, param, **kwargs):
+    def patch(cls, param=None, **kwargs):
         """Bind a patch responder.
         """
         return cls.bind(param, methods=['PATCH'], **kwargs)
 
     @classmethod
-    def head(cls, param, **kwargs):
+    def head(cls, param=None, **kwargs):
         """Bind a head responder.
         """
         return cls.bind(param, methods=['HEAD'], **kwargs)
 
     @classmethod
-    def options(cls, param, **kwargs):
+    def options(cls, param=None, **kwargs):
         """Bind a options responder.
         """
         return cls.bind(param, methods=['OPTIONS'], **kwargs)
