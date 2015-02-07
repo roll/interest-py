@@ -51,7 +51,8 @@ class Endpoint(Middleware):
             name=name, prefix=prefix,
             methods=methods, endpoint=endpoint)
         # Override attributes
-        self.respond = respond
+        if respond is not None:
+            self.respond = respond
 
     @asyncio.coroutine
     def __call__(self, request):

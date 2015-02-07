@@ -58,8 +58,12 @@ class Parser(Config):
             restore = self.RESTORE
         self.__service = service
         self.__pattern = pattern
-        self.__convert = convert
-        self.__restore = restore
+        assert isinstance(self.pattern, str)
+        # Override attributes
+        if convert is not None:
+            self.convert = convert
+        if restore is not None:
+            self.restore = restore
 
     def __repr__(self):
         template = (
@@ -81,8 +85,7 @@ class Parser(Config):
         """
         return self.__pattern
 
-    @property
-    def convert(self):
+    def convert(self, string):
         """Convert a given string to a value.
 
         Parameters
@@ -95,10 +98,9 @@ class Parser(Config):
         object
             Converted string.
         """
-        return self.__convert
+        raise NotImplementedError()
 
-    @property
-    def restore(self):
+    def restore(self, value):
         """Restore a given value to a string.
 
         Parameters
@@ -111,7 +113,7 @@ class Parser(Config):
         str
             Restored string.
         """
-        return self.__restore
+        raise NotImplementedError()
 
 
 class StringParser(Parser):
