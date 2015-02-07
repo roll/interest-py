@@ -163,15 +163,11 @@ Now we're creating restful API exploring interest features:
             return response
     
     
-    class Endpoint(Endpoint):
+    class MyEndpoint(Endpoint):
     
         # Public
     
-        HEADERS = []
-    
-        def __init__(self, *args, headers=None, **kwargs):
-            if headers is None:
-                headers = self.HEADERS
+        def __init__(self, *args, headers=[], **kwargs):
             super().__init__(*args, **kwargs)
             self.headers = headers
     
@@ -205,7 +201,7 @@ Now we're creating restful API exploring interest features:
         # Public
     
         PREFIX = '/comment'
-        ENDPOINT = Endpoint
+        ENDPOINT = MyEndpoint
         MIDDLEWARES = [Auth]
     
         @http.get('/key=<key:myint>')
