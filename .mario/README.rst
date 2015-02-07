@@ -4,14 +4,20 @@
 {% block badges %}
 {{ super() }}
 
-Minimal service
----------------
+Main features
+-------------
+
+Getting ready
+-------------
+
+Minimal server
+--------------
 
 Base example of the interest:
 
 .. code-block:: python
 
-    {{ examples['service']|indent }}
+    {{ examples['server']|indent }}
     
 Run the server in the terminal and use another to interact:
     
@@ -38,10 +44,10 @@ Run the server in the terminal and use another to interact:
     $ python3 server.py
     ...
     $ curl -X GET http://127.0.0.1:9000/; echo
-    Hello World 1 times!
-    $ curl -X GET http://127.0.0.1:9000/5; echo
-    Hello World 5 times!
-    $ curl -X GET http://127.0.0.1:9000/ten; echo 
+    Hello World!
+    $ curl -X GET http://127.0.0.1:9000/math/power/2; echo
+    4
+    $ curl -X GET http://127.0.0.1:9000/math/power/two; echo 
     404: Not Found
 
 Diving into features

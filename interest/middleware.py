@@ -5,39 +5,75 @@ from .helpers import Chain, Config, OrderedMetaclass, STICKER, name
 
 
 class Middleware(Chain, Config, metaclass=OrderedMetaclass):
-    """Middleware representation (abstract).
+    """Middleware is a coroutine extension to process requests.
+
+    Middleware is a key concept of the interest. For example
+    :class:`.Service` and :class:`.Endpoint` are the Middlewares.
+    The interest framework uses middlewares only as coroutines
+    calling :meth:`.Middleware.__call__` method.
+    But user application may use all provided API because of
+    knowledge of the application topology.
+
+
+    .. seealso:: Implements:
+        :class:`.Chain`,
+        :class:`.Config`
 
     Parameters
     ----------
     service: :class:`.Service`
         Service instance.
+    name: str
+        Middleware's name.
+    prefix: str
+        HTTP path prefix constraint.
+    methods: list
+        HTTP methods allowed constraint.
+    middlewares: list
+        List of submiddlewares.
+    endpoint: :class:`.Endpoint` subclass.
+        Default endpoint class for bindings.
 
     Example
     -------
-    By default interest doesn't know what to do with any request.
-    We have to implement a minimal midleware::
+    Processing middleware::
 
-        class MinimalMiddleware(Middleware):
+        class Middleware(Middleware):
 
             # Public
 
             @asyncio.coroutine
-            def __call__(self, request):
-                return Response(text='Hello World!')
+            def process(self, request):
+                try:
+                    # Process request here
+                    response = yield from self.next(request)
+                    # Process response here
+                except http.Exception as exception:
+                    # Process exception here
+                    response = exception
+                return response
 
-        service = Service(prefix='/api/v1')
-        service.add_middleware(MinimalMiddleware)
-
-    .. seealso:: API: :class:`.Config`
+        middleware = Middleware('<service>')
+        response = yield from middleware('<request>')
     """
 
     # Public
 
     NAME = name
+    """Default name parameter.
+    """
     PREFIX = ''
+    """Default prefix parameter.
+    """
     METHODS = []
+    """Default methods parameter.
+    """
     MIDDLEWARES = []
+    """Default middlewares parameter.
+    """
     ENDPOINT = None
+    """Default endpoint parameter.
+    """
 
     def __init__(self, service, *,
                  name=None, prefix=None, methods=None,
@@ -68,6 +104,18 @@ class Middleware(Chain, Config, metaclass=OrderedMetaclass):
 
     @asyncio.coroutine
     def __call__(self, request):
+        """Process a request (coroutine).
+
+        Parameters
+        ----------
+        request: :class:`.http.Request`
+            Request instance.
+
+        Returns
+        -------
+        object
+            Reply value.
+        """
         match = self.service.match(
             request, root=self.path, methods=self.methods)
         if match:
@@ -97,7 +145,7 @@ class Middleware(Chain, Config, metaclass=OrderedMetaclass):
 
     @property
     def path(self):
-        """Middleware's path (read-only).
+        """HTTP full path constraint. (read-only).
         """
         path = self.__prefix
         if self is not self.over:
@@ -106,13 +154,20 @@ class Middleware(Chain, Config, metaclass=OrderedMetaclass):
 
     @property
     def methods(self):
-        """Middleware's methods (read-only).
+        """HTTP methods allowed constraint (read-only).
         """
         return self.__methods
 
     @asyncio.coroutine
     def process(self, request):
         """Process a request (coroutine).
+
+        .. note:: This coroutine will be reached only if request
+            matches :attr:`.path` and :attr:`.methods` constraints.
+
+        By default this method sends request to submiddleware chain and
+        returns reply. It's standard point to override Middleware behavior
+        by user application.
 
         Parameters
         ----------
@@ -121,14 +176,8 @@ class Middleware(Chain, Config, metaclass=OrderedMetaclass):
 
         Returns
         -------
-        :class:`.http.StreamResponse`
-            Response instance.
-
-        Raises
-        ------
-        :class:`RuntimeError`
-            If middlewares chain doesn't return
-            :class:`.http.StreamResponse`.
+        object
+            Reply value.
         """
         if self:
             return (yield from self[0](request))
@@ -136,25 +185,25 @@ class Middleware(Chain, Config, metaclass=OrderedMetaclass):
 
     @asyncio.coroutine
     def main(self, request):
-        """Call the main middleware (coroutine).
+        """Link to the main middleware (coroutine).
         """
         raise http.NotFound()
 
     @asyncio.coroutine
     def over(self, request):
-        """Call the over middleware (coroutine).
+        """Link to the over middleware (coroutine).
         """
         raise http.NotFound()
 
     @asyncio.coroutine
     def prev(self, request):
-        """Call the previous middleware (coroutine).
+        """Link to the previous middleware (coroutine).
         """
         raise http.NotFound()
 
     @asyncio.coroutine
     def next(self, request):
-        """Call the next middleware (coroutine).
+        """Link to the next middleware (coroutine).
         """
         raise http.NotFound()
 
@@ -195,6 +244,7 @@ class Middleware(Chain, Config, metaclass=OrderedMetaclass):
     def __update_topology(self):
         for index, middleware in enumerate(self):
             if isinstance(middleware, Middleware):
+                # Override attributes
                 middleware.main = self.main
                 middleware.over = self
                 if index - 1 > -1:

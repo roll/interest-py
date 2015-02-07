@@ -31,7 +31,7 @@ class ProjectModule(ProjectModule):
         examples = {}
         directory = Path('demo')
         for path in directory.iterdir():
-            if path.is_file():
+            if path.suffix == '.py':
                 with path.open() as file:
                     examples[path.stem] = file.read()
         return examples

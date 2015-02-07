@@ -5,14 +5,29 @@ from .pattern import Pattern
 
 
 class Router(Config):
-    """Router implementation.
+    """Router is a component responsable for the routing.
 
-    .. seealso:: API: :class:`.Config`
+    Router's only two fings to do are to check if request/constraints
+    pair have :class:`.Match` or not and to costruct url back from
+    the middleware name and the given parameters.
+
+    .. seealso:: API:
+        :class:`.Config`
+
+    Parameters
+    ----------
+    service: :class:`.Service`
+        Service instance.
+    parsers: dict
+        Dictionary of the :class:`.Parser` sublasses.
     """
 
     # Public
 
     PARSERS = {}
+    """Default parsers parameter.
+    """
+
 
     def __init__(self, service, *, parsers=None):
         if parsers is None:

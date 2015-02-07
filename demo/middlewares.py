@@ -23,10 +23,21 @@ class Resource(Middleware):
 
     # Public
 
+    PREFIX = '/math'
+
+    @http.get('/power')
+    @http.get('/power/<value:int>')
+    def power(self, request, value=1):
+        return http.Response(text=str(value ** 2))
+
+
+class Service(Service):
+
+    # Public
+
     @http.get('/')
-    @http.get('/<times:int>')
-    def hello(self, request, times=1):
-        return http.Response(text='Hello World {} times!'.format(times))
+    def hello(self, request, key):
+        return http.Response(text='Hello World!')
 
 
 # Listen forever

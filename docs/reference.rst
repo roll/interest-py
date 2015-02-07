@@ -15,63 +15,65 @@ Middleware
 
 .. autoclass:: interest.Middleware
 
-Resource
---------
-
-.. autoclass:: interest.Resource
-
 Endpoint
 --------
 
 .. autoclass:: interest.Endpoint
 
-Adapter
--------
+Router
+------
 
-.. autoclass:: interest.Adapter
+.. autoclass:: interest.Router
 
-Converter
----------
+Parser
+------
 
-.. autoclass:: interest.Converter
+.. autoclass:: interest.Parser
 
-Provider
---------
+Logger
+------
 
-.. autoclass:: interest.Provider
+.. autoclass:: interest.Logger
 
 Handler
 -------
 
 .. autoclass:: interest.Handler
-.. autoclass:: interest.SystemHandler
 
 Record
 ------
 
 .. autoclass:: interest.Record
 
-Logger
-------
+Provider
+--------
 
-.. autoclass:: interest.Logger
-.. autoclass:: interest.SystemLogger
+.. autoclass:: interest.Provider
 
 Chain
 -----
 
 .. autoclass:: interest.Chain
 
+Config
+------
+
+.. autoclass:: interest.Config
+
 Match
 -----
 
 .. autoclass:: interest.Match
 
-Config
+Adapter
+-------
+
+.. autoclass:: interest.Adapter
+
+Tester
 ------
 
-.. autoclass:: interest.Config
-.. autoclass:: interest.Configurable
+.. autoclass:: interest.Tester
 
 http
 ----

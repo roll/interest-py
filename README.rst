@@ -27,8 +27,14 @@ Interest is a web framework on top of aiohttp/asyncio.
      :alt: pypi
 
 
-Minimal service
----------------
+Main features
+-------------
+
+Getting ready
+-------------
+
+Minimal server
+--------------
 
 Base example of the interest:
 
@@ -92,10 +98,21 @@ Now we're adding some middlewares:
     
         # Public
     
+        PREFIX = '/math'
+    
+        @http.get('/power')
+        @http.get('/power/<value:int>')
+        def power(self, request, value=1):
+            return http.Response(text=str(value ** 2))
+    
+    
+    class Service(Service):
+    
+        # Public
+    
         @http.get('/')
-        @http.get('/<times:int>')
-        def hello(self, request, times=1):
-            return http.Response(text='Hello World {} times!'.format(times))
+        def hello(self, request, key):
+            return http.Response(text='Hello World!')
     
     
     # Listen forever
@@ -109,10 +126,10 @@ Run the server in the terminal and use another to interact:
     $ python3 server.py
     ...
     $ curl -X GET http://127.0.0.1:9000/; echo
-    Hello World 1 times!
-    $ curl -X GET http://127.0.0.1:9000/5; echo
-    Hello World 5 times!
-    $ curl -X GET http://127.0.0.1:9000/ten; echo 
+    Hello World!
+    $ curl -X GET http://127.0.0.1:9000/math/power/2; echo
+    4
+    $ curl -X GET http://127.0.0.1:9000/math/power/two; echo 
     404: Not Found
 
 Diving into features

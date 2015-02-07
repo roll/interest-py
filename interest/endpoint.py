@@ -4,14 +4,43 @@ from .middleware import Middleware
 
 
 class Endpoint(Middleware):
-    """Endpoint representation.
+    """Endpoint is a middleware capable to respont to a request.
 
-    .. seealso:: API: :class:`.Middleware`
+    Enpoint is used by :meth:`.http.bind` methods family to convert
+    middleware's methods to the middleware's endpoints.
+    Usually user application never creates enpoints by itself.
+
+    .. seealso:: Implements:
+        :class:`.Middleware`,
+        :class:`.Chain`,
+        :class:`.Config`
+
+    Parameters
+    ----------
+    respond: coroutine
+        Coroutine to respond to a request.
+
+    Example
+    -------
+    Let see how to get access to an endpoint::
+
+        class Middleware(Middleware):
+
+            # Public
+
+            @http.get('/<text:path>')
+            def echo(self, request, text):
+                return http.Response(text=text)
+
+        endpoint = Middleware('<service>')['echo']
+        response = yield from endpoint('<request>')
     """
 
     # Public
 
     RESPOND = None
+    """Default respond parameter.
+    """
 
     def __init__(self, service, *,
                  name=None, prefix=None, methods=None, endpoint=None,
@@ -21,7 +50,8 @@ class Endpoint(Middleware):
         super().__init__(service,
             name=name, prefix=prefix,
             methods=methods, endpoint=endpoint)
-        self.__respond = respond
+        # Override attributes
+        self.respond = respond
 
     @asyncio.coroutine
     def __call__(self, request):
@@ -42,6 +72,20 @@ class Endpoint(Middleware):
         compiled = template.format(self=self)
         return compiled
 
-    @property
-    def respond(self):
-        return self.__respond
+    @asyncio.coroutine
+    def respond(self, request, **kwargs):
+        """Respond to a request (coroutine).
+
+        Parameters
+        ----------
+        request: :class:`.http.Request`
+            Request instance.
+        kwargs: dict
+            Keyword arguments.
+
+        Returns
+        -------
+        object
+            Reply value.
+        """
+        raise http.NotFound()

@@ -63,6 +63,8 @@ class http:
 
     @classmethod
     def bind(cls, param=None, **kwargs):
+        """Bind middleware's method as HTTP endpoint.
+        """
         def stick(function, **binding):
             if not asyncio.iscoroutine(function):
                 function = asyncio.coroutine(function)
@@ -76,42 +78,42 @@ class http:
 
     @classmethod
     def get(cls, param=None, **kwargs):
-        """Bind a get responder.
+        """Bind middleware's method as HTTP get endpoint.
         """
         return cls.bind(param, methods=['GET'], **kwargs)
 
     @classmethod
     def post(cls, param=None, **kwargs):
-        """Bind a post responder.
+        """Bind middleware's method as HTTP post endpoint.
         """
         return cls.bind(param, methods=['POST'], **kwargs)
 
     @classmethod
     def put(cls, param=None, **kwargs):
-        """Bind a put responder.
+        """Bind middleware's method as HTTP put endpoint.
         """
         return cls.bind(param, methods=['PUT'], **kwargs)
 
     @classmethod
     def delete(cls, param=None, **kwargs):
-        """Bind a delete responder.
+        """Bind middleware's method as HTTP delete endpoint.
         """
         return cls.bind(param, methods=['DELETE'], **kwargs)
 
     @classmethod
     def patch(cls, param=None, **kwargs):
-        """Bind a patch responder.
+        """Bind middleware's method as HTTP patch endpoint.
         """
         return cls.bind(param, methods=['PATCH'], **kwargs)
 
     @classmethod
     def head(cls, param=None, **kwargs):
-        """Bind a head responder.
+        """Bind middleware's method as HTTP head endpoint.
         """
         return cls.bind(param, methods=['HEAD'], **kwargs)
 
     @classmethod
     def options(cls, param=None, **kwargs):
-        """Bind a options responder.
+        """Bind middleware's method as HTTP options endpoint.
         """
         return cls.bind(param, methods=['OPTIONS'], **kwargs)
