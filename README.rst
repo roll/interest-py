@@ -156,7 +156,6 @@ Now we're creating restful API exploring interest features:
             assert self.main == self.service.over
             assert self.over == self.service
             assert self.prev == self.service['restful']
-            assert self.next == self.service['comment']
             assert self.next == self.service['comment']['read'].over
             request.user = False
             response = yield from self.next(request)
