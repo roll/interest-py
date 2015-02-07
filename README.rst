@@ -6,7 +6,7 @@
 
 Interest
 =====================
-Interest is a web framework on top of aiohttp/asyncio.
+Interest is a asynchronous web framework on top of aiohttp/asyncio.
 
 .. Block: badges
 
@@ -183,13 +183,9 @@ Now we're creating restful API exploring interest features:
     
         # Public
     
-        def __init__(self, *args, headers=[], **kwargs):
-            super().__init__(*args, **kwargs)
-            self.headers = headers
-    
         @asyncio.coroutine
         def __call__(self, request):
-            for header in self.headers:
+            for header in self.extra.get('headers', []):
                 if header not in request.headers:
                     return (yield from self.next(request))
             return (yield from super().__call__(request))
