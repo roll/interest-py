@@ -67,7 +67,7 @@ is a middleware concept. For example service is also a middleware.
   Middleware is a coroutine taking http.Request as first argument 
   to return any object.
   
-Interest provides class-based middleware implementation with extended API.
+Interest provides class-based middleware with extended API.
 For example you can set constraints like HTTP path or methods, 
 call the next middleware, get access to the upper server and more:
 
