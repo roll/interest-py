@@ -107,7 +107,7 @@ is a middleware concept. For example service is also a middleware.
   
 Interest provides class-based middleware with extended API.
 For example you can set constraints like HTTP path or methods, 
-call the next middleware, get access to the upper service and more:
+call the next middleware, get access to the parent service and more:
 
 .. code-block:: python
 
