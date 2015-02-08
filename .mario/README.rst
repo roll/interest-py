@@ -117,7 +117,7 @@ What's next?
 
 See the Interest documentation to get more:
 
-.. warning:: It's under development for now.
+  It's under development for now.
 
 - `Getting started <http://{{ rtd_name }}.readthedocs.org/en/latest/tutorial.html>`_
 - `Extended Guide <http://{{ rtd_name }}.readthedocs.org/en/latest/guide.html>`_
