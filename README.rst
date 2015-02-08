@@ -54,17 +54,19 @@ Features
 
 Package is authored and maintained by roll <roll@respect31.com>.
 
-Getting ready
--------------
+Installation
+------------
 
-To get started we need Python 3.4+. Installation is simple:
+We need Python 3.4+ and higher:
 
 - pip3 install interest
 
-Minimal server
---------------
+Creating service
+----------------
 
-Finally showing you the code:
+Service is a main interest component. Service can listen on TCP/IP port.
+It means that when we create service and call listen method we create
+HTTP server:
 
 .. code-block:: python
 
@@ -97,7 +99,15 @@ Run the server in the terminal and use another to interact:
 Adding middlewares
 ------------------
 
-Let's add some middlewares to the our service:
+As it was said service is a main interest component but heart of the interest 
+is a middleware concept. By the way service is a middleware.
+
+  Middleware is a coroutine taking http.Request as first argument 
+  to return any object.
+  
+Interest provides class-based middleware implementation with extended API.
+For example you can set constraints like HTTP path or methods, 
+call the next middleware, get access to the upper server and more:  
 
 .. code-block:: python
 
@@ -106,9 +116,12 @@ Let's add some middlewares to the our service:
     from interest import Service, Middleware, http
     
     
-    class Processor(Middleware):
+    class Upper(Middleware):
     
         # Public
+    
+        PREFIX = '/upper'
+        METHODS = ['GET']
     
         @asyncio.coroutine
         def process(self, request):
@@ -116,13 +129,53 @@ Let's add some middlewares to the our service:
                 # Process request here
                 response = (yield from self.next(request))
                 # Process response here
+                response.text = response.text.upper()
             except http.Exception as exception:
                 # Process exception here
                 response = exception
+            print(self.service)
             return response
     
     
-    class Resource(Middleware):
+    class Service(Service):
+    
+        # Public
+    
+        @http.get('/<key:path>')
+        def hello(self, request, key):
+            return http.Response(text='Hello World!')
+    
+    
+    # Listen forever
+    service = Service(middlewares=[Upper])
+    service.listen(host='127.0.0.1', port=9000, override=True, forever=True)
+    
+Run the server in the terminal and use another to interact:
+    
+.. code-block:: bash
+
+    $ python3 server.py
+    ...
+    $ curl -X GET http://127.0.0.1:9000/; echo
+    Hello World!
+    $ curl -X GET http://127.0.0.1:9000/upper/; echo
+    HELLO WORLD!
+
+Adding endpoints
+----------------
+
+Endpoint is a middleware responsible for responding to a request.
+To create endpoint you just wrap middleware's method by one or a few http.bind 
+functions. We already saw it in a very first example. Add some endpoints: 
+
+.. code-block:: python
+
+  # server.py
+    import asyncio
+    from interest import Service, Middleware, http
+    
+    
+    class Math(Middleware):
     
         # Public
     
@@ -134,19 +187,40 @@ Let's add some middlewares to the our service:
             return http.Response(text=str(value ** 2))
     
     
+    class Upper(Middleware):
+    
+        # Public
+    
+        PREFIX = '/upper'
+        METHODS = ['GET']
+    
+        @asyncio.coroutine
+        def process(self, request):
+            try:
+                # Process request here
+                response = (yield from self.next(request))
+                # Process response here
+                response.text = response.text.upper()
+            except http.Exception as exception:
+                # Process exception here
+                response = exception
+            print(self.service)
+            return response
+    
+    
     class Service(Service):
     
         # Public
     
-        @http.get('/')
+        @http.get('/<key:path>')
         def hello(self, request, key):
             return http.Response(text='Hello World!')
     
     
     # Listen forever
-    service = Service(middlewares=[Processor, Resource])
+    service = Service(middlewares=[Math, Upper])
     service.listen(host='127.0.0.1', port=9000, override=True, forever=True)
-    
+  
 Run the server in the terminal and use another to interact:
     
 .. code-block:: bash
@@ -155,159 +229,25 @@ Run the server in the terminal and use another to interact:
     ...
     $ curl -X GET http://127.0.0.1:9000/; echo
     Hello World!
+    $ curl -X GET http://127.0.0.1:9000/upper/; echo
+    HELLO WORLD!    
     $ curl -X GET http://127.0.0.1:9000/math/power/2; echo
     4
     $ curl -X GET http://127.0.0.1:9000/math/power/two; echo 
     404: Not Found
+    
+What's next?
+------------
 
-Diving deeper
--------------
+See the Interest documentation to get more:
 
-Now let's create restful API exploring interest features:
+.. warning:: It's under development for now.
 
-.. code-block:: python
-
-    # server.py
-    import json
-    import asyncio
-    import logging
-    from interest import Service, Middleware, http
-    from interest import Logger, Handler, Router, Parser, Provider, Endpoint
-    
-    
-    class Restful(Middleware):
-    
-        # Public
-    
-        @asyncio.coroutine
-        def process(self, request):
-            try:
-                response = http.Response()
-                payload = yield from self.next(request)
-            except http.Exception as exception:
-                response = exception
-                payload = {'message': str(response)}
-            response.text = json.dumps(payload)
-            response.content_type = 'application/json'
-            return response
-    
-    
-    class Session(Middleware):
-    
-        # Public
-    
-        @asyncio.coroutine
-        def process(self, request):
-            assert self.main == self.service.over
-            assert self.over == self.service
-            assert self.prev == self.service['restful']
-            assert self.next == self.service['comment']['read'].over
-            request.user = False
-            response = yield from self.next(request)
-            return response
-    
-    
-    class MyEndpoint(Endpoint):
-    
-        # Public
-    
-        @asyncio.coroutine
-        def __call__(self, request):
-            for header in self.extra.get('headers', []):
-                if header not in request.headers:
-                    return (yield from self.next(request))
-            return (yield from super().__call__(request))
-    
-    
-    class Auth(Middleware):
-    
-        # Public
-    
-        METHODS = ['POST']
-    
-        @asyncio.coroutine
-        def process(self, request):
-            assert self.service.match(request, root='/api/v1')
-            assert self.service.match(request, path=request.path)
-            assert self.service.match(request, methods=['POST'])
-            if not request.user:
-                raise http.Unauthorized()
-            response = yield from self.next(request)
-            return response
-    
-    
-    class Comment(Middleware):
-    
-        # Public
-    
-        PREFIX = '/comment'
-        ENDPOINT = MyEndpoint
-        MIDDLEWARES = [Auth]
-    
-        @http.get('/key=<key:myint>')
-        def read(self, request, key):
-            url = '/api/v1/comment/key=' + str(key)
-            assert url == self.service.url('comment.read', key=key)
-            assert url == self.service.url('read', base=self, key=key)
-            return {'key': key}
-    
-        @http.put  # Restful -> Session -> Comment -> upsert
-        @http.post  # Restful -> Session -> Comment -> Auth -> upsert
-        def upsert(self, request):
-            self.service.log('info', 'Adding custom header!')
-            raise http.Created(headers={'endpoint': 'upsert'})
-    
-        @http.delete(headers=['ACCEPT'])
-        def delete(self, request):
-            assert self.service.db == '<connection>'
-            raise http.Forbidden()
-    
-    
-    class Database(Provider):
-    
-        # Public
-    
-        @asyncio.coroutine
-        def provide(self, service):
-            self.service.db = '<connection>'
-    
-    
-    # Create restful service
-    restful = Service(
-        prefix='/api/v1',
-        middlewares=[Restful, Session, Comment],
-        providers=[Database],
-        router=Router.config(
-            parsers={'myint': Parser.config(
-                pattern=r'[1-9]+', convert=int)}))
-    
-    # Create main service
-    service = Service(
-        logger=Logger.config(
-            template='%(request)s | %(status)s | %(<endpoint:res>)s'),
-        handler=Handler.config(
-            connection_timeout=25, request_timeout=5))
-    
-    # Add restful to main
-    service.push(restful)
-    
-    # Listen forever with logging
-    logging.basicConfig(level=logging.DEBUG)
-    service.listen(host='127.0.0.1', port=9000, override=True, forever=True)
-    
-Run the server in the terminal and use another to interact:  
-    
-.. code-block:: bash
-
-    $ python3 server.py
-    INFO:interest:Start listening host="127.0.0.1" port="9000"
-    ... <see log here> ... 
-    $ curl -X GET http://127.0.0.1:9000/api/v1/comment/key=1; echo
-    {"key": 1}
-    $ curl -X PUT http://127.0.0.1:9000/api/v1/comment; echo
-    {"message": "Created"}
-    $ curl -X POST http://127.0.0.1:9000/api/v1/comment; echo
-    {"message": "Unauthorized"}
+- `Getting started <http://interest.readthedocs.org/en/latest/tutorial.html>`_
+- `Extended Guide <http://interest.readthedocs.org/en/latest/guide.html>`_
+- `API Reference <http://interest.readthedocs.org/en/latest/reference.html>`_
+- `Questions <http://interest.readthedocs.org/en/latest/questions.html>`_
+- `Changes <http://interest.readthedocs.org/en/latest/changes.html>`_
 
 
 

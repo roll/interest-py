@@ -3,6 +3,18 @@ import asyncio
 from interest import Service, Middleware, http
 
 
+class Math(Middleware):
+
+    # Public
+
+    PREFIX = '/math'
+
+    @http.get('/power')
+    @http.get('/power/<value:int>')
+    def power(self, request, value=1):
+        return http.Response(text=str(value ** 2))
+
+
 class Upper(Middleware):
 
     # Public
@@ -34,5 +46,5 @@ class Service(Service):
 
 
 # Listen forever
-service = Service(middlewares=[Upper])
+service = Service(middlewares=[Math, Upper])
 service.listen(host='127.0.0.1', port=9000, override=True, forever=True)

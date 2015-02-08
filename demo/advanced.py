@@ -82,8 +82,8 @@ class Comment(Middleware):
         assert url == self.service.url('read', base=self, key=key)
         return {'key': key}
 
-    @http.put  # Restful -> Session -> Comment -> upsert
-    @http.post  # Restful -> Session -> Comment -> Auth -> upsert
+    @http.put
+    @http.post  # Auth
     def upsert(self, request):
         self.service.log('info', 'Adding custom header!')
         raise http.Created(headers={'endpoint': 'upsert'})

@@ -31,21 +31,23 @@ Features
 
 Package is authored and maintained by {{ maintainer }} <{{ maintainer_email }}>.
 
-Getting ready
--------------
+Installation
+------------
 
-To get started we need Python 3.4+. Installation is simple:
+We need Python 3.4+ and higher:
 
 - pip3 install {{ pypi_name }}
 
-Minimal server
---------------
+Creating service
+----------------
 
-Finally showing you the code:
+Service is a main interest component. Service can listen on TCP/IP port.
+It means that when we create service and call listen method we create
+HTTP server:
 
 .. code-block:: python
 
-    {{ examples['server']|indent }}
+    {{ examples['service']|indent }}
     
 Run the server in the terminal and use another to interact:
     
@@ -59,7 +61,15 @@ Run the server in the terminal and use another to interact:
 Adding middlewares
 ------------------
 
-Let's add some middlewares to the our service:
+As it was said service is a main interest component but heart of the interest 
+is a middleware concept. By the way service is a middleware.
+
+  Middleware is a coroutine taking http.Request as first argument 
+  to return any object.
+  
+Interest provides class-based middleware implementation with extended API.
+For example you can set constraints like HTTP path or methods, 
+call the next middleware, get access to the upper server and more:  
 
 .. code-block:: python
 
@@ -73,33 +83,47 @@ Run the server in the terminal and use another to interact:
     ...
     $ curl -X GET http://127.0.0.1:9000/; echo
     Hello World!
-    $ curl -X GET http://127.0.0.1:9000/math/power/2; echo
-    4
-    $ curl -X GET http://127.0.0.1:9000/math/power/two; echo 
-    404: Not Found
+    $ curl -X GET http://127.0.0.1:9000/upper/; echo
+    HELLO WORLD!
 
-Diving deeper
--------------
+Adding endpoints
+----------------
 
-Now let's create restful API exploring interest features:
+Endpoint is a middleware responsible for responding to a request.
+To create endpoint you just wrap middleware's method by one or a few http.bind 
+functions. We already saw it in a very first example. Add some endpoints: 
 
 .. code-block:: python
 
-    {{ examples['features']|indent }}
-    
-Run the server in the terminal and use another to interact:  
+  {{ examples['endpoints']|indent }}
+  
+Run the server in the terminal and use another to interact:
     
 .. code-block:: bash
 
     $ python3 server.py
-    INFO:interest:Start listening host="127.0.0.1" port="9000"
-    ... <see log here> ... 
-    $ curl -X GET http://127.0.0.1:9000/api/v1/comment/key=1; echo
-    {"key": 1}
-    $ curl -X PUT http://127.0.0.1:9000/api/v1/comment; echo
-    {"message": "Created"}
-    $ curl -X POST http://127.0.0.1:9000/api/v1/comment; echo
-    {"message": "Unauthorized"}
+    ...
+    $ curl -X GET http://127.0.0.1:9000/; echo
+    Hello World!
+    $ curl -X GET http://127.0.0.1:9000/upper/; echo
+    HELLO WORLD!    
+    $ curl -X GET http://127.0.0.1:9000/math/power/2; echo
+    4
+    $ curl -X GET http://127.0.0.1:9000/math/power/two; echo 
+    404: Not Found
+    
+What's next?
+------------
+
+See the Interest documentation to get more:
+
+.. warning:: It's under development for now.
+
+- `Getting started <http://{{ rtd_name }}.readthedocs.org/en/latest/tutorial.html>`_
+- `Extended Guide <http://{{ rtd_name }}.readthedocs.org/en/latest/guide.html>`_
+- `API Reference <http://{{ rtd_name }}.readthedocs.org/en/latest/reference.html>`_
+- `Questions <http://{{ rtd_name }}.readthedocs.org/en/latest/questions.html>`_
+- `Changes <http://{{ rtd_name }}.readthedocs.org/en/latest/changes.html>`_
 
 {% endblock %}
 

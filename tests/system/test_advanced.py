@@ -11,7 +11,7 @@ class ExampleTest(unittest.TestCase):
     def setUpClass(cls):
         current = Path(__file__).parent
         basedir = current / '..' / '..'
-        factory = basedir / 'demo' / 'features.py'
+        factory = basedir / 'demo' / 'advanced.py'
         cls.tester = Tester(str(factory),
             environ={'PYTHONPATH': str(basedir)})
         cls.tester.start()
