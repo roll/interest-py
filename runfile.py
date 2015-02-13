@@ -15,7 +15,7 @@ class ProjectModule(ProjectModule):
     description = 'Interest is a event-driven web framework on top of aiohttp/asyncio.'
     development_requires = [
         'runfile', 'mario', 'sphinx', 'sphinx-settings', 'sphinx-rtd-theme']
-    github_user = 'interest-hub'
+    github_user = 'inventive-ninja'
     install_requires = ['aiohttp>=0.14']
     interpreters = ['3.4']
     license = 'MIT License'
