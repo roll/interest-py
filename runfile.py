@@ -11,7 +11,7 @@ class ProjectModule(ProjectModule):
 
     author = 'roll'
     author_email = 'roll@respect31.com'
-    copyright = '2015, Respect31'
+    copyright = '2015, Inventive Ninja'
     description = 'Interest is a event-driven web framework on top of aiohttp/asyncio.'
     development_requires = [
         'runfile', 'mario', 'sphinx', 'sphinx-settings', 'sphinx-rtd-theme']

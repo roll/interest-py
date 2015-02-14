@@ -2,7 +2,7 @@ import os
 import sphinx
 import sphinx_rtd_theme
 from sphinx_settings import Settings
-copyset = '2015, Respect31'  # REPLACE: copyset = '{{ copyright }}'
+copyset = '2015, Inventive Ninja'  # REPLACE: copyset = '{{ copyright }}'
 project = 'interest'  # REPLACE: project = '{{ name }}'
 version = '0.4.0'  # REPLACE: version = '{{ version }}'
 
