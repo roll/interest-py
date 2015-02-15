@@ -3,7 +3,7 @@
 
 {% block badges %}
 {{ super() }}
-.. image:: http://img.shields.io/badge/chat-here-brightgreen.svg
+.. image:: http://img.shields.io/badge/chat-online-brightgreen.svg
      :target: https://gitter.im/inventive-ninja/public
      :alt: chat
      

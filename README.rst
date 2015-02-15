@@ -26,7 +26,7 @@ Interest is a event-driven web framework on top of aiohttp/asyncio.
      :target: https://pypi.python.org/pypi?:action=display&name=interest
      :alt: pypi
 
-.. image:: http://img.shields.io/badge/chat-here-brightgreen.svg
+.. image:: http://img.shields.io/badge/chat-online-brightgreen.svg
      :target: https://gitter.im/inventive-ninja/public
      :alt: chat
      
