@@ -10,7 +10,7 @@ Interest is a event-driven web framework on top of aiohttp/asyncio.
 
 .. Block: badges
 
-.. image:: http://img.shields.io/badge/code-GitHub-brightgreen.svg
+.. image:: http://img.shields.io/badge/code-github-brightgreen.svg
      :target: https://github.com/inventive-ninja/interest
      :alt: code
 .. image:: http://img.shields.io/travis/inventive-ninja/interest/master.svg

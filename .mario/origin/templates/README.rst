@@ -15,7 +15,7 @@
 {% block badges %}
 .. Block: badges
 
-.. image:: http://img.shields.io/badge/code-GitHub-brightgreen.svg
+.. image:: http://img.shields.io/badge/code-github-brightgreen.svg
      :target: https://github.com/{{ github_user }}/{{ name }}
      :alt: code
 .. image:: http://img.shields.io/travis/{{ github_user }}/{{ name }}/master.svg
