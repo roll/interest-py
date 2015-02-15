@@ -4,7 +4,7 @@ import sphinx_rtd_theme
 from sphinx_settings import Settings
 copyset = '2015, Inventive Ninja'  # REPLACE: copyset = '{{ copyright }}'
 project = 'interest'  # REPLACE: project = '{{ name }}'
-version = '0.4.0'  # REPLACE: version = '{{ version }}'
+version = '0.4.1'  # REPLACE: version = '{{ version }}'
 
 
 class Settings(Settings):

@@ -31,7 +31,7 @@ setup(
     classifiers=[],       
     description='Interest is a event-driven web framework on top of aiohttp/asyncio.',
     data_files=data_files,
-    download_url='https://github.com/inventive-ninja/interest/tarball/0.4.0',
+    download_url='https://github.com/inventive-ninja/interest/tarball/0.4.1',
     entry_points={},
     license='MIT License',
     long_description=long_description,
@@ -45,4 +45,4 @@ setup(
     url='https://github.com/inventive-ninja/interest',
     tests_require=['nose', 'coverage'],
     test_suite='nose.collector',
-    version='0.4.0')
+    version='0.4.1')
