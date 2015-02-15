@@ -134,7 +134,7 @@ class IntegerParser(Parser):
 
     # Public
 
-    PATTERN = r'[1-9]+'
+    PATTERN = r'[0-9]+'
     CONVERT = int
 
 
@@ -142,5 +142,5 @@ class FloatParser(Parser):
 
     # Public
 
-    PATTERN = r'[1-9.]+'
+    PATTERN = r'[0-9.]+'
     CONVERT = float
