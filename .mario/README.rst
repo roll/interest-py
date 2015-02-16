@@ -9,7 +9,10 @@
 .. image:: http://img.shields.io/badge/board-kanban-brightgreen.svg
      :target: https://waffle.io/{{ github_user }}/{{ name }}
      :alt: board
-     
+.. image:: http://img.shields.io/badge/groups-public-brightgreen.svg
+     :target: https://groups.google.com/forum/#!forum/{{ github_user }}
+     :alt: groups     
+          
 Features
 --------
 

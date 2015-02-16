@@ -32,7 +32,10 @@ Interest is a event-driven web framework on top of aiohttp/asyncio.
 .. image:: http://img.shields.io/badge/board-kanban-brightgreen.svg
      :target: https://waffle.io/inventive-ninja/interest
      :alt: board
-     
+.. image:: http://img.shields.io/badge/groups-public-brightgreen.svg
+     :target: https://groups.google.com/forum/#!forum/inventive-ninja
+     :alt: groups     
+          
 Features
 --------
 
