@@ -4,8 +4,11 @@
 {% block badges %}
 {{ super() }}
 .. image:: http://img.shields.io/badge/chat-online-brightgreen.svg
-     :target: https://gitter.im/inventive-ninja/public
+     :target: https://gitter.im/{{ github_user }}/public
      :alt: chat
+.. image:: http://img.shields.io/badge/board-kanban-brightgreen.svg
+     :target: https://waffle.io/{{ github_user }}/{{ name }}
+     :alt: board
      
 Features
 --------
