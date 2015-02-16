@@ -12,7 +12,7 @@ class ProjectModule(Module):
 
     author = '<author>'
     author_email = '<author_email>'
-    caution = 'TO MAKE CHANGES USE [meta] DIRECTORY.'
+    caution = 'TO MAKE CHANGES USE [.mario] DIRECTORY.'
     classifiers = []
     copyright = '<copyright>'
     data_files = []

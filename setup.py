@@ -1,5 +1,5 @@
 # Block: caution
-# TO MAKE CHANGES USE [meta] DIRECTORY.
+# TO MAKE CHANGES USE [.mario] DIRECTORY.
 
 # Block: data_files
 import os

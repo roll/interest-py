@@ -1,6 +1,6 @@
 .. Block: caution
 
-.. TO MAKE CHANGES USE [meta] DIRECTORY.
+.. TO MAKE CHANGES USE [.mario] DIRECTORY.
 
 .. Block: description
 
@@ -8,30 +8,30 @@ Interest
 =====================
 Interest is a event-driven web framework on top of aiohttp/asyncio.
 
-.. Block: badges
-
-.. image:: http://img.shields.io/badge/code-github-brightgreen.svg
-     :target: https://github.com/inventive-ninja/interest
-     :alt: code
+.. image:: http://img.shields.io/pypi/v/interest.svg
+     :target: https://pypi.python.org/pypi?:action=display&name=interest
+     :alt: pypi
 .. image:: http://img.shields.io/travis/inventive-ninja/interest/master.svg
      :target: https://travis-ci.org/inventive-ninja/interest 
      :alt: build
 .. image:: http://img.shields.io/coveralls/inventive-ninja/interest/master.svg 
      :target: https://coveralls.io/r/inventive-ninja/interest  
      :alt: coverage
-.. image:: http://img.shields.io/badge/docs-latest-brightgreen.svg
-     :target: http://interest.readthedocs.org
-     :alt: docs     
-.. image:: http://img.shields.io/pypi/v/interest.svg
-     :target: https://pypi.python.org/pypi?:action=display&name=interest
-     :alt: pypi
 
-.. image:: http://img.shields.io/badge/chat-online-brightgreen.svg
-     :target: https://gitter.im/inventive-ninja/public
-     :alt: chat
+----     
+     
+.. image:: http://img.shields.io/badge/code-github-brightgreen.svg
+     :target: https://github.com/inventive-ninja/interest
+     :alt: code
 .. image:: http://img.shields.io/badge/board-kanban-brightgreen.svg
      :target: https://waffle.io/inventive-ninja/interest
      :alt: board
+.. image:: http://img.shields.io/badge/docs-latest-brightgreen.svg
+     :target: http://interest.readthedocs.org
+     :alt: docs
+.. image:: http://img.shields.io/badge/chat-online-brightgreen.svg
+     :target: https://gitter.im/inventive-ninja/public
+     :alt: chat
 .. image:: http://img.shields.io/badge/groups-public-brightgreen.svg
      :target: https://groups.google.com/forum/#!forum/inventive-ninja
      :alt: groups 

@@ -2,13 +2,30 @@
 {% extends 'mario.origin/README.rst' %}
 
 {% block badges %}
-{{ super() }}
-.. image:: http://img.shields.io/badge/chat-online-brightgreen.svg
-     :target: https://gitter.im/{{ github_user }}/public
-     :alt: chat
+.. image:: http://img.shields.io/pypi/v/{{ pypi_name }}.svg
+     :target: https://pypi.python.org/pypi?:action=display&name={{ pypi_name }}
+     :alt: pypi
+.. image:: http://img.shields.io/travis/{{ github_user }}/{{ name }}/master.svg
+     :target: https://travis-ci.org/{{ github_user }}/{{ name }} 
+     :alt: build
+.. image:: http://img.shields.io/coveralls/{{ github_user }}/{{ name }}/master.svg 
+     :target: https://coveralls.io/r/{{ github_user }}/{{ name }}  
+     :alt: coverage
+
+----     
+     
+.. image:: http://img.shields.io/badge/code-github-brightgreen.svg
+     :target: https://github.com/{{ github_user }}/{{ name }}
+     :alt: code
 .. image:: http://img.shields.io/badge/board-kanban-brightgreen.svg
      :target: https://waffle.io/{{ github_user }}/{{ name }}
      :alt: board
+.. image:: http://img.shields.io/badge/docs-latest-brightgreen.svg
+     :target: http://{{ rtd_name }}.readthedocs.org
+     :alt: docs
+.. image:: http://img.shields.io/badge/chat-online-brightgreen.svg
+     :target: https://gitter.im/{{ github_user }}/public
+     :alt: chat
 .. image:: http://img.shields.io/badge/groups-public-brightgreen.svg
      :target: https://groups.google.com/forum/#!forum/{{ github_user }}
      :alt: groups 

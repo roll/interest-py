@@ -1,4 +1,4 @@
-#TO MAKE CHANGES USE [meta] DIRECTORY.
+#TO MAKE CHANGES USE [.mario] DIRECTORY.
 
 runfile
 mario
