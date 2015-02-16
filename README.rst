@@ -8,6 +8,18 @@ Interest
 =====================
 Interest is a event-driven web framework on top of aiohttp/asyncio.
 
+.. image:: http://img.shields.io/pypi/v/interest.svg
+     :target: https://pypi.python.org/pypi?:action=display&name=interest
+     :alt: pypi
+.. image:: http://img.shields.io/travis/inventive-ninja/interest/master.svg
+     :target: https://travis-ci.org/inventive-ninja/interest 
+     :alt: build
+.. image:: http://img.shields.io/coveralls/inventive-ninja/interest/master.svg 
+     :target: https://coveralls.io/r/inventive-ninja/interest  
+     :alt: coverage
+
+----
+
 .. image:: http://img.shields.io/badge/code-github-brightgreen.svg
      :target: https://github.com/inventive-ninja/interest
      :alt: code
@@ -27,18 +39,6 @@ Interest is a event-driven web framework on top of aiohttp/asyncio.
      :target: http://stackoverflow.com/
      :alt: questions  
 
-----
-        
-.. image:: http://img.shields.io/pypi/v/interest.svg
-     :target: https://pypi.python.org/pypi?:action=display&name=interest
-     :alt: pypi
-.. image:: http://img.shields.io/travis/inventive-ninja/interest/master.svg
-     :target: https://travis-ci.org/inventive-ninja/interest 
-     :alt: build
-.. image:: http://img.shields.io/coveralls/inventive-ninja/interest/master.svg 
-     :target: https://coveralls.io/r/inventive-ninja/interest  
-     :alt: coverage
-               
 Features
 --------
 
