@@ -11,7 +11,10 @@
      :alt: board
 .. image:: http://img.shields.io/badge/groups-public-brightgreen.svg
      :target: https://groups.google.com/forum/#!forum/{{ github_user }}
-     :alt: groups     
+     :alt: groups 
+.. image:: http://img.shields.io/badge/questions-soon-yellow.svg
+     :target: http://stackoverflow.com/
+     :alt: questions           
           
 Features
 --------
