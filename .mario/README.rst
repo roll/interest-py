@@ -2,6 +2,18 @@
 {% extends 'mario.origin/README.rst' %}
 
 {% block badges %}
+.. image:: http://img.shields.io/pypi/v/{{ pypi_name }}.svg
+     :target: https://pypi.python.org/pypi?:action=display&name={{ pypi_name }}
+     :alt: pypi
+.. image:: http://img.shields.io/travis/{{ github_user }}/{{ name }}/master.svg
+     :target: https://travis-ci.org/{{ github_user }}/{{ name }} 
+     :alt: build
+.. image:: http://img.shields.io/coveralls/{{ github_user }}/{{ name }}/master.svg 
+     :target: https://coveralls.io/r/{{ github_user }}/{{ name }}  
+     :alt: coverage
+
+----
+
 .. image:: http://img.shields.io/badge/code-github-brightgreen.svg
      :target: https://github.com/{{ github_user }}/{{ name }}
      :alt: code
@@ -21,18 +33,6 @@
      :target: http://stackoverflow.com/
      :alt: questions  
 
-----
-        
-.. image:: http://img.shields.io/pypi/v/{{ pypi_name }}.svg
-     :target: https://pypi.python.org/pypi?:action=display&name={{ pypi_name }}
-     :alt: pypi
-.. image:: http://img.shields.io/travis/{{ github_user }}/{{ name }}/master.svg
-     :target: https://travis-ci.org/{{ github_user }}/{{ name }} 
-     :alt: build
-.. image:: http://img.shields.io/coveralls/{{ github_user }}/{{ name }}/master.svg 
-     :target: https://coveralls.io/r/{{ github_user }}/{{ name }}  
-     :alt: coverage
-               
 Features
 --------
 
