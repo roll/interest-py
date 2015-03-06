@@ -10,6 +10,12 @@ coverage.xml
 .project
 .pydevproject
 
+# Block: idea
+.idea/
+*.ipr
+*.iws
+*.iml
+
 # Block: nose
 nosetests.xml
 

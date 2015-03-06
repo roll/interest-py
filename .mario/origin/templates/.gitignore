@@ -16,6 +16,14 @@ coverage.xml
 .pydevproject
 {% endblock %}
 
+{% block idea %}
+# Block: idea
+.idea/
+*.ipr
+*.iws
+*.iml
+{% endblock %}
+
 {% block nose %}
 # Block: nose
 nosetests.xml
