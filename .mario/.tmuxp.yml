@@ -1,0 +1,6 @@
+# REPLACE: .tmuxp.yml
+session_name: {{ name }}
+windows:
+  - window_name: main
+    panes:
+      - source venv/bin/activate
