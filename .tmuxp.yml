@@ -3,3 +3,4 @@ windows:
   - window_name: main
     panes:
       - source venv/bin/activate
+
