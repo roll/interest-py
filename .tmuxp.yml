@@ -1,6 +1,13 @@
+# General
 session_name: interest
-windows:
-  - window_name: main
-    panes:
-      - source venv/bin/activate
 
+# Windows
+windows:
+  - window_name: bash
+    panes:
+      - shell_command:
+        -
+  - window_name: vim
+    panes:
+      - shell_command:
+        - vim

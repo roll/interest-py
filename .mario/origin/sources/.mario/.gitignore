@@ -1,2 +1,0 @@
-# REPLACE: .gitignore
-{% extends 'mario.origin/.gitignore' %}
