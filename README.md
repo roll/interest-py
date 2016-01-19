@@ -56,4 +56,10 @@ Please visit Interest's developer hub to get docs, news and support:
 
 [Developer Hub](https://interest.readme.io/)
 
+## Contributing
+
+Please read the contribution guideline:
+
+[How to Contribute](CONTRIBUTING.md)
+
 Thanks!
