@@ -1,48 +1,70 @@
-# Block: caution
-# TO MAKE CHANGES USE [.mario] DIRECTORY.
+# -*- coding: utf-8 -*-
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
 
-# Block: data_files
 import os
-data_files = []
-if data_files:
-    try:
-        if os.geteuid() != 0:
-            data_files.clear()
-    except Exception:
-        pass
+import io
+from setuptools import setup, find_packages
 
-# Block: long_description
-from glob import iglob
-long_description = 'Interest is a event-driven web framework on top of aiohttp/asyncio.'
-for filepath in iglob('README.*'):
-    with open(filepath, encoding='UTF-8') as file:
-        long_description = file.read()
-    break     
 
-# Block: packages
-from setuptools import find_packages
-packages = find_packages(os.path.dirname(__file__) or '.', exclude=['tests*'])
+# Helpers
+def read(*paths):
+    """Read a text file."""
+    basedir = os.path.dirname(__file__)
+    fullpath = os.path.join(basedir, *paths)
+    contents = io.open(fullpath, encoding='utf-8').read().strip()
+    return contents
 
-# Block: setup
-from setuptools import setup
+
+# Prepare
+PACKAGE = 'interest'
+INSTALL_REQUIRES = [
+    'aiohttp==0.14',
+]
+LINT_REQUIRES = [
+    'pylint',
+]
+TESTS_REQUIRE = [
+    'tox',
+]
+README = read('README.md')
+VERSION = read(PACKAGE, 'VERSION')
+PACKAGES = find_packages(exclude=['examples', 'tests'])
+
+
+# Run
 setup(
-    author='roll',
-    author_email='roll@respect31.com',
-    classifiers=[],       
-    description='Interest is a event-driven web framework on top of aiohttp/asyncio.',
-    data_files=data_files,
-    download_url='https://github.com/inventive-ninja/interest/tarball/0.4.1',
-    entry_points={},
-    license='MIT License',
-    long_description=long_description,
-    maintainer='roll',
-    maintainer_email='roll@respect31.com',
-    name='interest',
+    name=PACKAGE,
+    version=VERSION,
+    packages=PACKAGES,
     include_package_data=True,
-    install_requires=['aiohttp>=0.14'], 
-    packages=packages,
-    platforms=['Unix'],
+    install_requires=INSTALL_REQUIRES,
+    tests_require=TESTS_REQUIRE,
+    extras_require={'develop': LINT_REQUIRES + TESTS_REQUIRE},
+    zip_safe=False,
+    long_description=README,
+    description='Interest is a event-driven web framework on top of aiohttp/asyncio.',
+    author='roll',
+    author_email='roll@post.agency',
     url='https://github.com/inventive-ninja/interest',
-    tests_require=['nose', 'coverage'],
-    test_suite='nose.collector',
-    version='0.4.1')
+    license='MIT',
+    keywords=[
+        'web framework',
+    ],
+    classifiers=[
+        'Development Status :: 4 - Beta',
+        'Environment :: Web Environment',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: MIT License',
+        'Operating System :: OS Independent',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
+        'Topic :: Software Development :: Libraries :: Python Modules'
+    ],
+)

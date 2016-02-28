@@ -1,38 +1,32 @@
-# Block: caution
-#TO MAKE CHANGES USE [.mario] DIRECTORY.
+sudo:
+  false
 
-# Block: language
-language: 
+language:
   python
 
-# Block: python
 python:
-  - '3.4'
+  - 3.4
 
-# Block: install
+env:
+  global:
+    - TOXENV="py${PYTHON_VERSION//./}"
+
 install:
+  - make develop
   - pip install coveralls
-  - pip install 'aiohttp>=0.14' 'nose' 'coverage'  
 
-# Block: script
 script:
-  - coverage run --source=interest setup.py test
+  # FIXME: configure linter
+  # - make lint
+  - make test
 
-# Block: after_success
 after_success:
   - coveralls
 
-# Block: notifications
-notifications:
-  email:
-    - roll@respect31.com
-
-# Block: deploy
 deploy:
   provider: pypi
   user: roll
   password:
-    secure: eN3OOqIkf4QsVDzJnCoXGRUOtUwqBBu+nu8V52QBzBdlSJ+Vs8FNFgfkZ1RBK0f1O10OHNzKxtM7l9oKx17DD/vsxT3FyP/VmFZs2GLkmXIT1652o42vuiSUuY736KboXOU6NzoQjjK4uKXn89vAoWY9R/CFUpLkgtw24LwKSiw=
+    secure: EtPOQV6AoJUbSlFX4C84zP9KK46BUzjy8IcXwfviNiieyfUsO3S4zs4N4PSTKBjQCJudCXU6+kRQlQV0WBbT80cr4IQVKGV+KqysK5NabytzXHEXUHci/vGhPwzhWv7bGNDMUdwp3FoWqbYT8AYpNXkHFOuZRIr3r4O3I++YjkwSednqt3U7822eFuNfujpsO6A6CRIdhzzQ3bfXtyEtQd1M17lUv1WyRrV0DgXtYvnkzm5M0I6h6h861iXLkPgW1DMLn4vIeouj/txzzhs0HlYyZFsDRdvAaNPTI0o63VGXJ81LExHUa4fVYasW1IGyzABT9dBEENc0LiF7035QkwSHgEfVzieQ0OcuEmVsBMB0uVGupCprus9dgX1zZCBx/SE+4WxXKZ+/R6OGOcIVlKYVsCtZnFv7aYLWN9Z0hzE9tlESXwM6/4VbEV9lVtOzsVjT7ePZ0+nmR63hcrmfPUdL3ec1crGoNvWmY2JmmjDWvke11qyMw/XmHohPVByc9RwwX/i/EuF0+Jj4OY7p3mOZMrnk8a/H01ifuXVj/HfIQuY5i1bILS8lny6E6QGugG9CkcRPRQSLzLg0stR6LVlmdy1wUMqwSpcMq6YzWaUj+pdOT6HkPA7GkmpfNjTI9Pkn6MNo7TwOjZFiglQHAMwriz3rfyR4f5iDFAb/J38=
   on:
     tags: true
-    all_branches: true

@@ -1,14 +1,6 @@
-# Block: caution
-# TO MAKE CHANGES USE [.mario] DIRECTORY.
-
-# Block: graft
-graft data
-graft interest
-graft tests
-
-# Block: include
-include *.rst
-include *.py
-
-# Block: global_exclude
-global-exclude __pycache__/*
+global-include VERSION
+include LICENSE.md
+include Makefile
+include pylintrc
+include README.md
+include tox.ini
