@@ -41,9 +41,3 @@ sdist/
 
 # Block: sphinx
 docs/_build
-
-# Block: virtualenv
-venv/
-venvs/
-virtualenv/
-virtualenvs/

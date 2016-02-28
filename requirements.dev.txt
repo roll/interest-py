@@ -1,0 +1,8 @@
+-r requirements.txt
+runfile
+mario
+sphinx
+sphinx-settings
+sphinx-rtd-theme
+nose
+coverage
