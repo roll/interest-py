@@ -1,7 +1,8 @@
 # Interest
 
 [![Travis](https://img.shields.io/travis/inventive-ninja/interest.svg)](https://travis-ci.org/inventive-ninja/interest)
-[![Coveralls](http://img.shields.io/coveralls/inventive-ninja/interest.svg?branch=master)](https://coveralls.io/r/inventive-ninja/interest?branch=master)
+[![Coveralls](https://img.shields.io/coveralls/inventive-ninja/interest.svg?branch=master)](https://coveralls.io/r/inventive-ninja/interest?branch=master)
+[![PyPI](https://img.shields.io/pypi/v/interest.svg)](https://pypi.org/project/interest)
 
 Event-driven web framework on top of aiohttp/asyncio.
 
